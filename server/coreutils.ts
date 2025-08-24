@@ -42,7 +42,7 @@ export const loadFileToHTML = memoize(
 			//else if (['.tex', '.latex'].includes(ext)) renderingType = 'latex'
 		}
 
-		let textContent: string | void = await Deno.readTextFile(filePath).catch(err=>console.warn(yellow(err)))
+		let textContent: string | void = await Deno.readTextFile(filePath).catch((err)=>console.warn(yellow(err.toString())))
 		
 		if(!textContent) textContent = 'File not found.'
 
