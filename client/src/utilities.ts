@@ -178,7 +178,7 @@ export const updateTitle = (): void  => {
 					.split('#')[0] || ''
 			)
 			//@ts-ignore constant defined in another codeblcok
-		) || globalThis.config.title
+		) || document.querySelector('meta[property="og:title"]')?.content
 }
 
 export const lastOnlyChild = (el: Element): Element  => {

@@ -74,9 +74,6 @@ export const buildHtmlTemplate = async (): Promise<string>  => {
   return outputHtml
 }
 
-export const htmlTemplate: string = await buildHtmlTemplate()
-esbuild.stop()
-
 const loadCSS = async (): Promise<string>  => {
   const CSSFilePaths: string[] =
 	[...Deno.readDirSync("./client/styles")]
@@ -105,3 +102,6 @@ export const renderWithTwind = (html: string): string  => {
 	const style: string = getStyleTag(sheet)
 	return style
 }
+
+export const htmlTemplate: string = await buildHtmlTemplate()
+esbuild.stop()
