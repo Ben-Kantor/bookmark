@@ -13,7 +13,7 @@ import { generateToc } from './toc.ts'
 
 declare const vaultMap: VaultMapDirectory
 
-export function navigateTo(targetURL: string, forceRedirect?: boolean): void {
+export const navigateTo = (targetURL: string, forceRedirect?: boolean): void  => {
 	highlightItem(null)
 
 	const url = new URL(targetURL, globalThis.location.origin)
@@ -82,7 +82,7 @@ export function navigateTo(targetURL: string, forceRedirect?: boolean): void {
 		})
 }
 
-export function downloadFile(path: string, downloadName?: string): void {
+export const downloadFile = (path: string, downloadName?: string): void  => {
 	const a = document.createElement('a')
 	a.href = downloadName ? path : `/!/${path}`
 	a.download = downloadName || decodeURIComponent(path.split('/').pop() || '')
@@ -91,7 +91,7 @@ export function downloadFile(path: string, downloadName?: string): void {
 	document.body.removeChild(a)
 }
 
-export function initHeaderLinks(): void {
+export const initHeaderLinks = (): void  => {
 	const headers = document.querySelectorAll<HTMLElement>(
 		'h1, h2, h3, h4, h5, h6'
 	)
@@ -132,7 +132,7 @@ export function initHeaderLinks(): void {
 	})
 }
 
-export function scrollToAnchor(): void {
+export const scrollToAnchor = (): void  => {
 	const scrollContainer = document.getElementsByTagName('main')[0]!
 	const hash = globalThis.location.hash
 
@@ -162,11 +162,11 @@ export function scrollToAnchor(): void {
 	})
 }
 
-export function titleFromMarkdown(markdown: string): string | undefined {
+export const titleFromMarkdown = (markdown: string): string | undefined  => {
 	return markdown.match(/\A#\s(.+)\n/)?.[1]
 }
 
-export function updateTitle(): void {
+export const updateTitle = (): void  => {
 	document.title =
 		document.querySelector('h1')?.textContent ||
 		toTitleCase(
@@ -177,9 +177,10 @@ export function updateTitle(): void {
 					?.split('.')[0]
 					.split('#')[0] || ''
 			)
-		) || window.config.title
+			//@ts-ignore constant defined in another codeblcok
+		) || globalThis.config.title
 }
 
-export function lastOnlyChild(el: Element): Element {
+export const lastOnlyChild = (el: Element): Element  => {
 	return el.children.length > 1 ? el : lastOnlyChild(el.children[0])
 }

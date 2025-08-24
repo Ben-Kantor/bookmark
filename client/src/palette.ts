@@ -18,7 +18,7 @@ type PaletteItem =
 	| { label: string; type: 'command'; run: () => void }
 	| { label: string; type: 'file'; path: string }
 
-export function openCommandPalette(): void {
+export const openCommandPalette = (): void  => {
 	try {
 		//@ts-ignore lightbox is created in js embedded in the html
 		if (lightbox?.pswp) return
@@ -34,12 +34,12 @@ export function openCommandPalette(): void {
 	updatePaletteResults('')
 }
 
-export function closeCommandPalette(): void {
+export const closeCommandPalette = (): void  => {
 	paletteOverlay.style.pointerEvents = 'none'
 	paletteOverlay.classList.add('hidden')
 }
 
-export function updatePaletteResults(query: string): void {
+export const updatePaletteResults = (query: string): void  => {
 	const lower: string = query.toLowerCase()
 
 	const fileMatches: PaletteItem[] = searchFiles(lower, vaultMap.children)
@@ -62,7 +62,7 @@ export function updatePaletteResults(query: string): void {
 	renderPaletteResults()
 }
 
-export function renderPaletteResults(): void {
+export const renderPaletteResults = (): void  => {
 	paletteResultsEl.innerHTML = ''
 
 	paletteResults.forEach((item, i) => {
@@ -88,7 +88,7 @@ export function renderPaletteResults(): void {
 	})
 }
 
-export function executePaletteItem(item: PaletteItem): void {
+export const executePaletteItem = (item: PaletteItem): void  => {
 	closeCommandPalette()
 
 	if (item.type === 'command') item.run()

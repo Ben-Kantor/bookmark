@@ -54,7 +54,7 @@ export const createEmbedWithProperties = (
 	}
 
 	if (properties.firstline || properties.lastline) {
-		content = processLineSection(content, properties, targetPath)
+		content = processLineSection(content, properties)
 	}
 
 	const display = properties.noTitle ? "" : (properties.title || displayText)
@@ -116,7 +116,7 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 }
 
 
-function stripQuotes(s: string): string {
+const stripQuotes = (s: string): string  => {
 	if(s.startsWith('"') && s.endsWith('"')||s.startsWith("'") && s.endsWith("'"))
 		return s.slice(1,-1)
 	return s
@@ -244,8 +244,7 @@ const processHeaderSection = (
 
 const processLineSection = (
 	embeddedHTML: string,
-	properties: types.EmbedProperties,
-	targetPath: string | undefined
+	properties: types.EmbedProperties
 ): string => {
 	const splitResult = splitHtmlWrappers(embeddedHTML)
 	const lines = splitResult[1].split("\n")
@@ -262,7 +261,7 @@ const escapeRegex = (str: string): string => {
 }
 
 
-export function addLineNumbers(html: string): string {
+export const addLineNumbers = (html: string): string  => {
 	return html.replace(/<pre.*?>\s*<code.*?>([\s\S]*?)<\/code>\s*<\/pre>/gi, (match, codeContent) => {
 		const lines = codeContent.split('\n')
 		const lastIndex = lines.length - 1

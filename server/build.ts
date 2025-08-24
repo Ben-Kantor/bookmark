@@ -17,7 +17,7 @@ const result = await esbuild.build({
 })
 const transpiledBundle: string = result.outputFiles[0].text
 
-export async function buildHtmlTemplate(): Promise<string> {
+export const buildHtmlTemplate = async (): Promise<string>  => {
   ("Building server template...")
   const [htmlString, clientCSS, iconMap] = await Promise.all([
 	Deno.readTextFile("./client/client.html"),
@@ -77,7 +77,7 @@ export async function buildHtmlTemplate(): Promise<string> {
 export const htmlTemplate: string = await buildHtmlTemplate()
 esbuild.stop()
 
-async function loadCSS(): Promise<string> {
+const loadCSS = async (): Promise<string>  => {
   const CSSFilePaths: string[] =
 	[...Deno.readDirSync("./client/styles")]
 	  .map(({ name }) => join("./client/styles", name))
@@ -96,7 +96,7 @@ async function loadCSS(): Promise<string> {
   return CSSContentsWithHeaders.join("\n")
 }
 
-export function renderWithTwind(html: string): string {
+export const renderWithTwind = (html: string): string  => {
 	const sheet = virtualSheet()
 	setup({ sheet, mode: "silent" })
 	sheet.reset()

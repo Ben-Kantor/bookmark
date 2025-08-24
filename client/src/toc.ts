@@ -4,7 +4,7 @@ import { mainContentEl, expandedTocItems } from './constants-client.ts'
 
 declare const fileTypeIcons: FileTypeIcons
 
-export function generateToc(): void {
+export const generateToc = (): void  => {
 	const headings: HTMLHeadingElement[] = Array.from(
 		mainContentEl.querySelectorAll<HTMLHeadingElement>(
 			':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6'
@@ -47,7 +47,7 @@ export function generateToc(): void {
 	renderTocItems(hierarchy, tocList as HTMLUListElement, 0)
 }
 
-function buildTocHierarchy(items: TocItem[]): TocItem[] {
+const buildTocHierarchy = (items: TocItem[]): TocItem[]  => {
 	const root: TocItem = { id: '', text: '', level: 0, children: [] }
 	const stack: TocItem[] = [root]
 

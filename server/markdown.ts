@@ -287,6 +287,6 @@ const markdownInlineCode = (text: string): string => {
   })
 }
 
-function escapeBrackets(input: string): string {
+const escapeBrackets = (input: string): string  => {
   return input.replace(/(?<!\\)([\[\]])/g, '\\$1')
 }

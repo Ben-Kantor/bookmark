@@ -102,7 +102,7 @@ The triple backtick was escaped by preceding each by a backslash (\\`\\`\\`)
 ```
 
 ```javascript
-function greet(name) {
+const greet = (name) => {
   console.log(`Hello, ${name}!`);
 }
 
