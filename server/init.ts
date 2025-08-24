@@ -15,27 +15,32 @@ const handler = async (request: Request): Promise<Response> => {
 			headers: { "Content-Type": "application/zip" } 
 		})
 	}
+
+
+	const filePathResult = await resolveFileRequest(normalizedPath)
 	
-	if (config.paths.whitelist.findIndex((path: string) => pathMatches(normalizedPath, path)) > -1) {
-		const filePath = join(Deno.cwd(), normalizedPath)
-		
-		try {
-			const file = await Deno.open(filePath, { read: true })
-			const stat = await file.stat()
-			const headers = new Headers({
-				"Content-Type": contentType(extname(filePath)) || "application/octet-stream",
-				"Content-Length": stat.size.toString(),
-				"X-Redirect-URL": request.url
-			})
-			return new Response(file.readable, { status: 200, headers })
-		} catch {
-			console.warn(`Whitelisted file not found: ${filePath}`)
-			return new Response("File not found.", { status: 404 })
+	if (filePathResult.isNotFound) {
+		const cleanedPath = normalizedPath.replace("/!", "")
+		if(config.paths.whitelist.findIndex((path: string) => pathMatches(cleanedPath, path)) > -1){
+			const filePath = join(Deno.cwd(), normalizedPath)
+			
+			try {
+				const file = await Deno.open(filePath, { read: true })
+				const stat = await file.stat()
+				const headers = new Headers({
+					"Content-Type": contentType(extname(filePath)) || "application/octet-stream",
+					"Content-Length": stat.size.toString(),
+					"X-Redirect-URL": request.url
+				})
+				return new Response(file.readable, { status: 200, headers })
+			} catch {
+				console.warn(`Whitelisted file not found: ${filePath}`)
+				return new Response("File not found.", { status: 404 })
+			}
 		}
 	}
 
 	try {
-		const filePathResult = await resolveFileRequest(normalizedPath)
 		
 		if (filePathResult.isLiteralRequest) {
 			const file = await Deno.open(filePathResult.filePath, { read: true })

@@ -85,6 +85,9 @@ main img:not(.pswp__img) {
 }
 
 /* Code Styles */
+pre, code {
+	font-family: 'FiraCode Nerd Font' !important;
+}
 code {
 	background-color: var(--layer-1) !important;
 	display: block;
