@@ -1,0 +1,92 @@
+/* layout.css */
+html {
+	background: var(--background-primary);
+	font-family: 'FiraCode Nerd Font', -apple-system, BlinkMacSystemFont,
+		'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans',
+		'Helvetica Neue', sans-serif;
+	scroll-behavior: smooth;
+}
+
+/* Reset & Universal Styles */
+* {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+	display: none;
+}
+main {
+	padding: 1em;
+}
+
+#content-area {
+	box-shadow: 0 0 0.25em 0.25em rgba(0, 0, 0, 0.3);
+}
+
+#content-area-wrapper,
+#content-area,
+#content-area main.content {
+	max-width: 100% !important;
+	overflow-x: hidden;
+}
+
+#content-area .embed-wrapper {
+	max-width: 100% !important;
+	width: auto !important;
+	overflow-x: auto;
+	display: block;
+}
+
+#content-area audio,
+#content-area video {
+	max-width: 100% !important;
+	height: auto;
+	object-fit: contain;
+}
+
+#content-area pre,
+#content-area code,
+#content-area iframe,
+#content-area img {
+	object-fit: contain;
+}
+
+#open-palette-button {
+	flex-shrink: 0;
+	width: 1.5em;
+	height: 1.5em;
+	font-size: 200%;
+	text-align: left;
+	margin-right: -0.5em;
+	cursor: pointer;
+	font-family: var(--font-icons);
+	font-size: 200%;
+	color: var(--accent-light);
+	transition: color 0.2s ease-in-out;
+}
+#open-palette-button:hover {
+	color: var(--accent-primary);
+}
+
+.panel-transitions {
+	transition: width 0.2s ease-in-out;
+}
+
+#explorer.panel-collapsed,
+#toc-panel.panel-collapsed {
+	width: 0 !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+}
+
+#explorer,
+#toc-panel {
+	visibility: visible;
+	background: var(--layer-1);
+}
+
+main *::selection {
+	background-color: var(--accent-primary);
+	color: var(--background-primary);
+}

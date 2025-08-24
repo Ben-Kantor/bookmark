@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
+    "start": "deno run --allow-env=TERM,PORT --allow-read=. --allow-net ./server/init.ts"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "deno.ns"]
+  }
+}

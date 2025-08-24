@@ -1,0 +1,120 @@
+@font-face {
+	font-family: 'FiraCode Nerd Font';
+	src: url('/assets/FiraCodeNerdFont-Regular.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'DM Serif Text';
+	src: url('/assets/DMSerifText-Regular-Subset.woff2') format('woff2');
+}
+
+:root {
+	--font-title: 'DM Serif Text', serif;
+	--font-icons: 'FiraCode Nerd Font', monospace;
+	--font-body: 'FiraCode Nerd Font', monospace;
+
+	--background-primary: #121212;
+	--layer-0: #1c1c1c;
+	--layer-1: #242424;
+	--layer-2: #2e2e2e;
+	--accent-primary: #d14b68;
+	--accent-dark: #692534;
+	--accent-light: #eee4cd;
+	--accent-gold: #fcd882;
+	--text-normal: #f8f6fc;
+	--text-accent: var(--accent-light);
+	--text-bold: var(--accent-gold);
+	--text-italic: #f3b7c1;
+	--active-interactable: var(--layer-2);
+
+	--code-bg: var(--layer-1);
+	--code-text: var(--text-normal);
+	--code-comment: #777777;
+	--code-keyword: var(--accent-gold);
+	--code-string: var(--accent-light);
+	--code-function: var(--accent-primary);
+	--code-number: #e6a85c;
+	--code-type: var(--accent-primary);
+	--code-operator: var(--accent-light);
+	--code-variable: var(--text-italic);
+}
+
+[data-theme='light'] {
+	--background-primary: #faf4ed;
+	--layer-0: #f2e9de;
+	--layer-1: #fffaf3;
+	--layer-2: #e7d9cf;
+	--accent-primary: #b4637a;
+	--accent-dark: #ffbba6;
+	--accent-light: #575279;
+	--accent-gold: #bd7614;
+	--text-normal: #575279;
+	--text-accent: var(--accent-light);
+	--text-bold: var(--accent-gold);
+	--text-italic: #907aa9;
+	--active-interactable: var(--layer-2);
+
+	--code-bg: var(--layer-1);
+	--code-text: var(--text-normal);
+	--code-comment: #8a8a8a;
+	--code-keyword: var(--accent-gold);
+	--code-string: var(--accent-light);
+	--code-function: var(--accent-primary);
+	--code-number: #d19a66;
+	--code-type: var(--accent-primary);
+	--code-operator: var(--accent-light);
+	--code-variable: var(--text-italic);
+}
+
+[data-high-contrast='true'] {
+	--background-primary: #000000;
+	--layer-0: #000000;
+	--layer-1: #161616;
+	--layer-2: #252525;
+	--accent-primary: #ff5599;
+	--accent-dark: #cc4477;
+	--accent-light: #ffffff;
+	--accent-gold: #ffff00;
+	--text-normal: #ffffff;
+	--text-accent: var(--accent-gold);
+	--text-bold: var(--accent-gold);
+	--text-italic: #00ffff;
+	--active-interactable: var(--layer-2);
+
+	--code-bg: #111111;
+	--code-text: #ffffff;
+	--code-comment: #bbbbbb;
+	--code-keyword: var(--accent-gold);
+	--code-string: #99ff99;
+	--code-function: var(--accent-primary);
+	--code-number: #ffa500;
+	--code-type: var(--accent-primary);
+	--code-operator: #cc4477;
+	--code-variable: var(--text-italic);
+}
+
+[data-theme='light'][data-high-contrast='true'] {
+	--background-primary: #ffffff;
+	--layer-0: #ffffff;
+	--layer-1: #f0f0f0;
+	--layer-2: #e0e0e0;
+	--accent-primary: #ff0077;
+	--accent-dark: #ff00ff;
+	--accent-light: #000000;
+	--accent-gold: #705600;
+	--text-normal: #000000;
+	--text-accent: var(--accent-primary);
+	--text-bold: var(--accent-gold);
+	--text-italic: #00ffbf;
+	--active-interactable: var(--layer-2);
+
+	--code-bg: #f5f5f5;
+	--code-text: #000000;
+	--code-comment: #3b3b3b;
+	--code-keyword: var(--accent-gold);
+	--code-string: #008000;
+	--code-function: var(--accent-primary);
+	--code-number: #d15c00;
+	--code-type: var(--accent-primary);
+	--code-operator: #0000cc;
+	--code-variable: var(--text-italic);
+}

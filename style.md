@@ -1,0 +1,27 @@
+please reformat my code:
+- all code should be easily human-readable, and comments should only be used if this is impossible
+- code should have full double indentations everywhere
+- code should have no trailing spaces or other undeeded punctuation
+- code should not include semicolons, or braces wherever possible
+- if no changes in indentation, there should be a line gap usually at least every six lines, and between distinct sections
+- concepts such as desctructuring, anon functions, and method chaining should be used whenever they don't interfere with readability
+- do not use oop and use a functional paradigm wherever convenient
+- ensure code maintains all significant functionality
+- fragile implementations can be replaced with more robust ones, where the new one is not significantly more complex and does not require
+    - the importing of additional unofficial modules
+- make minimal modification to the flow of code and the methods used, except when called o by the reasons above
+- comments should only be used when code is not self-explanatory, very rarely
+- if possible imports should use npm:... or jsr:... similar
+- otherwise they should usecurrent latest version, and any newer patches
+- if unsure otherwise, resort to typescript style guide, but prefer the explicit instructions above
+- leave a blank line before and after brace sections
+- method chaining and such can be indented further to align with the code above it
+- remove all dead code
+- use globalThis instead of window
+- organize files with key functions at the top, and smaller less important functions below
+- type definitions must be used in all variable definitions and function parameters, never use "any"
+- all function must have a return type
+- remember DOUBLE INDENTATIONS
+- code should avoid more than three deep indendation where possible
+- files over 250 lines should be split into two new named files
+- use const for function definitions

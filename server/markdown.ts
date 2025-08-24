@@ -1,0 +1,292 @@
+import {
+	Marked,
+	TokenizerAndRendererExtension,
+	Tokens,
+} from 'npm:marked@^9.0.0'
+import { markedSmartypantsLite } from 'npm:marked-smartypants-lite@^1.0.3'
+import { markedHighlight } from 'npm:marked-highlight@^2.1.1'
+import hljs from 'npm:highlight.js@latest'
+import {
+	basename,
+	dirname,
+	extname,
+	join,
+} from 'https://deno.land/std@0.224.0/path/mod.ts'
+
+import { fileExists, findFilePath, vaultMap } from './vaultmap.ts'
+import { replaceUnicode, toHTTPLink, toTitleCase } from './lib.ts'
+import * as types from './types.ts'
+import { config } from './constants.ts'
+import { processEmbed } from './embed-processor.ts'
+import { yellow } from 'jsr:@std/fmt@0.223/colors'
+
+export const renderMarkdown = async (
+	markdown: string,
+	currentPath: string,
+	noEmbeds?: boolean,
+	addTitle?: boolean
+): Promise<string> => {
+	if(!markdown) return ''
+	if (addTitle && !markdown.startsWith('# ')) {
+		markdown = `# ${toTitleCase(basename(currentPath))}\n\n${markdown}`
+	}
+
+	if (addTitle && markdown.match(/\n\#\s/)) {
+		console.warn(
+			yellow(`File ${currentPath} contains multiple level 1 headers.`)
+		)
+	}
+
+	markdown = replaceUnicode(markdown)
+
+	markdown = markdownInlineCode(markdown)
+
+	markdown = markdown.replace(/<br>/g, '\n')
+
+	markdown = markdown.replace(/```[\s\S]+?```/g, (match) => escapeBrackets(match))
+
+	markdown = markdown.replace(
+		/\`\`\`([^\n\\]+)([\n\\][^\`]+)\`\`\`/gm,
+		(_match, lang, code) => {
+			if (hljs.getLanguage(lang)) {
+				return '```' + lang + '\n' + code.trim() + '\n```'
+			} else if (lang) {
+				console.warn(yellow(`Codeblock with invalid language ${lang} in file ${currentPath}`))
+				return '```' + lang + '\n' + code.trim() + '\n```'
+			}
+
+			const result = hljs.highlightAuto(code.replace(/^\n+|\n+$/g, '')).language
+
+			console.warn(yellow(`Codeblock without specified language or invalid, in file ${currentPath}`))
+
+			return '```' + result + '\n' + code.trim() + '\n```'
+		}
+	)
+
+	const embedPromises: Promise<{ placeholder: string; content: string }>[] =
+		[]
+	const embedPlaceholders: string[] = []
+
+	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/g
+	let match
+	let processedMarkdown = markdown
+
+	while ((match = embedRegex.exec(markdown)) !== null) {
+		const [
+			raw,
+			linkPrefix,
+			doubleBracketTerm,
+			bracketTerm,
+			parenthesesTerm,
+		] = match
+
+		if (linkPrefix === '!') {
+			if (noEmbeds) {
+				processedMarkdown = processedMarkdown.replace(
+					raw,
+					'\n!' + raw.slice(1).trimEnd() + '\n'
+				)
+				continue
+			}
+
+			const placeholder = `<!-- EMBED_${embedPlaceholders.length} -->`
+			embedPlaceholders.push(placeholder)
+
+			const embedPromise = processEmbed(
+				doubleBracketTerm,
+				bracketTerm,
+				parenthesesTerm,
+				currentPath,
+				config.paths.contentDir
+			).then(content => ({
+				placeholder,
+				content,
+			}))
+
+			embedPromises.push(embedPromise)
+			processedMarkdown = processedMarkdown.replace(raw, placeholder)
+		}
+	}
+
+	const resolvedEmbeds = await Promise.all(embedPromises)
+
+	const markedInstance = new Marked()
+
+	markedInstance.use({
+		extensions: [
+			createCustomLinksExtension(
+				currentPath,
+				vaultMap,
+				config.paths.contentDir
+			),
+		],
+	})
+
+	markedInstance.use(markedSmartypantsLite())
+	markedInstance.use(
+		markedHighlight({
+			langPrefix: 'hljs language-',
+			highlight(code, lang) {
+				const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+				try {
+					return hljs.highlight(code, {
+						language,
+						ignoreIllegals: true,
+					}).value
+				} catch {
+					return hljs.highlight(code, { language: 'plaintext' }).value
+				}
+			},
+		})
+	)
+
+	markedInstance.setOptions({
+		gfm: true,
+		breaks: false,
+		pedantic: false,
+	})
+
+	let result = markedInstance.parse(processedMarkdown) as string
+
+	for (const { placeholder, content } of resolvedEmbeds) {
+		result = result.replace(placeholder, content)
+	}
+
+	return result
+	.replace(/\\(?:<[^>]+>)*([\[\]])/g,(_, bracket) => bracket) //unescape brackets
+	.replace(/\\\`/gm,"`") //unescape backticks
+}
+
+export const createCustomLinksExtension = (
+	currentPath: string,
+	vaultMap: types.VaultMap,
+	contentDir: string
+): TokenizerAndRendererExtension => {
+	const extension: TokenizerAndRendererExtension = {
+		name: 'customLinks',
+		level: 'inline' as const,
+		start(src: string) {
+			const i = src.search(/(?<!\!)(\[\[|\[)/)
+			return i === -1 ? undefined : i
+		},
+		tokenizer(src: string): Tokens.Generic | undefined {
+			const rule = /^(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/
+			const match = rule.exec(src)
+
+			if (match) {
+				const [raw, doubleBracketTerm, bracketTerm, parenthesesTerm] =
+					match
+				if (src.startsWith('\\')) return undefined
+
+				return {
+					type: 'customLinks',
+					raw,
+					isEmbed: false,
+					isWikilink: !!doubleBracketTerm,
+					doubleBracketTerm: decodeURI(doubleBracketTerm || ''),
+					bracketTerm: decodeURI(bracketTerm || ''),
+					parenthesesTerm: decodeURI(parenthesesTerm || ''),
+				}
+			}
+			return undefined
+		},
+		renderer(token: Tokens.Generic): string {
+			const {
+				isWikilink,
+				doubleBracketTerm,
+				bracketTerm,
+				parenthesesTerm,
+			} = token
+
+			let mutableBracketTerm = bracketTerm
+			if (
+				mutableBracketTerm?.startsWith('<') &&
+				mutableBracketTerm.endsWith('>')
+			) {
+				mutableBracketTerm = mutableBracketTerm.slice(1, -1)
+			}
+
+			const linkSource =
+				doubleBracketTerm || parenthesesTerm || mutableBracketTerm
+			const rawLinkTarget = linkSource?.split(/[|#]/)[0]
+			const linkAnchor = linkSource?.split(/#(.*)$/)[1]
+
+			const displayText = isWikilink
+				? doubleBracketTerm.split(/[|#]/)[1] || rawLinkTarget
+				: mutableBracketTerm || rawLinkTarget
+
+			if (!rawLinkTarget) {
+				return `<a class="broken-link">${displayText}</a>`
+			}
+
+			const remoteLink = toHTTPLink(rawLinkTarget)
+			if (remoteLink) {
+				const finalURL =
+					remoteLink + (linkAnchor ? `#${linkAnchor}` : '')
+				return `<a href="${finalURL}" class="link">\u{1f517} ${displayText.trim()}</a>`
+			}
+
+			let targetPathFromContentDir: string | undefined
+
+			if (isWikilink) {
+				const term = doubleBracketTerm.split(/[|#]/)[0]
+				if (term.includes('.')) {
+					const parts = term.split('.')
+					targetPathFromContentDir = findFilePath(
+						vaultMap,
+						parts[0],
+						`.${parts[1]}`
+					)
+				} else {
+					targetPathFromContentDir =
+						findFilePath(vaultMap, term, '.md') ||
+						findFilePath(vaultMap, term)
+				}
+			} else {
+				const prospectivePath = join(
+					dirname(currentPath),
+					rawLinkTarget
+				)
+
+				if (fileExists(join(contentDir, prospectivePath))) {
+					targetPathFromContentDir = prospectivePath
+				} else {
+					const base = basename(rawLinkTarget, extname(rawLinkTarget))
+					const ext = extname(rawLinkTarget)
+					targetPathFromContentDir = findFilePath(vaultMap, base, ext)
+				}
+			}
+
+			if (!targetPathFromContentDir) {
+				console.warn(
+					yellow(
+						`Missing or malformed link ${token.raw} in /${currentPath}`
+					)
+				)
+				return `<a class="broken-link">${displayText.trim()}</a>`
+			}
+
+			const finalHref = '/' + targetPathFromContentDir.replace(/\\/g, '/')
+			const finalURL = finalHref + (linkAnchor ? `#${linkAnchor}` : '')
+
+			return `<a href="${finalURL}" class="link">${displayText.trim()}</a>`
+		},
+	}
+
+	return extension
+}
+
+const markdownInlineCode = (text: string): string => {
+  return text.replace(/(?<!\\)(?<!`)(`{1,2})(?!`)([\s\S]*?)(?<!`)\1(?!`)/g, (match, _backticks, content) => {
+    const totalNewlines = (content.match(/\n/g) || []).length
+    const hasDoubleNewline = content.includes('\n\n')
+    if (totalNewlines > 3 || hasDoubleNewline) {
+      return match
+    }
+    return `<span class="inline-code">${escapeBrackets(content)}</span>`
+  })
+}
+
+function escapeBrackets(input: string): string {
+  return input.replace(/(?<!\\)([\[\]])/g, '\\$1')
+}
