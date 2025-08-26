@@ -1,7 +1,7 @@
 export interface fileRequestInfo {
-	filePath: string //absolute path to the file to serve
-	isLiteralRequest: boolean
-	isNotFound?: boolean
+	filePath?: string //absolute path to the file to serve
+	status?: undefined | 403 | 404 | 500
+	isLiteralRequest?: boolean
 	preferredAddress?: string
 	isWebLink?: boolean
 }
@@ -14,10 +14,11 @@ export interface SiteConfig {
 	sourceMap: boolean
 	paths: {
 		contentDir: string
-		whitelist: string[]
+		assetsDir: string
 		indexFile: string
 	}
 	renderOverrides: { [key: string]: string[] }
+	logWarnings: boolean
 }
 
 export interface EmbedProperties {

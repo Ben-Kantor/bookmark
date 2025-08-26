@@ -184,3 +184,13 @@ export const updateTitle = (): void  => {
 export const lastOnlyChild = (el: Element): Element  => {
 	return el.children.length > 1 ? el : lastOnlyChild(el.children[0])
 }
+
+//currently unused, intended for a feature that automatically enables line wrapping when much of a codeblock is cut off
+export const checkLineWrapping = (embeddedHTML: string): boolean => {
+	const textContent = embeddedHTML.replace(/<[^>]*>/g, '')
+	const overflowCharacters = textContent
+		.split('\n')
+		.map(line => Math.max(0, line.length - 80))
+		.reduce((a, b) => a + b, 0)
+	return overflowCharacters > textContent.length / 4
+}

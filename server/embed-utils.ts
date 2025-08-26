@@ -1,7 +1,6 @@
 import * as types from "./types.ts"
 import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts"
-import { escapeHTML } from "./lib.ts"
-import { yellow } from "jsr:@std/fmt@0.223/colors"
+import { escapeHTML, warn } from "./lib.ts"
 
 export const createEmbedWithProperties = (
 	content: string,
@@ -15,7 +14,7 @@ export const createEmbedWithProperties = (
 		?.body
 
 	if (element?.children.length === 0){
-		console.warn(yellow(`No content found in embed ${targetPath}`))
+		warn(`No content found in embed ${targetPath}`)
 		return "<md-embed role='group' title='Error: Missing or malformed embed</p>'>![Embedded Content]</md-embed>"
 	}
 
@@ -37,9 +36,7 @@ export const createEmbedWithProperties = (
 				const src = element.getAttribute("src") || ""
 				element.setAttribute("src", src + pageFragment)
 			} else {
-				console.warn(
-					yellow(`Cannot specify pages for non-PDF embed in ${targetPath}`)
-				)
+				warn(`Cannot specify pages for non-PDF embed in ${targetPath}`)
 			}
 		}
 
@@ -57,13 +54,13 @@ export const createEmbedWithProperties = (
 		content = processLineSection(content, properties)
 	}
 
-	const display = properties.noTitle ? "" : (properties.title || displayText)
-	return `<md-embed role="group"
-	${properties.height ? `style="height:${properties.height}"` : ""}
-	${properties.width ? `style="width:${properties.width}"` : ""}
-	${properties.css ? `style="${properties.css}"` : ""}	
-	
-	title="${escapeHTML(display)}">${content}</md-embed>`
+	let style = ""
+	if (properties.width) style += `width:${properties.width};`
+	if (properties.height) style += `height:${properties.height};`
+	if (properties.css) style += properties.css
+
+	const display = properties.noTitle ? "" : (displayText || properties.title || "")
+	return `<md-embed role="group" style="${style}"	title="${escapeHTML(display)}">${content}</md-embed>`
 }
 
 export const extractEmbedProperties = (s: string): types.EmbedProperties => {
@@ -197,9 +194,7 @@ const processHeaderSection = (
 	const match = embeddedHTML.match(headerRegex)
 
 	if (!match) {
-		console.warn(
-			yellow(`Header "${properties.startHeader}" not found in embedded file ${targetPath}`)
-		)
+		warn(`Header "${properties.startHeader}" not found in embedded file ${targetPath}`)
 		return embeddedHTML
 	}
 
@@ -268,7 +263,7 @@ export const addLineNumbers = (html: string): string  => {
 		const numberedLines = lines.map((line: string, i: number) => {
 			if (i === lastIndex && line.trim() === '') return ''
 			const content = line.trim() === '' ? '&nbsp;' : line
-			return `<span class="line-number">${i + 1}.</span> ${content}`
+			return `<span class="line-number">${i + 1}. </span>${content}`
 		})
 		return match.replace(codeContent, numberedLines.join('\n'))
 	})

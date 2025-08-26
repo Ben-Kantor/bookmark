@@ -48,6 +48,8 @@ const init = () => {
 	initMobileHeader()
 	updateTitle()
 
+	globalThis.history.pushState({}, '', "/$PLACEHOLDER-PATH/")
+
 	setupGlobalKeyboardShortcuts()
 	setupCommandPaletteListeners()
 	initKeyboardNav()

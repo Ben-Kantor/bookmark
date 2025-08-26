@@ -14,7 +14,7 @@ import {
 } from 'https://deno.land/std@0.224.0/path/mod.ts'
 
 import { fileExists, findFilePath, vaultMap } from './vaultmap.ts'
-import { replaceUnicode, toHTTPLink, toTitleCase } from './lib.ts'
+import { replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
 import * as types from './types.ts'
 import { config } from './constants.ts'
 import { processEmbed } from './embed-processor.ts'
@@ -51,20 +51,19 @@ export const renderMarkdown = async (
 			if (hljs.getLanguage(lang)) {
 				return '```' + lang + '\n' + code.trim() + '\n```'
 			} else if (lang) {
-				console.warn(yellow(`Codeblock with invalid language ${lang} in file ${currentPath}`))
+				warn(`Codeblock with invalid language ${lang} in file ${currentPath}`)
 				return '```' + lang + '\n' + code.trim() + '\n```'
 			}
 
 			const result = hljs.highlightAuto(code.replace(/^\n+|\n+$/g, '')).language
 
-			console.warn(yellow(`Codeblock without specified language or invalid, in file ${currentPath}`))
+			warn(`Codeblock without specified language or invalid, in file ${currentPath}`)
 
 			return '```' + result + '\n' + code.trim() + '\n```'
 		}
 	)
 
-	const embedPromises: Promise<{ placeholder: string; content: string }>[] =
-		[]
+	const embedPromises: Promise<{ placeholder: string; content: string }>[] = []
 	const embedPlaceholders: string[] = []
 
 	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/g
@@ -288,5 +287,5 @@ const markdownInlineCode = (text: string): string => {
 }
 
 const escapeBrackets = (input: string): string  => {
-  return input.replace(/(?<!\\)([\[\]])/g, '\\$1')
+  return input.replaceAll("[", "\\[")
 }

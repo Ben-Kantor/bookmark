@@ -5,5 +5,8 @@
   },
   "compilerOptions": {
     "lib": ["dom", "deno.ns"]
+  },
+  "lint": {
+	"exclude": ["./assets/"]
   }
 }

@@ -7,11 +7,11 @@
     <meta property="og:title" content="<PLACEHOLDER-TITLE>">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#692534">
-    <link rel="icon" type="image/x-icon" href="/!/assets/icon-x32.ico">
+    <link rel="icon" type="image/x-icon" href="/!!/icon-x32.ico">
     <PLACEHOLDER-HEAD/>
     
     <!-- PhotoSwipe Lightbox Module Initilization -->
-    <script defer type="module">import PhotoSwipeLightbox from '/!/assets/photoswipe-lightbox.esm.min.js'; const lightbox = new PhotoSwipeLightbox({hideAnimationDuration: 0, showAnimationDuration: 0,zoomAnimationDuration: 100,gallery: 'main.content',children: 'a[data-pswp-width]', pswpModule: () => import('/!/assets/photoswipe.esm.min.js')}); lightbox.init(); globalThis.lightbox = lightbox;</script>
+    <script defer type="module">import PhotoSwipeLightbox from '/!!/photoswipe-lightbox.esm.min.js'; const lightbox = new PhotoSwipeLightbox({hideAnimationDuration: 0, showAnimationDuration: 0,zoomAnimationDuration: 100,gallery: 'main.content',children: 'a[data-pswp-width]', pswpModule: () => import('/!!/photoswipe.esm.min.js')}); lightbox.init(); globalThis.lightbox = lightbox;</script>
 
     <!-- Explorer/Toc State Initilization & Theme Initilization -->
     <script> const s=[`html.explorer-is-collapsed-initial #explorer,html.toc-is-collapsed-initial #toc-panel{width:0;padding:0;visibility:hidden;overflow:hidden}`],p=(i,k)=>{let c=localStorage.getItem(k+"Collapsed")==="true";if(c)document.documentElement.classList.add(k+"-is-collapsed-initial");else{let w=localStorage.getItem(k+"Width");if(w)s.push(`#${i}{width:${w}px}`)}};p("explorer","explorer"),p("toc-panel","toc");if(s.length){let t=document.createElement("style");t.textContent=s.join(" "),document.head.appendChild(t)}let T=localStorage.getItem("theme");if(!T){T=globalThis.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";localStorage.setItem("theme",T)}document.documentElement.setAttribute("data-theme",T);let H=localStorage.getItem("high-contrast");if(!H){H=globalThis.matchMedia("(prefers-contrast: high)").matches?"true":"false";localStorage.setItem("high-contrast",H)}document.documentElement.setAttribute("data-high-contrast",H) </script>
@@ -23,7 +23,7 @@
         <div id="explorer" role="navigation" aria-label="File Explorer" class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64 overflow-hidden">
         <div class="banner-container">
             <div class="banner-html">
-                <img src="/!/assets/icon-x128.ico" class="logo-img">
+                <img src="/!!/icon-x128.ico" class="logo-img">
                 <span class="logo-text">bookmark</span>
             </div>
             <button id="open-palette-button" aria-label="Open command palette">
@@ -76,7 +76,7 @@
     <header id="mobile-header" role="banner">
         <button id="mobile-explorer-button" class="icon mobile-nav-button" aria-label="Toggle file explorer"> </button>
         <div class="mobile-logo-group">
-            <img src="/!/assets/icon-x128.ico" class="mobile-logo-icon">
+            <img src="/!!/icon-x128.ico" class="mobile-logo-icon">
             <span class="mobile-logo-text">bookmark</span>
         </div>
         <div class="mobile-actions-group">

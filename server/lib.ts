@@ -1,4 +1,6 @@
-import { contentDir } from "./constants.ts"
+import { yellow } from "jsr:@std/fmt@0.223/colors";
+import { config, contentDir } from "./constants.ts"
+import { globToRegExp } from "https://deno.land/std@0.208.0/path/glob_to_regexp.ts";
 
 export const escapeHTML = (str: string): string => {
 	return str.replace(/&/g, '&amp;')
@@ -64,6 +66,7 @@ export const zipContent = async (): Promise<Uint8Array> => {
 
 export const pathMatches = (base: string, test: string): boolean => {
 	if (test.startsWith(".")) test = test.substring(1)
+	if (base.startsWith(".")) base = base.substring(1)
 	
 	const regexTest = test.replace(/[.+?^${}()|[\]\\]/g, '\\$&')
 		.replace(/\*\*/g, '.*')
@@ -74,17 +77,50 @@ export const pathMatches = (base: string, test: string): boolean => {
 }
 
 // deno-lint-ignore no-explicit-any
-export const memoize = <T extends (...args: any[]) => any>(fn: T): T => {
-	const cache = new Map<string, ReturnType<T>>()
-	
-	return ((...args: Parameters<T>): ReturnType<T> => {
-		const key = JSON.stringify(args)
-		if (!cache.has(key)) {
-			cache.set(key, fn(...args))
-		}
-		return cache.get(key) as ReturnType<T>
-	}) as T
-}
+export const memoize = <T extends (...args: any[]) => any>(
+  fn: T,
+  maxSizeKB: number
+): T => {
+  const cache = new Map<string, ReturnType<T>>();
+  const maxBytes = maxSizeKB * 1024;
+  let currentSize = 0;
+
+  const sizeOf = (k: string, v: ReturnType<T> | undefined) =>
+    k.length * 2 + JSON.stringify(v).length * 2 + 64;
+
+  // deno-lint-ignore no-explicit-any
+  const keyOf = (...args: any[]) =>
+    args.length === 0 ? '' :
+    args.length === 1
+      ? typeof args[0] === 'object' && args[0] !== null
+        ? JSON.stringify(args[0])
+        : String(args[0])
+      : args.map(a =>
+          typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a)
+        ).join('|');
+
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const key = keyOf(...args);
+    if (cache.has(key)) return cache.get(key)!;
+
+    const result = fn(...args) as ReturnType<T>;
+    const entrySize = sizeOf(key, result);
+
+    while (currentSize + entrySize > maxBytes && cache.size) {
+      const firstKey = cache.keys().next().value as string | undefined;
+      if (!firstKey) break;
+
+      const firstValue = cache.get(firstKey);
+      currentSize -= sizeOf(firstKey, firstValue);
+      cache.delete(firstKey);
+    }
+
+    cache.set(key, result);
+    currentSize += entrySize;
+    return result;
+  }) as T;
+};
+
 
 export const toTitleCase = (fileName: string): string => {
 	return fileName
@@ -111,4 +147,13 @@ export const replaceUnicode = (text: string): string => {
 
 export const titleFromMarkdown = (markdown: string): string | undefined => {
 	return markdown.match(/\A#\s(.+)\n/)?.[1]
+}
+
+const globToRegExpMemo = memoize(globToRegExp, 10)
+export const pathMatchesGlob = (path: string, glob: string): boolean => {
+	return globToRegExpMemo(glob).test(path)
+}
+
+export const warn = (message: string): void => {
+	if (config.logWarnings) console.warn(yellow(message))
 }

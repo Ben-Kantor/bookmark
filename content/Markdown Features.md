@@ -1,5 +1,5 @@
 
-This document aims to test many of the key features of CommonMark. As you can see, the implementation is not perfect in some places as Bookmark uses marked.js which is based on the gfm standard.
+This document aims to test and showcase many of the markdown features available through marked.js
 
 ---
 
@@ -22,21 +22,20 @@ This is another paragraph.
 This is a paragraph with a soft line break here >
 < It will render as a single line.
 
-This is a paragraph ending in two spaces for force a line break.  
+This is a paragraph ending in two spaces for a hard line break.  
 This line should appear directly below the first one.
 ## Emphasis
 
 *This text is emphasized with asterisks (italics).*  
 _This text is emphasized with underscores (italics)._
 
-**This text is strongly emphasized with asterisks (bold).**  
-__This text is strongly emphasized with underscores (bold).__
+**This text is strongly emphasized with double asterisks (bold).**  
+__This text is strongly emphasized with double underscores (bold).__
 
-***This text is both strongly emphasized and emphasized with asterisks (bold italics).***  
-___This text is both strongly emphasized and emphasized with underscores (bold italics).___
+***This text is both strongly emphasized and emphasized with tripe asterisks (bold italics).***  
+___This text is both strongly emphasized and emphasized with tripe underscores (bold italics).___
 
-* You can combine *emphasis* and **strong emphasis** within the same line.
-* Also, **_bold and italics together_** works.
+**_This text is emphasized with underscores inside double asterisks. (bold italics in italic color)._**
 
 ## Lists
 
@@ -78,9 +77,9 @@ ___This text is both strongly emphasized and emphasized with underscores (bold i
 ## Images
 Images and other media can be embedded by putting a local or remote link inside square brackets, preceded by an exclamation mark. More information can be found in the page on [[Embeds]].  
 
-`![https:\//upload.wikimedia.org\/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg|width=50%|Cat Picture]`
+`![https:\//upload.wikimedia.org\/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]`
 
-![https://upload.wikimedia.org/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg|width=50%|Cat  Picture]
+![https://upload.wikimedia.org/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]
 
 ## Code
 

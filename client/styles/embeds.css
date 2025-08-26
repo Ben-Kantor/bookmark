@@ -1,3 +1,4 @@
+/* ====> embeds.css <==== */
 .embed-wrapper {
 	margin: 0.5em 0.5em 0.5em 0.75em;
 }
@@ -81,7 +82,7 @@ main audio,
 main video,
 main img:not(.pswp__img) {
 	width: 100%;
-	max-height: calc(100vh - 4em);
+	/* max-height: calc(100vh - 4em); */
 }
 
 /* Code Styles */
@@ -91,7 +92,7 @@ pre, code {
 code {
 	background-color: var(--layer-1) !important;
 	display: block;
-    padding: 1em;
+	padding: 1em;
 	border-radius: 0.5em;
 }
 
@@ -115,18 +116,14 @@ main > pre:only-child > code:only-child {
 	margin: 0px !important;
 }
 
-code:has(.line-number) {
-	padding-left: 3em !important;
-}
-
 .line-number {
-	position: absolute;
-	left: 1em;
-	width: 40px;
-	color: #888;
-	text-align: right;
-	padding-right: 5px;
-	user-select: none;
+   position: static;
+   display: inline-block;
+   width: 2em;
+   color: #888;
+   text-align: right;
+   padding-right: 0;
+   user-select: none;
 }
 
 .mspace.newline {

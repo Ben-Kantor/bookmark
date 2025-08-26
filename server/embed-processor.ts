@@ -1,8 +1,7 @@
 import { join, dirname, basename, extname } from 'https://deno.land/std/path/mod.ts'
 import { loadFileToHTML } from './coreutils.ts'
 import { fileExists, findFilePath, vaultMap } from './vaultmap.ts'
-import { toTitleCase, toHTTPLink, escapeHTML } from './lib.ts'
-import { yellow } from 'jsr:@std/fmt@0.223/colors'
+import { toTitleCase, toHTTPLink, escapeHTML, warn } from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import { extractEmbedProperties, createEmbedWithProperties, splitHtmlWrappers, addLineNumbers } from './embed-utils.ts'
 import { config } from './constants.ts'
@@ -21,18 +20,11 @@ export const processEmbed = async (
 
 	const linkSource = doubleBracketTerm || parenthesesTerm || mutableBracketTerm
 	const rawLinkTarget = linkSource?.split(/[|#]/)[0]
-	let displayText =
+	const displayText =
 		(doubleBracketTerm
 			? doubleBracketTerm.split(/[|#]/)[0] || rawLinkTarget
-			: mutableBracketTerm || rawLinkTarget) || 'Embedded Content'
+			: mutableBracketTerm || rawLinkTarget) || ''
 
-	if (displayText.includes('://')) {
-		displayText = toTitleCase(
-			basename(decodeURIComponent(displayText.split(/[\|\#]/)[0]))
-				.split('.')[0]
-				.replace(/[\_\-]/g, ' ')
-		)
-	}
 
 	if (!rawLinkTarget) {
 		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${doubleBracketTerm||bracketTerm||parenthesesTerm}]</md-embed>`
@@ -46,9 +38,7 @@ export const processEmbed = async (
 	const targetPathFromContentDir = resolveTargetPath(doubleBracketTerm, rawLinkTarget, currentPath)
 
 	if (!targetPathFromContentDir && !httpLink) {
-		console.warn(
-			yellow(`Missing or malformed embed ![[${rawLinkTarget}]] in /${currentPath}`)
-		)
+		warn(`Missing or malformed embed ![[${rawLinkTarget}]] in /${currentPath}`)
 		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${doubleBracketTerm||bracketTerm||parenthesesTerm}]</md-embed>`
 	}
 
@@ -70,15 +60,15 @@ const processHttpEmbed = async (
 	const url = new URL(httpLink)
 	const hostname = url.hostname.toLowerCase()
 
+	if(displayText.includes('://')) displayText = ''
+	displayText = properties.title || displayText
+
 	if (hostname.includes('youtube.com') || hostname.includes('youtu.be')) {
 		const videoId = hostname.includes('youtu.be')
 			? url.pathname.slice(1)
 			: url.searchParams.get('v')
 		const iframe = `<iframe title="${escapeHTML(displayText)}" src="https://www.youtube.com/embed/${videoId}" frameborder="0" style="padding:0px" allowfullscreen></iframe>`
 
-		if (httpLink === displayText && !properties.title) {
-			properties.noTitle = true
-		}
 		return createEmbedWithProperties(iframe, displayText, properties)
 	}
 
@@ -86,9 +76,6 @@ const processHttpEmbed = async (
 		const videoId = url.pathname.split('/').pop()
 		const iframe = `<iframe title="${escapeHTML(displayText)}" src="https://player.vimeo.com/video/${videoId}" frameborder="0" style="padding:0px" allowfullscreen></iframe>`
 
-		if (httpLink === displayText && !properties.title) {
-			properties.noTitle = true
-		}
 		return createEmbedWithProperties(iframe, displayText, properties)
 	}
 
@@ -155,7 +142,7 @@ const processHttpEmbed = async (
 			return createEmbedWithProperties(httpLink, "Error Loading Content", rawProperties)
 		}
 	} catch (err) {
-		console.warn(yellow(`Error processing embed: ${err}`))
+		warn(`Error processing embed: ${err}`)
 		return createEmbedWithProperties(httpLink, "Error Loading Content", {})
 	}
 }

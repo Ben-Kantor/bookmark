@@ -1,10 +1,11 @@
+/* theme.css */
 @font-face {
 	font-family: 'FiraCode Nerd Font';
-	src: url('/!/assets/FiraCodeNerdFont-Regular.woff2') format('woff2');
+	src: url('/!!/FiraCodeNerdFont-Regular.woff2') format('woff2');
 }
 @font-face {
 	font-family: 'DM Serif Text';
-	src: url('/!/assets/DMSerifText-Regular-Subset.woff2') format('woff2');
+	src: url('/!!/DMSerifText-Regular-Subset.woff2') format('woff2');
 }
 
 :root {

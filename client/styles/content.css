@@ -1,4 +1,4 @@
-/* Content Typography */
+/* ====> content.css <==== */
 .content p { 
     margin-bottom: 0.75em; 
     line-height: 1.5;
@@ -34,7 +34,6 @@
     line-height: 1.25;
     margin: 0em 0 0.25rem;
     scroll-margin-top: 80px;
-	margin-top: 1em;
 	margin-bottom: 0.5em;
 }
 
@@ -87,26 +86,30 @@ hr {
 .content ul, .content ol { 
     padding-left: 2em; 
     margin-bottom: 1.25em; 
+    line-height: 1.25;
 }
 
 .content li { 
     margin-bottom: 0.5em; 
-    line-height: 1.25; 
 }
 
-main ul {
-  list-style-type: disc !important;
+.content li > ul, 
+.content li > ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
-main ol {
-  list-style-type: decimal !important;
+.content ul {
+    list-style-type: disc;
 }
 
-li p,
-ol p,
-li:has(> p),
-ol:has(> p) {
-  margin-bottom: 0.25em !important;
+.content ol {
+    list-style-type: decimal;
+}
+
+.content li p {
+    margin-bottom: 0.25em;
+    line-height: inherit;
 }
 
 /* Tables */
@@ -155,18 +158,9 @@ pre:not(code) {
   line-height: 1.2;
 }
 
-
-/* Checkboxes */
+/* Checkbox Lists */
 .content ul:has(input[type="checkbox"]) {
   list-style-type: none;
-  padding-left: 0;
-}
-
-.content ul:has(input[type="checkbox"]) li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5em;
-  line-height: 1.25;
 }
 
 .content ul:has(input[type="checkbox"]) li input[type="checkbox"] {
@@ -174,12 +168,13 @@ pre:not(code) {
   -webkit-appearance: none;
   -moz-appearance: none;
   
-  width: 1.2em;
-  height: 1.2em;
+  width: 1.1em;
+  height: 1.1em;
   border: 2px solid var(--text-normal);
-  border-radius: 4px;
-  margin-right: 0.5em;
+  border-radius: 3px;
+  margin-right: 0.4em;
   cursor: not-allowed;
+  vertical-align: middle;
   
   position: relative; 
 }
@@ -192,9 +187,10 @@ pre:not(code) {
 .content ul:has(input[type="checkbox"]) li input[type="checkbox"]:checked::after {
   content: '✓';
   color: var(--background-primary);
-  font-size: 1.1em;
+  font-size: 0.9em;
+  font-weight: bold;
   
   position: absolute;
-  top: -5%;
-  left: 50%;
+  top: -15%;
+  left: 0%;
 }

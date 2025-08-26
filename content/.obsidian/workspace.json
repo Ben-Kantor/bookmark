@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Embeds.md",
+                "file": "Markdown Features.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Embeds"
+              "title": "Markdown Features"
             }
           }
         ],
@@ -200,12 +200,13 @@
   },
   "active": "d32bb0287ee7588a",
   "lastOpenFiles": [
+    "GFM Test.md",
+    "Build.md",
+    "Embeds.md",
     "Files/Cargo.toml.md",
     "Markdown Features.md",
-    "Embeds.md",
     "Content.md",
     "index.md",
-    "GFM Test.md",
     "Files/Sample Embed.md",
     "Tests/commonmark-spec.md",
     "Tests/commonmark-spec.txt",
@@ -213,7 +214,6 @@
     "Tests",
     "Server Setup.md",
     "All.md",
-    "Build.md",
     "Files/Cargo.toml",
     "Files/cargo.toml",
     "Utilities.md",

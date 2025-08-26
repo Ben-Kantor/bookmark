@@ -43,7 +43,7 @@ export const buildHtmlTemplate = async (): Promise<string>  => {
 	.replace(
 	  "<PLACEHOLDER-HEAD/>",
 	  `<meta name="description" property="og:description" content="${config.description}">
-	  <link rel="stylesheet" href="/assets/photoswipe.css">
+	  <link rel="stylesheet" href="/!!/photoswipe.css">
 	  <style>${finalCSS}</style>
 	  ${renderWithTwind(htmlString)}
 	  <script>
@@ -81,16 +81,11 @@ const loadCSS = async (): Promise<string>  => {
   
   const CSSContentsWithHeaders: string[] =
 	await Promise.all(
-	  CSSFilePaths.map(async filePath => {
-		const fileName: string = filePath.split("/").pop() ?? "unknown.css"
-		const content: string = await Deno.readTextFile(filePath)
-		return config.minify
-		  ? content
-		  : `/* ====> ${fileName} <==== */\n ${content}`
-	  })
+	  CSSFilePaths.map((async filePath => {
+		return await Deno.readTextFile(filePath)
+	  }))
 	)
-  
-  return CSSContentsWithHeaders.join("\n")
+  return '\n' + CSSContentsWithHeaders.join("\n")
 }
 
 export const renderWithTwind = (html: string): string  => {

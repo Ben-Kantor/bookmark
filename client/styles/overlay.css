@@ -1,3 +1,4 @@
+/* ====> overlay.css <==== */
 .pswp {
 	--pswp-icon-color: var(--accent-light);
 	--pswp-icon-color-secondary: var(--accent-dark);
@@ -5,12 +6,19 @@
 	--pswp-error-text-color: var(--accent-light);
 	--pswp-preloader-color-secondary: var(--accent-light);
 }
-
 .overlay {
 	position: fixed;
 	inset: 0;
 	transition: opacity 0.2s ease-in-out;
 	pointer-events: none;
 	z-index: 90;
-	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.overlay, .pswp__bg {
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='light'] .overlay,
+[data-theme='light'] .pswp__bg {
+	background-color: rgba(0, 0, 0, 0.4);
 }
