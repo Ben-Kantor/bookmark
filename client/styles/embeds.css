@@ -89,7 +89,7 @@ main img:not(.pswp__img) {
 pre, code {
 	font-family: 'FiraCode Nerd Font' !important;
 }
-code {
+pre > code {
 	background-color: var(--layer-1) !important;
 	display: block;
 	padding: 1em;

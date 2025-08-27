@@ -108,7 +108,7 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 		}
     }
   }
-  if(!properties.title) properties.title = s.split(/[\|#]/)[0].trim()
+  if(!properties.title) properties.title = s.split(/[\|\#]/)[0].trim()
   return properties
 }
 

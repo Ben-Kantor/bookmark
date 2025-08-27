@@ -142,10 +142,16 @@ export const handleKeyDown = (e: KeyboardEvent) => {
 
 	let handled = false
 
-	if (e.key === 'ArrowLeft') {
+	// Vim key mappings
+	const isLeft = e.key === 'ArrowLeft' || e.key === 'h'
+	const isRight = e.key === 'ArrowRight' || e.key === 'l'
+	const isUp = e.key === 'ArrowUp' || e.key === 'k'
+	const isDown = e.key === 'ArrowDown' || e.key === 'j'
+
+	if (isLeft) {
 		setActive(activeIndex - 1, 'nav')
 		handled = true
-	} else if (e.key === 'ArrowRight') {
+	} else if (isRight) {
 		setActive(activeIndex + 1, 'nav')
 		handled = true
 	} else if (activeIndex !== -1) {
@@ -155,62 +161,53 @@ export const handleKeyDown = (e: KeyboardEvent) => {
 
 		if (
 			!lastFocusedItem &&
-			(e.key === 'ArrowUp' || e.key === 'ArrowDown')
+			(isUp || isDown)
 		) {
 			initPanelFocus()
-			if (e.key === 'ArrowUp') navigatePanel('down')
-			if (e.key === 'ArrowDown') navigatePanel('up')
+			if (isUp) navigatePanel('down')
+			if (isDown) navigatePanel('up')
 		}
 
-		switch (e.key) {
-			case 'ArrowUp':
-				if (activeIndex === 1) {
-					highlightItem(null)
-					document
-						.getElementById('content-area')
-						?.scrollBy({ top: -scrollAmount, behavior: 'smooth' })
-				} else {
-					navigatePanel('up')
-				}
-				handled = true
-				break
-
-			case 'ArrowDown':
-				if (activeIndex === 1) {
-					highlightItem(null)
-					document
-						.getElementById('content-area')
-						?.scrollBy({ top: scrollAmount, behavior: 'smooth' })
-				} else {
-					navigatePanel('down')
-				}
-				handled = true
-				break
-
-			case 'Enter':
-				if (activeIndex === 0) activeEl?.click()
-				else if (activeIndex === 2 && li)
-					li.querySelector<HTMLAnchorElement>('a')?.click()
-				else handled = false
-				break
-
-			case ' ':
-				e.preventDefault()
-				if (activeIndex === 2 && li) {
-					li.querySelector<HTMLElement>(
-						'.toc-toggle,button,summary'
-					)?.click()
-					setTimeout(() => {
-						if (document.body.contains(li)) highlightItem(li)
-					}, 0)
-				} else if (activeIndex === 0 && li) {
-					li.querySelector<HTMLButtonElement>('button')?.click()
-					highlightItem(li)
-				} else handled = false
-				break
-
-			default:
-				handled = false
+		if (isUp) {
+			if (activeIndex === 1) {
+				highlightItem(null)
+				document
+					.getElementById('content-area')
+					?.scrollBy({ top: -scrollAmount, behavior: 'smooth' })
+			} else {
+				navigatePanel('up')
+			}
+			handled = true
+		} else if (isDown) {
+			if (activeIndex === 1) {
+				highlightItem(null)
+				document
+					.getElementById('content-area')
+					?.scrollBy({ top: scrollAmount, behavior: 'smooth' })
+			} else {
+				navigatePanel('down')
+			}
+			handled = true
+		} else if (e.key === 'Enter') {
+			if (activeIndex === 0) activeEl?.click()
+			else if (activeIndex === 2 && li)
+				li.querySelector<HTMLAnchorElement>('a')?.click()
+			else handled = false
+		} else if (e.key === ' ') {
+			e.preventDefault()
+			if (activeIndex === 2 && li) {
+				li.querySelector<HTMLElement>(
+					'.toc-toggle,button,summary'
+				)?.click()
+				setTimeout(() => {
+					if (document.body.contains(li)) highlightItem(li)
+				}, 0)
+			} else if (activeIndex === 0 && li) {
+				li.querySelector<HTMLButtonElement>('button')?.click()
+				highlightItem(li)
+			} else handled = false
+		} else {
+			handled = false
 		}
 	}
 

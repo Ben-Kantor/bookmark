@@ -30,42 +30,35 @@ export const renderMarkdown = async (
 	if (addTitle && !markdown.startsWith('# ')) {
 		markdown = `# ${toTitleCase(basename(currentPath))}\n\n${markdown}`
 	}
-
 	if (addTitle && markdown.match(/\n\#\s/)) {
 		console.warn(
 			yellow(`File ${currentPath} contains multiple level 1 headers.`)
 		)
 	}
-
 	markdown = replaceUnicode(markdown)
-
-	markdown = markdownInlineCode(markdown)
-
 	markdown = markdown.replace(/<br>/g, '\n')
 
-	markdown = markdown.replace(/```[\s\S]+?```/g, (match) => escapeBrackets(match))
+	// Store code blocks and inline code with placeholders BEFORE processing embeds
+	const codeElements: { placeholder: string; content: string }[] = []
+	let codeCounter = 0
 
-	markdown = markdown.replace(
-		/\`\`\`([^\n\\]+)([\n\\][^\`]+)\`\`\`/gm,
-		(_match, lang, code) => {
-			if (hljs.getLanguage(lang)) {
-				return '```' + lang + '\n' + code.trim() + '\n```'
-			} else if (lang) {
-				warn(`Codeblock with invalid language ${lang} in file ${currentPath}`)
-				return '```' + lang + '\n' + code.trim() + '\n```'
-			}
+	// Replace code blocks first
+	markdown = markdown.replace(/```[\s\S]+?```/g, (match) => {
+		const placeholder = `__CODE_BLOCK_${codeCounter++}__`
+		codeElements.push({ placeholder, content: match })
+		return placeholder
+	})
 
-			const result = hljs.highlightAuto(code.replace(/^\n+|\n+$/g, '')).language
+	// Replace inline code
+	markdown = markdown.replace(/`[^`\n]+`/g, (match) => {
+		const placeholder = `__INLINE_CODE_${codeCounter++}__`
+		codeElements.push({ placeholder, content: match })
+		return placeholder
+	})
 
-			warn(`Codeblock without specified language or invalid, in file ${currentPath}`)
-
-			return '```' + result + '\n' + code.trim() + '\n```'
-		}
-	)
-
+	// Now process embeds (code elements are safely placeholder-ed)
 	const embedPromises: Promise<{ placeholder: string; content: string }>[] = []
 	const embedPlaceholders: string[] = []
-
 	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/g
 	let match
 	let processedMarkdown = markdown
@@ -78,7 +71,6 @@ export const renderMarkdown = async (
 			bracketTerm,
 			parenthesesTerm,
 		] = match
-
 		if (linkPrefix === '!') {
 			if (noEmbeds) {
 				processedMarkdown = processedMarkdown.replace(
@@ -87,10 +79,8 @@ export const renderMarkdown = async (
 				)
 				continue
 			}
-
 			const placeholder = `<!-- EMBED_${embedPlaceholders.length} -->`
 			embedPlaceholders.push(placeholder)
-
 			const embedPromise = processEmbed(
 				doubleBracketTerm,
 				bracketTerm,
@@ -101,16 +91,38 @@ export const renderMarkdown = async (
 				placeholder,
 				content,
 			}))
-
 			embedPromises.push(embedPromise)
 			processedMarkdown = processedMarkdown.replace(raw, placeholder)
 		}
 	}
 
+	// Restore code elements before markdown processing
+	for (const { placeholder, content } of codeElements) {
+		processedMarkdown = processedMarkdown.replace(placeholder, content)
+	}
+
+	// Process code blocks with syntax highlighting
+	processedMarkdown = processedMarkdown.replace(
+		/```[\s\S]+?```/g, 
+		(match) => escapeBrackets(match)
+	)
+	processedMarkdown = processedMarkdown.replace(
+		/\`\`\`([^\n\\]+)([\n\\][^\`]+)\`\`\`/gm,
+		(_match, lang, code) => {
+			if (hljs.getLanguage(lang)) {
+				return '```' + lang + '\n' + code.trim() + '\n```'
+			} else if (lang) {
+				warn(`Codeblock with invalid language ${lang} in file ${currentPath}`)
+				return '```' + lang + '\n' + code.trim() + '\n```'
+			}
+			const result = hljs.highlightAuto(code.replace(/^\n+|\n+$/g, '')).language
+			warn(`Codeblock without specified language or invalid, in file ${currentPath}`)
+			return '```' + result + '\n' + code.trim() + '\n```'
+		}
+	)
+
 	const resolvedEmbeds = await Promise.all(embedPromises)
-
 	const markedInstance = new Marked()
-
 	markedInstance.use({
 		extensions: [
 			createCustomLinksExtension(
@@ -120,7 +132,6 @@ export const renderMarkdown = async (
 			),
 		],
 	})
-
 	markedInstance.use(markedSmartypantsLite())
 	markedInstance.use(
 		markedHighlight({
@@ -138,7 +149,6 @@ export const renderMarkdown = async (
 			},
 		})
 	)
-
 	markedInstance.setOptions({
 		gfm: true,
 		breaks: false,
@@ -152,10 +162,9 @@ export const renderMarkdown = async (
 	}
 
 	return result
-	.replace(/\\(?:<[^>]+>)*([\[\]])/g,(_, bracket) => bracket) //unescape brackets
-	.replace(/\\\`/gm,"`") //unescape backticks
+		.replace(/\\(?:<[^>]+>)*([\[\]])/g,(_, bracket) => bracket) //unescape brackets
+		.replace(/\\\`/gm,"`") //unescape backticks
 }
-
 export const createCustomLinksExtension = (
 	currentPath: string,
 	vaultMap: types.VaultMap,
@@ -273,17 +282,6 @@ export const createCustomLinksExtension = (
 	}
 
 	return extension
-}
-
-const markdownInlineCode = (text: string): string => {
-  return text.replace(/(?<!\\)(?<!`)(`{1,2})(?!`)([\s\S]*?)(?<!`)\1(?!`)/g, (match, _backticks, content) => {
-    const totalNewlines = (content.match(/\n/g) || []).length
-    const hasDoubleNewline = content.includes('\n\n')
-    if (totalNewlines > 3 || hasDoubleNewline) {
-      return match
-    }
-    return `<span class="inline-code">${escapeBrackets(content)}</span>`
-  })
 }
 
 const escapeBrackets = (input: string): string  => {

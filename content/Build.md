@@ -20,4 +20,4 @@ The second placeholder, `<PLACEHOLDER-JS/>`, located just before the closing `</
 As a final optimization, if minification is enabled, the complete HTML string is processed by [html-minifier-terser](https://github.com/terser/html-minifier-terser). This step further reduces the page size by collapsing whitespace and removing any remaining comments, making the file as lightweight as possible before it's sent to the user.
 ## Result
 
-The output of this entire process is a single, self-contained HTML string stored in the `htmlTemplate` constant. When a user connects to the server, this template is sent with the ``$PLACEHOLDER-CONTENT`` tag replaced with the content of the first requested page. 
+The output of this entire process is a single, self-contained HTML string stored in the `htmlTemplate` constant. When a user connects to the server, this template is sent with the `\$PLACEHOLDER-CONTENT` tag replaced with the content of the first requested page. 

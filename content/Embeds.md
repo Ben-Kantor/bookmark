@@ -4,7 +4,6 @@ Embeds are the most powerful feature in bookmark, they allow a variety of types 
 
 The recommended way to construct an embed is as follows:
 
-``
 `!\[Filename.ext|option=value|option=value\]`
 
 The bang (!) at the start differentiates the embed from a [[Link]]. Then either single or double brackets surround either a filename or a path, with a filename. Paths may be absolute from the root of the content directory, or relative to their current directory. Extensions are optional in both cases.
@@ -82,7 +81,7 @@ For text-based embeds (`.txt`, `.toml`, `.md`):
 ``![Cargo.toml|numbered|lines=10-12]``
 ![Cargo.toml|numbered|lines=10-12]
 
-This embeds lines 3 through 15 of `Cargo.toml` with line numbers displayed.
+This embeds lines 10 through 12 of `Cargo.toml` with line numbers displayed.
 
 ### Headers
 

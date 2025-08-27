@@ -182,6 +182,7 @@ const processFileEmbed = async (
 		const fullPathToEmbed = !httpLink ? join(contentDir, targetPathFromContentDir || '') : ''
 		const properties = extractEmbedProperties(linkSource)
 		let embeddedHTML: string
+		displayText = properties.title || displayText
 
 		if (httpLink) {
 			const response = await fetch(httpLink)
