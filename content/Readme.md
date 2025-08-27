@@ -4,40 +4,41 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
 
 ## Installation
 
-First, clone the repository and enter it
-	`git clone https://github.com/Ben-Kantor/bookmark`
+First, clone the repository and enter it  
+	`git clone https://github.com/Ben-Kantor/bookmark`  
 	`cd bookmark`
 
 Then [Install Deno](https://docs.deno.com/runtime/getting_started/installation/)
 
-Clear the ./Content/Directory and re-add key files
+Clear the ./Content/Directory and re-add key files  
 	`rm -rf ./content/*`
 	`touch .404.md index.md`
 
-Run once to setup dependencies
+Run once to setup dependencies  
 	`deno run dev`
 
-Move your content vault directly into `./content`
-	Put the contents directly within the content directory, not in a subdirectory
-	Avoid more than three levels of folders, and files with duplicated names
-	Make sure you have a `.404.md` and `index.md` file
+Move your content vault directly into `./content`  
+	Put the contents directly within the content directory, not in a subdirectory  
+	Avoid more than three levels of folders, and files with duplicated names  
+	Make sure you have a `.404.md` and `index.md` file  
  
-Configure the server in `constants.ts`
+Configure the server in `constants.ts`  
 	Change the title, description, and paths as needed
 
-Grant access to esbuild.
-	On first startup, it will request read and run access to the esbuild binary, this can then be added to your deno.json start command with their paths on your system e.g.
-	`--allow-read/home/bantor/.cache/esbuild/bin/@esbuild-linux-x64@0.21.4`
-	`--allow-run=/home/bkantor/.cache/esbuild/bin/@esbuild-linux-x64@0.21.4`
+Grant access to esbuild.  
+	On first startup, it will request read and run access to the esbuild binary, this can then be added to your deno.json start command with their paths on your system e.g.  
+	`--allow-read/home/bantor/.cache/esbuild/bin/@esbuild-linux-x64@0.21.4`  
+	`--allow-run=/home/bkantor/.cache/esbuild/bin/@esbuild-linux-x64@0.21.4`  
 
-Run with `deno run start`
+Run with `deno run start`  
 	Setup a systemd task or equivalent to keep the server running
 	
-Updating
+Updating  
 	To update to the latest github version, simply run deno run update and resolve any conflicts with changes you've made
 
-Customizing Branding
-	Modifying the branding will involve changing the source paths from the client and modifying client.html and the css files, remember that paths beginning in /!!/ lead to the assets directory. 
+Customizing Branding  
+	Modifying the branding will involve changing the source paths from the client and modifying client.html and the css files, remember that paths beginning in /!!/ lead to the assets directory.
+
 ## Features
 
 ### Core Functionality
