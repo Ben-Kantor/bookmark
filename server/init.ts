@@ -17,7 +17,7 @@ const handler = async (request: Request): Promise<Response> => { try {
 
 	const filePathResult = await resolveFileRequest(normalizedPath)
 
-	if (filePathResult.status === 404) return new Response("File not found.", { status: 404 })
+	if (filePathResult.status === 404 && !filePathResult.filePath) return new Response("File not found.", { status: 404 })
 	else if (filePathResult.status === 403) return new Response("Forbidden.", { status: 403 })
 	else if (filePathResult.status === 500 || !filePathResult.filePath) throw new Error("Failure to resolve file request")
 

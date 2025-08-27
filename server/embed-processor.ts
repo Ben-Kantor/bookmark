@@ -1,7 +1,7 @@
 import { join, dirname, basename, extname } from 'https://deno.land/std/path/mod.ts'
 import { loadFileToHTML } from './coreutils.ts'
 import { fileExists, findFilePath, vaultMap } from './vaultmap.ts'
-import { toTitleCase, toHTTPLink, escapeHTML, warn } from './lib.ts'
+import { toHTTPLink, escapeHTML, warn } from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import { extractEmbedProperties, createEmbedWithProperties, splitHtmlWrappers, addLineNumbers } from './embed-utils.ts'
 import { config } from './constants.ts'

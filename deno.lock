@@ -220,7 +220,6 @@
     }
   },
   "redirects": {
-    "https://deno.land/std/path/glob.ts": "https://deno.land/std@0.224.0/path/glob.ts",
     "https://deno.land/std/path/mod.ts": "https://deno.land/std@0.224.0/path/mod.ts",
     "https://deno.land/x/deno_dom/deno-dom-wasm.ts": "https://deno.land/x/deno_dom@v0.1.56/deno-dom-wasm.ts"
   },

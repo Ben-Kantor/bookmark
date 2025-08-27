@@ -17,7 +17,7 @@ export const config: SiteConfig = {
 
 	renderOverrides: {
 		"iframe": [],
-		"codeblock": ["./**/*.html"]
+		"codeblock": ["./**.html"]
 	},
 	logWarnings: true
 }

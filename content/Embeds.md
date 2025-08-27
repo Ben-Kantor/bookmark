@@ -4,7 +4,8 @@ Embeds are the most powerful feature in bookmark, they allow a variety of types 
 
 The recommended way to construct an embed is as follows:
 
-!\[Filename.ext|option=value|option=value\]
+``
+`!\[Filename.ext|option=value|option=value\]`
 
 The bang (!) at the start differentiates the embed from a [[Link]]. Then either single or double brackets surround either a filename or a path, with a filename. Paths may be absolute from the root of the content directory, or relative to their current directory. Extensions are optional in both cases.
 

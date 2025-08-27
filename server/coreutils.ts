@@ -86,7 +86,7 @@ const readFileContent = async (filePath: string): Promise<string> => {
 	const textContent: string | void = await Deno.readTextFile(filePath).catch(
 		err => warn(err.toString())
 	)
-	return textContent || '<i>[Empty File]</i>'
+	return textContent || '<i>Empty File</i>'
 }
 
 const detectBinaryContent = (textContent: string): boolean => textContent.includes('\u0000')

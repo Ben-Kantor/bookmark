@@ -23,6 +23,7 @@ import {
 	initHeaderLinks,
 	scrollToAnchor,
 	updateTitle,
+  hideEmptyHeaders,
 } from './utilities.ts'
 
 import { renderExplorer, initResizablePanel } from './explorer.ts'
@@ -46,6 +47,7 @@ const init = () => {
 	initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
 	initResizablePanel('toc-panel', 'toc-handle', 'toc', 'right')
 	initMobileHeader()
+	hideEmptyHeaders()
 	updateTitle()
 
 	globalThis.history.pushState({}, '', "/$PLACEHOLDER-PATH/")

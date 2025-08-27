@@ -63,7 +63,7 @@ md-embed:has(iframe),
 md-embed:has(video),
 md-embed:has(audio),
 md-embed:has(img) {
-	width: 100%;
+	width: auto;
 	height: auto;
 }
 

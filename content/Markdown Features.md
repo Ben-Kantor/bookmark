@@ -140,6 +140,12 @@ const data = {
 | Cell 1   | Cell 2   | Cell 3   |
 | Long text | Short | Another long text |
 
+
+
+|  |  |
+| :------- | :------: |
+| This Table Has | an Empty Header |
+
 ## Escaping Characters
 
 To display characters that have special meaning,1 you can escape them with a backslash.

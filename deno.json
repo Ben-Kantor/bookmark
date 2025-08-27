@@ -1,7 +1,8 @@
 {
   "tasks": {
     "dev": "deno run --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
-    "start": "deno run --allow-env=TERM,PORT --allow-read=. --allow-net ./server/init.ts"
+    "start": "deno run --allow-env --allow-net --allow-read=. ./server/init.ts",
+    "update": "git stash && git pull --rebase && git stash pop"
   },
   "compilerOptions": {
     "lib": ["dom", "deno.ns"]

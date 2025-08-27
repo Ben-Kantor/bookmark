@@ -194,3 +194,17 @@ export const checkLineWrapping = (embeddedHTML: string): boolean => {
 		.reduce((a, b) => a + b, 0)
 	return overflowCharacters > textContent.length / 4
 }
+
+export const hideEmptyHeaders = () => {
+  const tables = document.querySelectorAll('.content table');
+  tables.forEach(table => {
+    const header = table.querySelector('thead');
+    if (header) {
+      const headerText = header?.textContent?.trim();
+      if (headerText === '') {
+        header.style.display = 'none';
+      }
+    }
+  });
+	
+}
