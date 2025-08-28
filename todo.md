@@ -1,6 +1,5 @@
 Priority:
 documentation
-vim keys
 
 Future:
 latex/katex

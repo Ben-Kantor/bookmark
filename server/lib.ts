@@ -1,6 +1,7 @@
-import { yellow } from "jsr:@std/fmt@0.223/colors";
+import { yellow } from "jsr:@std/fmt@0.223/colors"
 import { config, contentDir } from "./constants.ts"
-import { globToRegExp } from "https://deno.land/std@0.208.0/path/glob_to_regexp.ts";
+import { globToRegExp } from "https://deno.land/std@0.208.0/path/glob_to_regexp.ts"
+import { fileRequestInfo } from "./types.ts"
 
 export const escapeHTML = (str: string): string => {
 	return str.replace(/&/g, '&amp;')
@@ -29,7 +30,7 @@ export const toHTTPLink = (link: string | null | undefined): string | null => {
 		return null
 	}
 
-	const hasCommonTld = /\.(com|org|net|io|dev|app|ai|co|uk|gov|edu|me|xyz)([/_?#\s]|$)/.test(trimmed)
+	const hasCommonTld = /\.(com|org|net|io|dev|app|ai|co|uk|gov|edu|me|xyz|tv|gg)([/_?#\s]|$)/.test(trimmed)
 	const startsWithHttp = /^https?:\/\//.test(trimmed)
 	const isLocalhost = trimmed.startsWith('localhost')
 
@@ -64,29 +65,17 @@ export const zipContent = async (): Promise<Uint8Array> => {
 	return zipSync(files)
 }
 
-export const pathMatches = (base: string, test: string): boolean => {
-	if (test.startsWith(".")) test = test.substring(1)
-	if (base.startsWith(".")) base = base.substring(1)
-	
-	const regexTest = test.replace(/[.+?^${}()|[\]\\]/g, '\\$&')
-		.replace(/\*\*/g, '.*')
-		.replace(/\*/g, '[^/.]*')
-
-	const regex = new RegExp(`^${regexTest}$`)
-	return regex.test(base)
-}
-
 // deno-lint-ignore no-explicit-any
 export const memoize = <T extends (...args: any[]) => any>(
   fn: T,
   maxSizeKB: number
 ): T => {
-  const cache = new Map<string, ReturnType<T>>();
-  const maxBytes = maxSizeKB * 1024;
-  let currentSize = 0;
+  const cache = new Map<string, ReturnType<T>>()
+  const maxBytes = maxSizeKB * 1024
+  let currentSize = 0
 
   const sizeOf = (k: string, v: ReturnType<T> | undefined) =>
-    k.length * 2 + JSON.stringify(v).length * 2 + 64;
+    k.length * 2 + JSON.stringify(v).length * 2 + 64
 
   // deno-lint-ignore no-explicit-any
   const keyOf = (...args: any[]) =>
@@ -97,29 +86,29 @@ export const memoize = <T extends (...args: any[]) => any>(
         : String(args[0])
       : args.map(a =>
           typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a)
-        ).join('|');
+        ).join('|')
 
   return ((...args: Parameters<T>): ReturnType<T> => {
-    const key = keyOf(...args);
-    if (cache.has(key)) return cache.get(key)!;
+    const key = keyOf(...args)
+    if (cache.has(key)) return cache.get(key)!
 
-    const result = fn(...args) as ReturnType<T>;
-    const entrySize = sizeOf(key, result);
+    const result = fn(...args) as ReturnType<T>
+    const entrySize = sizeOf(key, result)
 
     while (currentSize + entrySize > maxBytes && cache.size) {
-      const firstKey = cache.keys().next().value as string | undefined;
-      if (!firstKey) break;
+      const firstKey = cache.keys().next().value as string | undefined
+      if (!firstKey) break
 
-      const firstValue = cache.get(firstKey);
-      currentSize -= sizeOf(firstKey, firstValue);
-      cache.delete(firstKey);
+      const firstValue = cache.get(firstKey)
+      currentSize -= sizeOf(firstKey, firstValue)
+      cache.delete(firstKey)
     }
 
-    cache.set(key, result);
-    currentSize += entrySize;
-    return result;
-  }) as T;
-};
+    cache.set(key, result)
+    currentSize += entrySize
+    return result
+  }) as T
+}
 
 
 export const toTitleCase = (fileName: string): string => {
@@ -137,12 +126,12 @@ export const replaceUnicode = (text: string): string => {
       const code = p1
         ? parseInt(p1, 16)        // \uXXXX
         : p2
-        ? parseInt(p2, 16)        // &#xHEX;
-        : parseInt(p3, 10);       // &#DEC;
+        ? parseInt(p2, 16)        // &#xHEX
+        : parseInt(p3, 10)        // &#DEC
 
-      return code <= 0x10FFFF ? String.fromCodePoint(code) : "";
+      return code <= 0x10FFFF ? String.fromCodePoint(code) : ""
     }
-  );
+  )
 }
 
 export const titleFromMarkdown = (markdown: string): string | undefined => {
@@ -157,3 +146,11 @@ export const pathMatchesGlob = (path: string, glob: string): boolean => {
 export const warn = (message: string): void => {
 	if (config.logWarnings) console.warn(yellow(message))
 }
+
+export const generateOgTags = memoize((file: fileRequestInfo): string => {
+  return `
+    <meta property="og:title" content="${config.title}">
+    <meta property="og:description" content="${escapeHTML(`File: ${file.filePath?.split("/").pop()}`)}">
+    <meta property="og:type" content="website">
+  `
+}, 100)

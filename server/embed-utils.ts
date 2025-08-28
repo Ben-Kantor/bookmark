@@ -121,64 +121,64 @@ const stripQuotes = (s: string): string  => {
 
 export const splitHtmlWrappers = (html: string): [string, string, string] => {
   let s = html.trim();           // strip outer whitespace only
-  let openSeq = '';
-  let closeSeq = '';
+  let openSeq = ''
+  let closeSeq = ''
 
   while (s.startsWith('<')) {
-    const m = s.match(/^<([a-zA-Z0-9-]+)(\s[^>]*)?>/);
-    if (!m) break;
+    const m = s.match(/^<([a-zA-Z0-9-]+)(\s[^>]*)?>/)
+    if (!m) break
 
-    const tag = m[1];
-    const openTag = m[0];
+    const tag = m[1]
+    const openTag = m[0]
 
     // scan for the matching closing tag with same-name depth tracking
-    const openRe = new RegExp(`<${tag}(?=[\\s>/])`, 'gi');
-    const closeRe = new RegExp(`</${tag}>`, 'gi');
+    const openRe = new RegExp(`<${tag}(?=[\\s>/])`, 'gi')
+    const closeRe = new RegExp(`</${tag}>`, 'gi')
 
-    let depth = 1;
-    let i = openTag.length;
-    let closeIdx = -1;
+    let depth = 1
+    let i = openTag.length
+    let closeIdx = -1
 
     while (i < s.length) {
-      openRe.lastIndex = i;
-      closeRe.lastIndex = i;
+      openRe.lastIndex = i
+      closeRe.lastIndex = i
 
-      const o = openRe.exec(s);
-      const c = closeRe.exec(s);
+      const o = openRe.exec(s)
+      const c = closeRe.exec(s)
 
-      const nextOpen = o ? o.index : -1;
-      const nextClose = c ? c.index : -1;
+      const nextOpen = o ? o.index : -1
+      const nextClose = c ? c.index : -1
 
       if (nextClose === -1) { closeIdx = -1; break; }
 
       if (nextOpen !== -1 && nextOpen < nextClose) {
-        depth++;
+        depth++
         i = o!.index + 1;            // advance to avoid re-matching same open
       } else {
-        depth--;
+        depth--
         i = c!.index + c![0].length; // move past this close
         if (depth === 0) {
-          closeIdx = c!.index;
-          break;
+          closeIdx = c!.index
+          break
         }
       }
     }
 
-    if (closeIdx === -1) break;
+    if (closeIdx === -1) break
 
     // only peel if the close is at the very end (ignoring trailing whitespace)
-    const closeTag = `</${tag}>`;
-    const after = s.slice(closeIdx + closeTag.length);
+    const closeTag = `</${tag}>`
+    const after = s.slice(closeIdx + closeTag.length)
     if (after.trim() !== '') break;  // not a true wrapper; stop peeling
 
     // accumulate wrapper and slice inner WITHOUT trimming
-    openSeq += openTag;
-    closeSeq = closeTag + closeSeq;
-    s = s.slice(openTag.length, closeIdx);
+    openSeq += openTag
+    closeSeq = closeTag + closeSeq
+    s = s.slice(openTag.length, closeIdx)
   }
 
-  return [openSeq, s, closeSeq];
-};
+  return [openSeq, s, closeSeq]
+}
 
 
 
@@ -248,7 +248,7 @@ const processLineSection = (
 	const last = properties.lastline ? properties.lastline : lines.length
 	const selected = lines.slice(first, last).join("\n").trim()
 
-	return splitResult[0] + selected + splitResult[2];
+	return splitResult[0] + selected + splitResult[2]
 }
 
 const escapeRegex = (str: string): string => {

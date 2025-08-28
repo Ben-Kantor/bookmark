@@ -13,7 +13,7 @@ import {
 	join,
 } from 'https://deno.land/std@0.224.0/path/mod.ts'
 
-import { fileExists, findFilePath, vaultMap } from './vaultmap.ts'
+import { findFilePath, vaultMap } from './vaultmap.ts'
 import { replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
 import * as types from './types.ts'
 import { config } from './constants.ts'
@@ -256,7 +256,7 @@ export const createCustomLinksExtension = (
 					rawLinkTarget
 				)
 
-				if (fileExists(join(contentDir, prospectivePath))) {
+				if (Deno.statSync(join(contentDir, prospectivePath)).isFile) {
 					targetPathFromContentDir = prospectivePath
 				} else {
 					const base = basename(rawLinkTarget, extname(rawLinkTarget))

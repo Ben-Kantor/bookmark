@@ -86,7 +86,7 @@ main {
 	background: var(--layer-1);
 }
 
-main *::selection {
+*::selection {
 	background-color: var(--accent-primary);
 	color: var(--background-primary);
 }

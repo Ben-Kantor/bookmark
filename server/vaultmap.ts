@@ -10,7 +10,7 @@ import * as types from './types.ts'
 import { toTitleCase } from './lib.ts'
 import { contentDir } from './constants.ts'
 
-const buildVaultMap = (
+export const buildVaultMap_ = (
 	dir: string = './',
 	absolutePath?: string,
 	isRoot: boolean = true
@@ -52,32 +52,15 @@ const buildVaultMap = (
 	return vaultNode
 }
 
-const watchVaultMap = (
-	pathToIndex: string,
-	onIndexUpdated: (newMap: types.VaultMap) => void
-): (() => void) => {
-	const absolutePathToIndex = resolve(
-		dirname(fromFileUrl(import.meta.url)),
-		pathToIndex
-	)
-	const watcher = Deno.watchFs(absolutePathToIndex)
-
-	const update = (): void => onIndexUpdated(buildVaultMap(pathToIndex))
-	update()
-
-	const watchLoop = async (): Promise<void> => {
-		for await (const { kind } of watcher) {
-			if (['create', 'modify', 'remove'].includes(kind)) {
-				setTimeout(update, 100)
-			}
-		}
-	}
-
-	watchLoop()
-	return () => watcher.close()
+export const buildVaultMap = (
+	dir: string = './',
+	absolutePath?: string,
+	isRoot: boolean = true
+): types.VaultMap => {
+	return sortVaultMap(buildVaultMap_(dir, absolutePath, isRoot))
 }
 
-const findFilePath = (
+export const findFilePath = (
 	vaultMap: types.VaultMap,
 	fileName?: string,
 	fileExtension?: string,
@@ -126,28 +109,14 @@ const findFilePath = (
 	return undefined
 }
 
-const loadFileContent = async (
-	filePath: string
-): Promise<{ content: string }> => ({
-	content: await Deno.readTextFile(filePath).catch(() => 'File not found.'),
-})
-
-const fileExists = (filePath: string): boolean => {
-	try {
-		return Deno.statSync(filePath).isFile
-	} catch {
-		return false
-	}
+function sortVaultMap(node: types.VaultMap): types.VaultMap {
+  if (node.dir && node.children) {
+    node.children.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+    )
+    node.children.forEach(sortVaultMap)
+  }
+  return node
 }
 
-export let vaultMap = buildVaultMap(contentDir)
-
-export {
-	buildVaultMap,
-	watchVaultMap,
-	findFilePath,
-	loadFileContent,
-	fileExists,
-}
-
-watchVaultMap(contentDir, (newIndex: types.VaultMap) => (vaultMap = newIndex))
+export const vaultMap = buildVaultMap(contentDir)

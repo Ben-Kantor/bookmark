@@ -196,15 +196,15 @@ export const checkLineWrapping = (embeddedHTML: string): boolean => {
 }
 
 export const hideEmptyHeaders = () => {
-  const tables = document.querySelectorAll('.content table');
+  const tables = document.querySelectorAll('.content table')
   tables.forEach(table => {
-    const header = table.querySelector('thead');
+    const header = table.querySelector('thead')
     if (header) {
-      const headerText = header?.textContent?.trim();
+      const headerText = header?.textContent?.trim()
       if (headerText === '') {
-        header.style.display = 'none';
+        header.style.display = 'none'
       }
     }
-  });
+  })
 	
 }

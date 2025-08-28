@@ -1,6 +1,6 @@
 import { normalize, basename, extname } from "https://deno.land/std@0.224.0/path/mod.ts"
 import { contentType } from "https://deno.land/std@0.224.0/media_types/mod.ts"
-import { zipContent } from "./lib.ts"
+import { generateOgTags, zipContent } from "./lib.ts"
 import { loadFileToHTML, resolveFileRequest } from "./coreutils.ts"
 import { PORT } from "./constants.ts"
 import { htmlTemplate } from "./build.ts"
@@ -37,6 +37,7 @@ const handler = async (request: Request): Promise<Response> => { try {
 	const htmlContent = await loadFileToHTML(filePathResult.filePath)
 	const page = htmlTemplate
 		.replace("/$PLACEHOLDER-PATH/", filePathResult.preferredAddress || basename(request.url))
+		.replace("<PLACEHOLDER-META/>", generateOgTags(filePathResult))
 		.replace("$PLACEHOLDER-CONTENT", htmlContent)
 	
 	const headers: { [key: string]: string } = { "Content-Type": "text/html" } 
