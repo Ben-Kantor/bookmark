@@ -62,7 +62,7 @@ export const navigateTo = (targetURL: string, forceRedirect?: boolean): void  =>
 
 			tocList.innerHTML = ''
 			generateToc()
-
+			document.getElementsByTagName('main')[0]!.scrollTo({ top: 0 })
 			initHeaderLinks()
 			updateTitle()
 			scrollToAnchor()
@@ -137,7 +137,6 @@ export const scrollToAnchor = (): void  => {
 	const hash = globalThis.location.hash
 
 	if (!hash || hash === '#') {
-		setTimeout(() => scrollContainer.scrollTo({ top: 0 }), 10)
 		return
 	}
 

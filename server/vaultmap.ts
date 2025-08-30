@@ -5,7 +5,7 @@ import {
 	extname,
 	basename,
 	join,
-} from 'https://deno.land/std@0.224.0/path/mod.ts'
+} from 'https://deno.land/std/path/mod.ts'
 import * as types from './types.ts'
 import { toTitleCase } from './lib.ts'
 import { contentDir } from './constants.ts'

@@ -1,5 +1,5 @@
-import { normalize, basename, extname } from "https://deno.land/std@0.224.0/path/mod.ts"
-import { contentType } from "https://deno.land/std@0.224.0/media_types/mod.ts"
+import { normalize, basename, extname } from "https://deno.land/std/path/mod.ts"
+import { contentType } from "https://deno.land/std/media_types/mod.ts"
 import { generateOgTags, zipContent } from "./lib.ts"
 import { loadFileToHTML, resolveFileRequest } from "./coreutils.ts"
 import { PORT } from "./constants.ts"

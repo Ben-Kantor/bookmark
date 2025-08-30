@@ -1,24 +1,16 @@
-import {
-	Marked,
-	TokenizerAndRendererExtension,
-	Tokens,
-} from 'npm:marked@^9.0.0'
-import { markedSmartypantsLite } from 'npm:marked-smartypants-lite@^1.0.3'
-import { markedHighlight } from 'npm:marked-highlight@^2.1.1'
-import hljs from 'npm:highlight.js@latest'
-import {
-	basename,
-	dirname,
-	extname,
-	join,
-} from 'https://deno.land/std@0.224.0/path/mod.ts'
-
+import { Marked, TokenizerAndRendererExtension, Tokens } from "npm:marked"
+import { markedSmartypantsLite } from 'npm:marked-smartypants-lite'
+import { markedHighlight } from 'npm:marked-highlight'
+import markedFootnote from 'npm:marked-footnote'
+import hljs from 'npm:highlight.js'
+import { basename, dirname, extname, join } from 'https://deno.land/std/path/mod.ts'
 import { findFilePath, vaultMap } from './vaultmap.ts'
-import { replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
+import { fileExists, replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
 import * as types from './types.ts'
 import { config } from './constants.ts'
 import { processEmbed } from './embed-processor.ts'
-import { yellow } from 'jsr:@std/fmt@0.223/colors'
+import { yellow } from 'jsr:@std/fmt/colors'
+import * as sanitizeHtml from 'npm:sanitize-html';
 
 export const renderMarkdown = async (
 	markdown: string,
@@ -59,7 +51,7 @@ export const renderMarkdown = async (
 	// Now process embeds (code elements are safely placeholder-ed)
 	const embedPromises: Promise<{ placeholder: string; content: string }>[] = []
 	const embedPlaceholders: string[] = []
-	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/g
+	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[(?!\^)([^\]]+)\](?:\(([^\)]+)\))?)/g
 	let match
 	let processedMarkdown = markdown
 
@@ -123,7 +115,12 @@ export const renderMarkdown = async (
 
 	const resolvedEmbeds = await Promise.all(embedPromises)
 	const markedInstance = new Marked()
-	markedInstance.use({
+	markedInstance
+	.use(markedSmartypantsLite())
+	.use(markedFootnote({
+		keepLabels: true
+	}))
+	.use({
 		extensions: [
 			createCustomLinksExtension(
 				currentPath,
@@ -131,9 +128,7 @@ export const renderMarkdown = async (
 				config.paths.contentDir
 			),
 		],
-	})
-	markedInstance.use(markedSmartypantsLite())
-	markedInstance.use(
+	}).use(
 		markedHighlight({
 			langPrefix: 'hljs language-',
 			highlight(code, lang) {
@@ -148,8 +143,7 @@ export const renderMarkdown = async (
 				}
 			},
 		})
-	)
-	markedInstance.setOptions({
+	).setOptions({
 		gfm: true,
 		breaks: false,
 		pedantic: false,
@@ -161,9 +155,11 @@ export const renderMarkdown = async (
 		result = result.replace(placeholder, content)
 	}
 
-	return result
+	const finalResult =result
 		.replace(/\\(?:<[^>]+>)*([\[\]])/g,(_, bracket) => bracket) //unescape brackets
 		.replace(/\\\`/gm,"`") //unescape backticks
+	if(config.sanitize) return sanitizeHtml(finalResult)
+	return finalResult
 }
 export const createCustomLinksExtension = (
 	currentPath: string,
@@ -178,7 +174,7 @@ export const createCustomLinksExtension = (
 			return i === -1 ? undefined : i
 		},
 		tokenizer(src: string): Tokens.Generic | undefined {
-			const rule = /^(?:\[\[([^\]]+)\]\]|\[([^\]]+)\](?:\(([^\)]+)\))?)/
+			const rule = /^(?:\[\[([^\]]+)\]\]|\[(?!\^)([^\]]+)\](?:\(([^\)]+)\))?)/
 			const match = rule.exec(src)
 
 			if (match) {
@@ -256,7 +252,7 @@ export const createCustomLinksExtension = (
 					rawLinkTarget
 				)
 
-				if (Deno.statSync(join(contentDir, prospectivePath)).isFile) {
+				if (fileExists(join(contentDir, prospectivePath))) {
 					targetPathFromContentDir = prospectivePath
 				} else {
 					const base = basename(rawLinkTarget, extname(rawLinkTarget))

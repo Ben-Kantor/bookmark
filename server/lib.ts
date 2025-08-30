@@ -1,6 +1,6 @@
-import { yellow } from "jsr:@std/fmt@0.223/colors"
+import { yellow } from "jsr:@std/fmt/colors"
 import { config, contentDir } from "./constants.ts"
-import { globToRegExp } from "https://deno.land/std@0.208.0/path/glob_to_regexp.ts"
+import { globToRegExp } from "https://deno.land/std/path/glob_to_regexp.ts"
 import { fileRequestInfo } from "./types.ts"
 
 export const escapeHTML = (str: string): string => {
@@ -51,8 +51,8 @@ export const fileExists = (path: string): boolean => {
 }
 
 export const zipContent = async (): Promise<Uint8Array> => {
-	const { walk } = await import("https://deno.land/std@0.224.0/fs/walk.ts")
-	const { zipSync } = await import("npm:fflate@0.8.2")
+	const { walk } = await import("https://deno.land/std/fs/walk.ts")
+	const { zipSync } = await import("npm:fflate")
 
 	const files: Record<string, Uint8Array> = {}
 

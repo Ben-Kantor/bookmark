@@ -1,7 +1,7 @@
 import { join, dirname, basename, extname } from 'https://deno.land/std/path/mod.ts'
 import { loadFileToHTML } from './coreutils.ts'
 import { findFilePath, vaultMap } from './vaultmap.ts'
-import { toHTTPLink, escapeHTML, warn } from './lib.ts'
+import { toHTTPLink, escapeHTML, warn, fileExists } from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import { extractEmbedProperties, createEmbedWithProperties, splitHtmlWrappers, addLineNumbers } from './embed-utils.ts'
 import { config } from './constants.ts'
@@ -162,7 +162,7 @@ const resolveTargetPath = (
 	}
 
 	const prospectivePath = join(dirname(currentPath), rawLinkTarget)
-	if (Deno.statSync(join(config.paths.contentDir || '', prospectivePath)).isFile) {
+	if (fileExists(join(config.paths.contentDir || '', prospectivePath))) {
 		return prospectivePath
 	}
 

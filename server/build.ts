@@ -1,11 +1,11 @@
 import { config } from "../server/constants.ts"
 import { vaultMap } from "../server/vaultmap.ts"
-import * as esbuild from "https://deno.land/x/esbuild@v0.21.4/mod.js"
-import { join } from "https://deno.land/std@0.224.0/path/join.ts"
-import { minify } from "npm:html-minifier-terser@7.2.0"
-import { setup } from "npm:twind@0.16.19"
-import { virtualSheet } from "npm:twind@0.16.19/sheets"
-import { getStyleTag, shim } from "npm:twind@0.16.19/shim/server"
+import * as esbuild from "https://deno.land/x/esbuild/mod.js"
+import { join } from "https://deno.land/std/path/join.ts"
+import { minify } from "npm:html-minifier-terser"
+import { setup,  } from "npm:twind"
+import { virtualSheet } from "npm:twind/sheets"
+import { getStyleTag, shim } from "npm:twind/shim/server"
 
 const result = await esbuild.build({
   entryPoints: ["./client/src/init-client.ts"],

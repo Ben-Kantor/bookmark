@@ -1,4 +1,4 @@
-import { resolve } from "https://deno.land/std@0.224.0/path/resolve.ts"
+import { resolve } from "https://deno.land/std/path/resolve.ts"
 import { SiteConfig } from "./types.ts"
 
 
@@ -6,6 +6,7 @@ export const config: SiteConfig = {
 	port: 8000,
 	minify: false,
 	sourceMap: false,
+	sanitize: false,
 	paths: {
 		contentDir: "./content/",
 		assetsDir: "./assets/",

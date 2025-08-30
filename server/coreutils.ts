@@ -1,10 +1,10 @@
-import { basename, extname, parse, relative, isAbsolute, join } from 'https://deno.land/std@0.224.0/path/mod.ts'
+import { basename, extname, parse, relative, isAbsolute, join } from 'https://deno.land/std/path/mod.ts'
 import { config, contentDir, absoluteContentDir, absoluteAssetsDir } from './constants.ts'
 import { renderMarkdown } from './markdown.ts'
 import { formatBytes, memoize, toHTTPLink, pathMatchesGlob, warn } from './lib.ts'
-import { contentType } from 'https://deno.land/std@0.224.0/media_types/mod.ts'
+import { contentType } from 'https://deno.land/std/media_types/mod.ts'
 import * as types from './types.ts'
-import { ParsedPath } from 'https://deno.land/std@0.224.0/path/_interface.ts'
+import { ParsedPath } from 'https://deno.land/std/path/_interface.ts'
 
 export const resolveFileRequest = async (
 	path: string

@@ -12,6 +12,7 @@ export interface SiteConfig {
 	port: number
 	minify: boolean
 	sourceMap: boolean
+	sanitize: boolean
 	paths: {
 		contentDir: string
 		assetsDir: string
