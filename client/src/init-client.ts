@@ -51,15 +51,15 @@ const init = async (): Promise<void> => {
     }
 
     // 3. Render Initial UI Components
-    scrollToAnchor()
-    if (explorerList && vaultMap) {
-        explorerList.innerHTML = ""
-        renderExplorer(vaultMap.children, explorerList, "/", decodeURIComponent(globalThis.location.pathname))
-    }
     if (tocList) {
         tocList.innerHTML = ""
         generateToc()
     }
+    if (explorerList && vaultMap) {
+        explorerList.innerHTML = ""
+        renderExplorer(vaultMap.children, explorerList, "/", decodeURIComponent(globalThis.location.pathname))
+    }
+    scrollToAnchor()
     initHeaderLinks()
     updateTitle()
     await wrapImages()
@@ -73,6 +73,8 @@ const init = async (): Promise<void> => {
     setupCloseOnLinkClick()
     initSwipeDetection()
     hideEmptyHeaders()
+	initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
+	initResizablePanel('toc-panel', 'toc-handle', 'toc-panel', 'right')
 
     globalThis.document.addEventListener("dragstart", (evt) => evt.preventDefault())
 }

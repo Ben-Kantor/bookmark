@@ -1,42 +1,148 @@
 import {
+ExplorerItem,
 	FileTypeIcons,
 	VaultMap,
-	VaultMapDirectory,
-	VaultMapFile,
 } from '../../server/types.ts'
 
 import { expandedFolders } from './constants-client.ts'
 
 declare const fileTypeIcons: FileTypeIcons
 
-export function renderExplorer(
-	items: VaultMap[],
-	parentEl: HTMLUListElement,
-	pathPrefix: string = '/',
-	activePath: string
-): void {
-	const dirs: VaultMapDirectory[] = items
-		.filter((i): i is VaultMapDirectory => i.dir)
-		.sort((a, b) => a.name.localeCompare(b.name))
+const createExplorerStructure = (
+  items: VaultMap[], 
+  pathPrefix = '/', 
+  activePath: string
+): ExplorerItem[] => {
+  const visibleItems = items.filter(item => !item.name.startsWith('.'));
+  
+  return visibleItems
+    .sort((a, b) => {
+      if (a.dir !== b.dir) return a.dir ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    })
+    .map(item => ({
+      type: item.dir ? 'directory' : 'file',
+      name: item.name,
+      path: `${pathPrefix}${item.name}${item.dir ? '/' : ''}`,
+      displayName: item.dir ? item.name : (item.title || item.name),
+      extension: item.dir ? null : item.name.split('.').pop() || '',
+      isActive: !item.dir && decodeURIComponent(`${pathPrefix}${item.name}`) === activePath,
+      isExpanded: item.dir ? (
+        activePath.startsWith(`${pathPrefix}${item.name}/`) ||
+        expandedFolders[`${pathPrefix}${item.name}/`] ||
+        false
+      ) : false,
+      hasChildren: item.dir ? item.children.length > 0 : false,
+      children: item.dir ? createExplorerStructure(item.children, `${pathPrefix}${item.name}/`, activePath) : []
+    }));
+};
 
-	const files: VaultMapFile[] = items
-		.filter((i): i is VaultMapFile => !i.dir)
-		.sort((a, b) => a.name.localeCompare(b.name))
+const generateExplorerHTML = (items: ExplorerItem[]): string => {
+  return items.map(item => {
+    if (item.type === 'directory') {
+      return generateDirectoryHTML(item);
+    } else {
+      return generateFileHTML(item);
+    }
+  }).join('');
+};
 
-	for (const item of [...dirs, ...files]) {
-		if (item.name.startsWith('.')) continue
+const generateDirectoryHTML = (item: ExplorerItem): string => {
+  const folderId = `folder-contents-${item.path.replace(/[^a-zA-Z0-9]/g, '-')}`;
+  const icon = item.hasChildren
+    ? item.isExpanded ? fileTypeIcons['folder-open'] : fileTypeIcons['folder-closed']
+    : fileTypeIcons['folder-childless'];
+  
+  const childrenHTML = item.isExpanded && item.children.length > 0
+    ? `<ul id="${folderId}" role="group">${generateExplorerHTML(item.children)}</ul>`
+    : `<ul id="${folderId}" role="group" style="display: none">${generateExplorerHTML(item.children)}</ul>`;
 
-		const li: HTMLLIElement = document.createElement('li')
-		li.className = 'rounded p-0'
-		li.setAttribute('role', 'treeitem')
+  return `
+    <li class="rounded p-0 folder ${item.isExpanded ? 'expanded' : ''}" 
+        role="treeitem" 
+        aria-expanded="${item.isExpanded}">
+      <button class="flex gap-2 w-full text-left" 
+              style="padding-left: 0"
+              aria-expanded="${item.isExpanded}"
+              ${item.hasChildren ? `aria-controls="${folderId}"` : ''}
+              data-folder-path="${item.path}">
+        <span class="pl-[0.5em] icon w-6 text-center">${icon || ''}</span>
+        <span class="truncate">${item.name}</span>
+      </button>
+      ${childrenHTML}
+    </li>
+  `;
+};
 
-		item.dir
-			? renderExplorerDir(item, li, pathPrefix, activePath)
-			: renderExplorerFile(item, li, pathPrefix, activePath)
+const generateFileHTML = (item: ExplorerItem): string => {
+  const iconChar = fileTypeIcons[item.extension?.toLowerCase() || ''] ?? fileTypeIcons.default;
+  const activeClasses = item.isActive ? ' active-file font-bold' : '';
+  const ariaCurrent = item.isActive ? 'aria-current="page"' : '';
+  const liClasses = item.isActive ? 'rounded p-0 active-file-row' : 'rounded p-0';
+  
+  return `
+    <li class="${liClasses}" role="treeitem">
+      <a href="${encodeURI(item.path)}" 
+         class="flex items-center w-full hover:text-[var(--text-accent)]${iconChar ? ' gap-2' : ''}${activeClasses}"
+         style="padding-left: 0"
+         ${ariaCurrent}>
+        ${iconChar 
+          ? `<span class="pl-[0.5em] icon w-6 text-center">${iconChar}</span>`
+          : '&nbsp;&nbsp;'
+        }
+        <span class="truncate">${item.displayName}</span>
+      </a>
+    </li>
+  `;
+};
 
-		parentEl.appendChild(li)
-	}
-}
+const setupExplorerEventDelegation = (parentEl: HTMLUListElement): void => {
+  parentEl.addEventListener('click', (e: MouseEvent) => {
+    const button = (e.target as Element).closest('button[data-folder-path]') as HTMLButtonElement;
+    if (!button) return;
+    
+    e.preventDefault();
+    
+    const folderPath = button.dataset.folderPath!;
+    const li = button.closest('li')!;
+    const ul = li.querySelector('ul')!;
+    const iconSpan = button.querySelector('.icon')!;
+    
+    const isNowExpanded = li.classList.toggle('expanded');
+    li.setAttribute('aria-expanded', String(isNowExpanded));
+    button.setAttribute('aria-expanded', String(isNowExpanded));
+    ul.style.display = isNowExpanded ? 'block' : 'none';
+    
+    expandedFolders[folderPath] = isNowExpanded;
+    globalThis.localStorage.setItem('explorerFolders', JSON.stringify(expandedFolders));
+    
+    const hasChildren = ul.children.length > 0;
+    if (hasChildren) {
+      iconSpan.textContent = isNowExpanded
+        ? fileTypeIcons['folder-open'] || ''
+        : fileTypeIcons['folder-closed'] || '';
+    }
+  });
+};
+
+export const renderExplorer = (
+  items: VaultMap[],
+  parentEl: HTMLUListElement,
+  pathPrefix = '/',
+  activePath: string
+): void => {
+  const explorerStructure = createExplorerStructure(items, pathPrefix, activePath);
+  const htmlString = generateExplorerHTML(explorerStructure);
+  
+  parentEl.innerHTML = htmlString;
+  
+  if (!parentEl.dataset.delegationSetup) {
+    setupExplorerEventDelegation(parentEl);
+    parentEl.dataset.delegationSetup = 'true';
+  }
+};
+
+
 
 export function initResizablePanel(
 	panelId: string,
@@ -133,112 +239,4 @@ export function initResizablePanel(
 		globalThis.document.addEventListener('mousemove', onMouseMove)
 		globalThis.document.addEventListener('mouseup', onMouseUp)
 	}
-}
-
-function renderExplorerDir(
-	item: VaultMapDirectory,
-	li: HTMLLIElement,
-	pathPrefix: string,
-	activePath: string
-): void {
-	const folderPath: string = `${pathPrefix}${item.name}/`
-	const isExpanded: boolean =
-		activePath.startsWith(folderPath) ||
-		expandedFolders[folderPath] ||
-		false
-
-	const hasChildren: boolean = item.children.length > 0
-	const folderId: string = `folder-contents-${folderPath.replace(
-		/[^a-zA-Z0-9]/g,
-		'-'
-	)}`
-
-	li.classList.add('folder')
-	if (isExpanded) li.classList.add('expanded')
-	li.setAttribute('aria-expanded', String(isExpanded))
-
-	const icon: string = hasChildren
-		? isExpanded
-			? fileTypeIcons['folder-open']
-			: fileTypeIcons['folder-closed']
-		: fileTypeIcons['folder-childless']
-
-	const button: HTMLButtonElement = document.createElement('button')
-	button.className = 'flex gap-2 w-full text-left'
-	button.style.paddingLeft = '0'
-	button.innerHTML =
-		`<span class="pl-[0.5em] icon w-6 text-center">${icon || ''}</span>` +
-		`<span class="truncate">${item.name}</span>`
-
-	button.setAttribute('aria-expanded', String(isExpanded))
-	if (hasChildren) button.setAttribute('aria-controls', folderId)
-
-	button.onclick = (e: MouseEvent) => {
-		e.preventDefault()
-
-		const isNowExpanded: boolean = li.classList.toggle('expanded')
-		li.setAttribute('aria-expanded', String(isNowExpanded))
-		button.setAttribute('aria-expanded', String(isNowExpanded))
-
-		const childUl = li.querySelector('ul') as HTMLUListElement
-		childUl.style.display = isNowExpanded ? 'block' : 'none'
-
-		expandedFolders[folderPath] = isNowExpanded
-		globalThis.localStorage.setItem(
-			'explorerFolders',
-			JSON.stringify(expandedFolders)
-		)
-
-		const iconSpan = button.querySelector('.icon') as HTMLSpanElement
-		if (hasChildren && iconSpan) {
-			iconSpan.textContent = isNowExpanded
-				? fileTypeIcons['folder-open'] || ''
-				: fileTypeIcons['folder-closed'] || ''
-		}
-	}
-
-	li.appendChild(button)
-
-	const ul: HTMLUListElement = document.createElement('ul')
-	ul.id = folderId
-	ul.setAttribute('role', 'group')
-	if (!isExpanded) ul.style.display = 'none'
-
-	renderExplorer(item.children, ul, folderPath, activePath)
-	li.appendChild(ul)
-}
-
-function renderExplorerFile(
-	item: VaultMapFile,
-	li: HTMLLIElement,
-	pathPrefix: string,
-	activePath: string
-): void {
-	const fullPath: string = `${pathPrefix}${item.name}`
-	const isActive: boolean = decodeURIComponent(fullPath) === activePath
-	const extension: string = item.name.split('.').pop() || ''
-	const displayName: string = item.title || item.name
-
-	const iconChar: string =
-		fileTypeIcons[extension.toLowerCase()] ?? fileTypeIcons.default
-
-	const anchor: HTMLAnchorElement = document.createElement('a')
-	anchor.href = encodeURI(fullPath)
-	anchor.className =
-		`flex items-center w-full hover:text-[var(--text-accent)]` +
-		`${iconChar ? ' gap-2' : ''}` +
-		`${isActive ? ' active-file font-bold' : ''}`
-
-	anchor.style.paddingLeft = '0'
-	anchor.innerHTML =
-		(iconChar
-			? `<span class="pl-[0.5em] icon w-6 text-center">${iconChar}</span>`
-			: '&nbsp;&nbsp;') + `<span class="truncate">${displayName}</span>`
-
-	if (isActive) {
-		anchor.setAttribute('aria-current', 'page')
-		li.classList.add('active-file-row')
-	}
-
-	li.appendChild(anchor)
 }
