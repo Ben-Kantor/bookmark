@@ -13,73 +13,72 @@ import { generateToc } from './toc.ts'
 
 declare const vaultMap: VaultMapDirectory
 
-export const navigateTo = (targetURL: string, forceRedirect?: boolean): void  => {
-	highlightItem(null)
+export const navigateTo = async (targetURL: string, historyNav: boolean = false): Promise<void> => {
+    highlightItem(null)
 
-	const url = new URL(targetURL, globalThis.location.origin)
-	const path = url.pathname
-	const anchor = url.hash.substring(1)
+    const url = new URL(targetURL, globalThis.location.origin)
+    const path = url.pathname
+    const hash = url.hash
 
-	if (globalThis.location.pathname.endsWith(path) && !forceRedirect) {
-		requestAnimationFrame(() => {
-			document.getElementById(anchor)?.scrollIntoView({
-				behavior: 'smooth',
-				block: 'start',
-			})
-		})
-		return
+    if (globalThis.location.pathname === path && !historyNav) {
+        // If same path, non-history nav, only scroll to hash.
+        requestAnimationFrame(() => {
+            scrollToAnchor()
+        })
+        return
+    }
+
+    try {
+		const response = await globalThis.fetch(path)
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`)
+		}
+	} catch (error) {
+		console.error("Error fetching page content:", error)
+		globalThis.location.href = targetURL
 	}
 
-	fetch(path)
-		.then(response => {
-			if (!response.ok)
-				throw new Error(`HTTP error! status: ${response.status}`)
+	const response = await globalThis.fetch(path)
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`)
+	}
 
-			globalThis.history.pushState(
-				{},
-				'',
-				response.headers.get('X-Redirect-URL')
-			)
+	const html = await response.text()
+	const parser = new globalThis.DOMParser()
+	const doc = parser.parseFromString(html, "text/html")
 
-			return response.text()
-		})
-		.then(html => {
-			const parser = new DOMParser()
-			const doc = parser.parseFromString(html, 'text/html')
-			const newMainContent = doc.querySelector('main.content')?.innerHTML
-			const newTitle = doc.querySelector('title')?.textContent || 'Page'
+	if (!historyNav) {
+		globalThis.history.pushState({}, "", response.headers.get("X-Redirect-URL") || path + hash)
+	}
 
-			if (newMainContent) mainContentEl.innerHTML = newMainContent
-			document.title = newTitle
+	const mainContent = doc.querySelector("main.content")
+	const newMainContentHtml = mainContent?.innerHTML
+	if (!newMainContentHtml) throw new Error('No main content found in response')
 
-			explorerList.innerHTML = ''
-			renderExplorer(
-				vaultMap.children,
-				explorerList,
-				'/',
-				decodeURIComponent(path)
-			)
+	if (mainContentEl && newMainContentHtml) {
+		mainContentEl.innerHTML = newMainContentHtml
+	}
 
-			tocList.innerHTML = ''
-			generateToc()
-			document.getElementsByTagName('main')[0]!.scrollTo({ top: 0 })
-			initHeaderLinks()
-			updateTitle()
-			scrollToAnchor()
-			wrapImages()
+	if (explorerList && vaultMap) {
+		explorerList.innerHTML = ""
+		renderExplorer(vaultMap.children, explorerList, "/", decodeURIComponent(path))
+	}
+	if (tocList) {
+		tocList.innerHTML = ""
+		generateToc()
+	}
 
-			if (activeIndex === 0) {
-				const newActiveItem =
-					explorerList.querySelector<HTMLLIElement>(
-						'.active-file-row'
-					)
-				if (newActiveItem) highlightItem(newActiveItem)
-			}
-		})
-		.catch(error => {
-			console.error('Error fetching page content:', error)
-			globalThis.location.href = targetURL
-		})
+	globalThis.document.getElementsByTagName("main")[0]?.scrollTo({ top: 0 })
+	scrollToAnchor()
+
+	initHeaderLinks()
+	updateTitle()
+	await wrapImages()
+
+	if (activeIndex === 0 && explorerList) {
+		const newActiveItem = explorerList.querySelector(".active-file-row")
+		if (newActiveItem) highlightItem(newActiveItem as HTMLLIElement)
+	}
 }
 
 export const downloadFile = (path: string, downloadName?: string): void  => {
@@ -165,19 +164,14 @@ export const titleFromMarkdown = (markdown: string): string | undefined  => {
 	return markdown.match(/\A#\s(.+)\n/)?.[1]
 }
 
-export const updateTitle = (): void  => {
-	document.title =
-		document.querySelector('h1')?.textContent ||
-		toTitleCase(
-			decodeURI(
-				globalThis.location.href
-					.split('/')
-					.pop()
-					?.split('.')[0]
-					.split('#')[0] || ''
-			)
-			//@ts-ignore constant defined in another codeblcok
-		) || document.querySelector('meta[property="og:title"]')?.content
+export const updateTitle = (): void => {
+    const h1Title = document.querySelector('h1')?.textContent
+    const pathTitle = toTitleCase(
+        decodeURI(globalThis.location.pathname.split('/').pop()?.split('.')[0]?.split('#')[0] || '')
+    )
+    const metaTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content')
+    
+    document.title = h1Title || pathTitle || metaTitle || ""
 }
 
 export const lastOnlyChild = (el: Element): Element  => {

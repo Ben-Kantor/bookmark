@@ -1,6 +1,6 @@
 import { openCommandPalette } from './palette.ts'
 
-const get = (id: string) => document.getElementById(id)
+const get = (id: string): HTMLElement | null => document.getElementById(id)
 
 export const closePanels = () => {
 	const explorer = get('explorer')

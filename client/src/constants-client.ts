@@ -33,6 +33,12 @@ export const paletteOverlay = document.getElementById('command-palette-overlay')
 export const paletteInput = document.getElementById('command-palette-input') as HTMLInputElement
 export const paletteResultsEl = document.getElementById('command-palette-results') as HTMLUListElement
 
+//throw an error if any of the elements are not found
+[explorerList, tocList, mainContentEl, contentAreaEl, paletteOverlay, paletteInput, paletteResultsEl].forEach(el => {
+	if (!el) throw new Error("UI Element not found")
+})
+
+
 export const setActiveIndex = (index: number) => activeIndex = index
 export const setLastFocusedItem = (item: HTMLElement | null) => lastFocusedItem = item
 export const setCols = (columns: (HTMLElement | null)[]) => cols = columns

@@ -5,6 +5,7 @@ import {
 	paletteResults,
 	paletteSelectedIndex,
 	setPaletteSelectedIndex,
+  tocList,
 } from './constants-client.ts'
 
 import { initKeyboardNav } from './keyboard-nav.ts'
@@ -39,29 +40,41 @@ import { generateToc } from './toc.ts'
 
 declare const vaultMap: VaultMapDirectory
 
-const init = () => {
-	scrollToAnchor()
-	renderExplorer( vaultMap.children, explorerList, '/', decodeURIComponent(globalThis.location.pathname))
-	generateToc()
+const init = async (): Promise<void> => {
 
-	initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
-	initResizablePanel('toc-panel', 'toc-handle', 'toc', 'right')
-	initMobileHeader()
-	hideEmptyHeaders()
-	updateTitle()
+    // 2. Normalize Initial URL (Critical for correct history stack)
+    const currentPath = decodeURIComponent(globalThis.location.pathname)
+    const canonicalPath = currentPath.replace(/\.md$/, '')
 
-	globalThis.history.pushState({}, '', "/$PLACEHOLDER-PATH/")
+    if (currentPath !== canonicalPath) {
+        globalThis.history.replaceState({}, "", canonicalPath + globalThis.location.hash)
+    }
 
-	setupGlobalKeyboardShortcuts()
-	setupCommandPaletteListeners()
-	initKeyboardNav()
-	setupCloseOnLinkClick()
-	setupNavigationHandlers()
-	initHeaderLinks()
-	initSwipeDetection()
+    // 3. Render Initial UI Components
+    scrollToAnchor()
+    if (explorerList && vaultMap) {
+        explorerList.innerHTML = ""
+        renderExplorer(vaultMap.children, explorerList, "/", decodeURIComponent(globalThis.location.pathname))
+    }
+    if (tocList) {
+        tocList.innerHTML = ""
+        generateToc()
+    }
+    initHeaderLinks()
+    updateTitle()
+    await wrapImages()
 
-	document.addEventListener('dragstart', evt => evt.preventDefault())
-	wrapImages()
+    // 4. Setup Event Listeners and Keyboard Navigation
+    setupGlobalKeyboardShortcuts()
+    setupCommandPaletteListeners()
+    setupNavigationHandlers()
+    initKeyboardNav()
+    initMobileHeader()
+    setupCloseOnLinkClick()
+    initSwipeDetection()
+    hideEmptyHeaders()
+
+    globalThis.document.addEventListener("dragstart", (evt) => evt.preventDefault())
 }
 
 const setupCommandPaletteListeners = (): void => {
@@ -129,25 +142,33 @@ const handlePaletteNavigation = (e: KeyboardEvent): void => {
 	}
 }
 
-const setupNavigationHandlers = (): void => {
-	document.addEventListener('click', (e: MouseEvent) => {
-		const link = (e.target as HTMLElement).closest('a')
+const setupNavigationHandlers = () => {
+    globalThis.document.addEventListener("click", (e) => {
+        const link = (e.target as HTMLElement).closest("a")
+        if (!link || link.hasAttribute("download") || link.target === "_blank") {
+            return
+        }
+        const href = link.getAttribute("href")
+        if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || /^[a-z]+:/.test(href)) {
+            return
+        }
+        
+        const currentUrl = new globalThis.URL(globalThis.location.href)
+        const targetUrl = new globalThis.URL(href, currentUrl)
 
-		if (
-			!link ||
-			link.hasAttribute('download') ||
-			link.target === '_blank'
-		) {
-			return
-		}
+        if (currentUrl.origin === targetUrl.origin && currentUrl.pathname === targetUrl.pathname && currentUrl.hash !== targetUrl.hash) {
+            return
+        }
 
-		const href = link.getAttribute('href')
+        e.preventDefault()
+        navigateTo(targetUrl.pathname + targetUrl.hash, false)
+    })
 
-		if (!href || href.startsWith('#') || /^[a-z]+:/.test(href)) return
-
-		e.preventDefault()
-		navigateTo(href)
-	})
+    globalThis.addEventListener('popstate', () => {
+        const currentUrl = globalThis.location.pathname + globalThis.location.hash
+        navigateTo(currentUrl, true)
+    })
 }
+
 
 document.addEventListener('DOMContentLoaded', init)

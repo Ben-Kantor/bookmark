@@ -10,7 +10,7 @@ import * as types from './types.ts'
 import { config } from './constants.ts'
 import { processEmbed } from './embed-processor.ts'
 import { yellow } from 'jsr:@std/fmt/colors'
-import * as sanitizeHtml from 'npm:sanitize-html';
+import * as sanitizeHtml from 'npm:sanitize-html'
 
 export const renderMarkdown = async (
 	markdown: string,

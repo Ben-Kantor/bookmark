@@ -12,9 +12,7 @@ import {
 export const highlightItem = (item: HTMLLIElement | null) => {
 	if (lastFocusedItem) {
 		lastFocusedItem.classList.remove('keyboard-focus')
-		lastFocusedItem
-			.querySelector('.keyboard-focus')
-			?.classList.remove('keyboard-focus')
+		lastFocusedItem.querySelector('.keyboard-focus')?.classList.remove('keyboard-focus')
 	}
 
 	if (!item) {
