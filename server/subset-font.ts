@@ -2,9 +2,9 @@
 // Original author: Andreas Lind
 // Original source: https://github.com/papandreou/subset-font
 
-import _ from "https://esm.sh/lodash";
-import { compress, decompress } from "https://esm.sh/woff2-encoder";
-import plimit from "https://esm.sh/p-limit";
+import _ from "https://esm.sh/lodash@4";
+import plimit from "https://esm.sh/p-limit@4";
+import { compress, decompress } from "https://esm.sh/woff2-encoder@1";
 
 interface SubsetOptions {
   targetFormat?: "woff2" | "truetype";

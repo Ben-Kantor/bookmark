@@ -1,12 +1,13 @@
-import { config } from "./constants.ts";
-import { vaultMap } from "./vaultmap.ts";
 import * as esbuild from "https://deno.land/x/esbuild/mod.js";
 import { join } from "https://deno.land/std/path/join.ts";
-import { minify } from "npm:html-minifier-terser";
-import { setup } from "npm:twind";
-import { virtualSheet } from "npm:twind/sheets";
-import { getStyleTag, shim } from "npm:twind/shim/server";
+import { setup } from "https://esm.sh/twind";
+import { virtualSheet } from "https://esm.sh/twind/sheets";
+import { getStyleTag, shim } from "https://esm.sh/twind/shim/server";
+import { minify } from "https://esm.sh/html-minifier-terser@7";
+
+import { config } from "./constants.ts";
 import subsetFont from "./subset-font.ts";
+import { vaultMap } from "./vaultmap.ts";
 
 export const nerdFont: Uint8Array = await subsetNerdFont();
 

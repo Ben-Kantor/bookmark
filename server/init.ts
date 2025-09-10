@@ -1,13 +1,14 @@
+import { contentType } from "https://deno.land/std/media_types/mod.ts";
 import {
   basename,
   extname,
   normalize,
 } from "https://deno.land/std/path/mod.ts";
-import { contentType } from "https://deno.land/std/media_types/mod.ts";
-import { generateOgTags, zipContent } from "./lib.ts";
-import { loadFileToHTML, resolveFileRequest } from "./coreutils.ts";
-import { PORT } from "./constants.ts";
+
 import { htmlTemplate, nerdFont } from "./build.ts";
+import { PORT } from "./constants.ts";
+import { loadFileToHTML, resolveFileRequest } from "./coreutils.ts";
+import { generateOgTags, zipContent } from "./lib.ts";
 
 const handler = async (request: Request): Promise<Response> => {
   try {
