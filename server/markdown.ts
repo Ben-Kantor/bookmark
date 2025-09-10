@@ -22,7 +22,7 @@ export const renderMarkdown = async (
 	if (addTitle && !markdown.startsWith('# ')) {
 		markdown = `# ${toTitleCase(basename(currentPath))}\n\n${markdown}`
 	}
-	if (addTitle && markdown.match(/\n\#\s/)) {
+	if (addTitle && markdown.match(/^#\s(.*)|<h1>(.*)<\/h1>\n/)) {
 		console.warn(
 			yellow(`File ${currentPath} contains multiple level 1 headers.`)
 		)

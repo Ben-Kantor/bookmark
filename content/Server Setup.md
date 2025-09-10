@@ -25,6 +25,6 @@ The configuration is stored in the *constants.ts* file, below each option is exp
 
 This section contains an object of key-value pairs, where each key is a rendering type, as seen in the list below. Each array of paths contains relative paths from the root of the content directory. This allows you to, for instance, force an html file which would otherwise be embedded in an iframe to be shown as code, embedded raw, or listed as a download link.
 
-Here are all currently accepted media types: `markdown`, `plaintext`, `codeblock`, `pdf`, `image`, `video`, `audio`, `literal`, `iframe`, `download`.
+Here are all currently accepted media types: `markdown`, `plaintext`, `codeblock`, `image`, `video`, `audio`, `literal`, `iframe`, `download`.
 
 If a matching override is not found, the type will be determined automatically.

@@ -123,10 +123,7 @@ const renderContent = async (
 				filePath,
 				isEmbed
 			)
-
-		case 'pdf':
-			return `<iframe src="/!/${relativePath}" class="w-full h-full border-none" title="PDF Preview"></iframe>`
-
+		
 		case 'image':
 			return `<div class="relative h-full bg-gray-200">
 <img src="/!/${relativePath}" data-pswp-src="/!/${relativePath}" class="max-w-full h-auto block p-0 lightbox-image">
@@ -146,8 +143,7 @@ const renderContent = async (
 </audio>`
 
 		case 'iframe':
-			return `<iframe src="/!/${relativePath}" class="w-full h-full border-none"
-			title="Embedded content for ${basename(filePath)}"></iframe>`
+			return `<iframe src="/!/${relativePath}" class="w-full h-full border-none"></iframe>`
 
 		case 'download':
 			return await renderDownloadContent(
