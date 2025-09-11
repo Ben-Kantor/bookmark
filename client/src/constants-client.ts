@@ -45,5 +45,5 @@ export const setCols = (columns: (HTMLElement | null)[]) => cols = columns
 export const setPaletteResults = (results: PaletteResult[]) => paletteResults = results
 export const setPaletteSelectedIndex = (index: number) => paletteSelectedIndex = index
 
-export const FOLDER_OPEN_ICON = '\uf07c';
-export const FOLDER_CLOSED_ICON = '\uf07b';
+export const FOLDER_OPEN_ICON = '\uf07c'
+export const FOLDER_CLOSED_ICON = '\uf07b'

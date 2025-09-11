@@ -61,106 +61,80 @@ const init = async (): Promise<void> => {
 }
 
 const setupCommandPaletteListeners = (): void => {
-
     document
         .getElementById( "open-palette-button" )
         ?.addEventListener( "click", openCommandPalette )
-
     paletteOverlay.addEventListener( "click", ( e: MouseEvent ) => {
         if ( e.target === document.getElementById( "command-palette" ) )
             closeCommandPalette()
     })
-
     paletteInput.addEventListener(
         "input",
         ( e: Event ) => updatePaletteResults( ( e.target as HTMLInputElement ).value ),
     )
-
 }
 
 const setupGlobalKeyboardShortcuts = (): void => {
 
     document.addEventListener( "keydown", ( e: KeyboardEvent ) => {
-
         if ( e.ctrlKey && e.key.toLowerCase() === "s" ) {
-
             e.preventDefault()
-
             if ( e.shiftKey )
                 downloadFile( "/site.zip", "site.zip" )
             else
                 downloadFile( globalThis.location.pathname )
-
             return
-
         }
-
         if ( e.key.toLowerCase() === "alt" ) {
-
             if ( !paletteOverlay.classList.contains( "hidden" ) ) {
                 closeCommandPalette()
                 return
             }
-
             e.preventDefault()
             openCommandPalette()
-
         }
-
         if ( !paletteOverlay.classList.contains( "hidden" ) )
             handlePaletteNavigation( e )
-
     })
 
 }
 
 const handlePaletteNavigation = ( e: KeyboardEvent ): void => {
-
     if ( e.key === "Escape" )
         closeCommandPalette()
     else if ( e.key === "ArrowDown" || e.key === "j" ) {
-
         e.preventDefault()
         setPaletteSelectedIndex(
             ( paletteSelectedIndex + 1 ) % ( paletteResults.length || 1 ),
         )
         renderPaletteResults()
-
     } else if ( e.key === "ArrowUp" || e.key === "k" ) {
-
         e.preventDefault()
         setPaletteSelectedIndex(
             ( paletteSelectedIndex - 1 + ( paletteResults.length || 1 ) ) %
             ( paletteResults.length || 1 ),
         )
         renderPaletteResults()
-
     } else if ( e.key === "Enter" && paletteResults[ paletteSelectedIndex ] ) {
 
         e.preventDefault()
         executePaletteItem( paletteResults[ paletteSelectedIndex ] )
-
     }
-
 }
 
 const setupNavigationHandlers = (): void => {
-
     globalThis.document.addEventListener( "click", ( e ) => {
-
         const link = ( e.target as HTMLElement ).closest( "a" )
-
+        
         if ( !link || link.hasAttribute( "download" ) || link.target === "_blank" )
             return
-
         const href = link.getAttribute( "href" )
-
+        
         if (
             !href || href.startsWith( "mailto:" ) || href.startsWith( "tel:" ) ||
             /^[a-z]+:/.test( href )
-        )
-            return
-
+        )   return
+        
         const currentUrl = new globalThis.URL( globalThis.location.href )
         const targetUrl = new globalThis.URL( href, currentUrl )
 
@@ -168,12 +142,10 @@ const setupNavigationHandlers = (): void => {
             currentUrl.origin === targetUrl.origin &&
             currentUrl.pathname === targetUrl.pathname &&
             currentUrl.hash !== targetUrl.hash
-        )
-            return
+        )   return
 
         e.preventDefault()
         navigateTo( targetUrl.pathname + targetUrl.hash, false )
-
     })
 
     globalThis.addEventListener( "popstate", () => {
@@ -184,7 +156,6 @@ const setupNavigationHandlers = (): void => {
 }
 
 const normalizeURL = (): void => {
-
     const currentPath = decodeURIComponent( globalThis.location.pathname )
     const canonicalPath = currentPath.replace( /\.md$/, "" )
 
@@ -194,16 +165,13 @@ const normalizeURL = (): void => {
             "",
             canonicalPath + globalThis.location.hash,
         )
-
 }
 
 const preventDragging = (): void => {
-
     globalThis.document.addEventListener(
         "dragstart",
         ( evt ) => evt.preventDefault(),
     )
-
 }
 
 document.addEventListener( "DOMContentLoaded", init )

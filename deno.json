@@ -1,13 +1,13 @@
 {
-  "tasks": {
-    "dev": "deno run --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
-    "start": "deno run --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
-    "update": "git stash && git pull --rebase && git stash pop && deno update"
-  },
-  "compilerOptions": {
-    "lib": ["dom", "deno.ns"]
-  },
-  "lint": {
-	"exclude": ["./assets/"]
-  }
+	"tasks": {
+		"dev": "deno run --unstable-bundle --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
+		"start": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
+		"update": "git stash && git pull --rebase && git stash pop && deno update"
+	},
+	"compilerOptions": {
+		"lib": ["dom", "deno.ns"]
+	},
+	"lint": {
+		"exclude": ["./assets/"]
+	}
 }

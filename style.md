@@ -1,4 +1,4 @@
-# TypeScript Deno Style Guide
+# Style Guide
 
 ## Code Structure and Organization
 
@@ -6,9 +6,7 @@ Files should prioritize key functions at the top, with supporting utilities plac
 
 ## Formatting and Whitespace
 
-Use double indentation (4 spaces) consistently throughout all code. Remove all trailing spaces and unnecessary punctuation. Maintain blank lines before and after brace sections for visual separation.
-
-Insert line gaps every six lines when indentation remains constant, and between distinct logical sections. This enhances code scanning and comprehension.
+Use double indentation (4 spaces) consistently throughout all code. Remove all trailing spaces and unnecessary punctuation. Only include blank lines between codeblocks, or to split up sections of many statements in a row.
 
 Avoid nesting beyond three levels of indentation where possible to prevent complexity buildup.
 

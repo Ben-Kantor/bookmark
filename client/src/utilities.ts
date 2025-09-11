@@ -13,195 +13,195 @@ export const navigateTo = async (
   targetURL: string,
   historyNav: boolean = false,
 ): Promise<void> => {
-  highlightItem(null);
+  highlightItem(null)
 
-  const url = new URL(targetURL, globalThis.location.origin);
-  const path = url.pathname;
-  const hash = url.hash;
+  const url = new URL(targetURL, globalThis.location.origin)
+  const path = url.pathname
+  const hash = url.hash
 
   if (globalThis.location.pathname === path && !historyNav) {
     // If same path, non-history nav, only scroll to hash.
     requestAnimationFrame(() => {
-      scrollToAnchor();
-    });
-    return;
+      scrollToAnchor()
+    })
+    return
   }
 
   try {
-    const response = await globalThis.fetch(path);
+    const response = await globalThis.fetch(path)
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
   } catch (error) {
-    console.error("Error fetching page content:", error);
-    globalThis.location.href = targetURL;
+    console.error("Error fetching page content:", error)
+    globalThis.location.href = targetURL
   }
 
-  const response = await globalThis.fetch(path);
+  const response = await globalThis.fetch(path)
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const html = await response.text();
-  const parser = new globalThis.DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const html = await response.text()
+  const parser = new globalThis.DOMParser()
+  const doc = parser.parseFromString(html, "text/html")
 
   if (!historyNav) {
     globalThis.history.pushState(
       {},
       "",
       response.headers.get("X-Redirect-URL") || path + hash,
-    );
+    )
   }
 
-  const mainContent = doc.querySelector("main.content");
-  const newMainContentHtml = mainContent?.innerHTML;
-  if (!newMainContentHtml) throw new Error("No main content found in response");
+  const mainContent = doc.querySelector("main.content")
+  const newMainContentHtml = mainContent?.innerHTML
+  if (!newMainContentHtml) throw new Error("No main content found in response")
 
   if (mainContentEl && newMainContentHtml) {
-    mainContentEl.innerHTML = newMainContentHtml;
+    mainContentEl.innerHTML = newMainContentHtml
   }
 
-  updateExplorerState(decodeURIComponent(path));
+  updateExplorerState(decodeURIComponent(path))
 
   if (tocList) {
-    tocList.innerHTML = "";
-    generateToc();
+    tocList.innerHTML = ""
+    generateToc()
   }
 
-  globalThis.document.getElementsByTagName("main")[0]?.scrollTo({ top: 0 });
-  scrollToAnchor();
+  globalThis.document.getElementsByTagName("main")[0]?.scrollTo({ top: 0 })
+  scrollToAnchor()
 
-  initHeaderLinks();
-  updateTitle();
-  await wrapImages();
+  initHeaderLinks()
+  updateTitle()
+  await wrapImages()
 
   if (activeIndex === 0) {
-    const newActiveItem = document.querySelector(".active-file-row");
-    if (newActiveItem) highlightItem(newActiveItem as HTMLLIElement);
+    const newActiveItem = document.querySelector(".active-file-row")
+    if (newActiveItem) highlightItem(newActiveItem as HTMLLIElement)
   }
-};
+}
 
 export const downloadFile = (path: string, downloadName?: string): void => {
-  const a = document.createElement("a");
-  a.href = downloadName ? path : `/!/${path}`;
-  a.download = downloadName || decodeURIComponent(path.split("/").pop() || "");
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
+  const a = document.createElement("a")
+  a.href = downloadName ? path : `/!/${path}`
+  a.download = downloadName || decodeURIComponent(path.split("/").pop() || "")
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
 
 export const initHeaderLinks = (): void => {
   const headers = document.querySelectorAll<HTMLElement>(
     "h1, h2, h3, h4, h5, h6",
-  );
+  )
 
   headers.forEach((header) => {
-    header.classList.add("clickable-header");
+    header.classList.add("clickable-header")
 
     const handleHeaderCopy = async (event: Event) => {
-      event.preventDefault();
+      event.preventDefault()
 
 			const url = `${globalThis.location.origin}${
 				globalThis.location.pathname
-			}#${encodeURIComponent(header.textContent || "")}`;
+			}#${encodeURIComponent(header.textContent || "")}`
 
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(url);
+          await navigator.clipboard.writeText(url)
         } else {
-          const textArea = document.createElement("textarea");
-          textArea.value = url;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand("copy");
-          document.body.removeChild(textArea);
+          const textArea = document.createElement("textarea")
+          textArea.value = url
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand("copy")
+          document.body.removeChild(textArea)
         }
 
-        header.classList.add("copied");
-        setTimeout(() => header.classList.remove("copied"), 200);
+        header.classList.add("copied")
+        setTimeout(() => header.classList.remove("copied"), 200)
       } catch (err) {
-        console.error("Failed to copy link: ", err);
+        console.error("Failed to copy link: ", err)
       }
-    };
+    }
 
-    header.addEventListener("click", handleHeaderCopy);
+    header.addEventListener("click", handleHeaderCopy)
     header.addEventListener("touchend", handleHeaderCopy, {
       passive: false,
-    });
-  });
-};
+    })
+  })
+}
 
 export const scrollToAnchor = (): void => {
-  const scrollContainer = document.getElementsByTagName("main")[0]!;
-  const hash = globalThis.location.hash;
+  const scrollContainer = document.getElementsByTagName("main")[0]!
+  const hash = globalThis.location.hash
 
   if (!hash || hash === "#") {
-    return;
+    return
   }
 
   requestAnimationFrame(() => {
     try {
       const decodedAndEscapedHash = "#" +
-        CSS.escape(decodeURIComponent(hash).substring(1));
+        CSS.escape(decodeURIComponent(hash).substring(1))
       const targetElement = scrollContainer.querySelector(
         decodedAndEscapedHash,
-      );
+      )
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: "smooth",
           block: "start",
-        });
-        return;
+        })
+        return
       }
     } catch (e) {
-      console.error(`Error scrolling to anchor "${hash}":`, e);
-      scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+      console.error(`Error scrolling to anchor "${hash}":`, e)
+      scrollContainer.scrollTo({ top: 0, behavior: "smooth" })
     }
-  });
-};
+  })
+}
 
 export const titleFromMarkdown = (markdown: string): string | undefined => {
-  return markdown.match(/\A#\s(.+)\n/)?.[1];
-};
+  return markdown.match(/\A#\s(.+)\n/)?.[1]
+}
 
 export const updateTitle = (): void => {
-  const h1Title = document.querySelector("h1")?.textContent;
+  const h1Title = document.querySelector("h1")?.textContent
   const pathTitle = toTitleCase(
     decodeURI(
       globalThis.location.pathname.split("/").pop()?.split(".")[0]?.split(
         "#",
       )[0] || "",
     ),
-  );
+  )
   const metaTitle = document.querySelector('meta[property="og:title"]')
-    ?.getAttribute("content");
+    ?.getAttribute("content")
 
-  document.title = h1Title || pathTitle || metaTitle || "";
-};
+  document.title = h1Title || pathTitle || metaTitle || ""
+}
 
 export const lastOnlyChild = (el: Element): Element => {
-  return el.children.length > 1 ? el : lastOnlyChild(el.children[0]);
-};
+  return el.children.length > 1 ? el : lastOnlyChild(el.children[0])
+}
 
 //currently unused, intended for a feature that automatically enables line wrapping when much of a codeblock is cut off
 export const checkLineWrapping = (embeddedHTML: string): boolean => {
-  const textContent = embeddedHTML.replace(/<[^>]*>/g, "");
+  const textContent = embeddedHTML.replace(/<[^>]*>/g, "")
   const overflowCharacters = textContent
     .split("\n")
     .map((line) => Math.max(0, line.length - 80))
-    .reduce((a, b) => a + b, 0);
-  return overflowCharacters > textContent.length / 4;
-};
+    .reduce((a, b) => a + b, 0)
+  return overflowCharacters > textContent.length / 4
+}
 
 export const hideEmptyHeaders = () => {
-  const tables = document.querySelectorAll(".content table");
+  const tables = document.querySelectorAll(".content table")
   tables.forEach((table) => {
-    const header = table.querySelector("thead");
+    const header = table.querySelector("thead")
     if (header) {
-      const headerText = header?.textContent?.trim();
+      const headerText = header?.textContent?.trim()
       if (headerText === "") {
-        header.style.display = "none";
+        header.style.display = "none"
       }
     }
   })

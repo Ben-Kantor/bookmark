@@ -2,7 +2,7 @@ import {
   ExplorerItem,
   FileTypeIcons,
   VaultMap,
-} from './types.ts';
+} from './types.ts'
 
 // Factory function to create an explorer builder with a given icon set.
 export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
@@ -13,11 +13,11 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
     return items
       .filter((item) => !item.name.startsWith('.'))
       .sort((a, b) => {
-        if (a.dir !== b.dir) return a.dir ? -1 : 1;
-        return a.name.localeCompare(b.name);
+        if (a.dir !== b.dir) return a.dir ? -1 : 1
+        return a.name.localeCompare(b.name)
       })
       .map((item) => {
-        const currentPath = `${pathPrefix}${item.name}${item.dir ? '/' : ''}`;
+        const currentPath = `${pathPrefix}${item.name}${item.dir ? '/' : ''}`
 
         return {
           type: item.dir ? 'directory' : 'file',
@@ -31,27 +31,27 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
           children: item.dir
             ? createExplorerStructure(item.children, currentPath)
             : [],
-        };
-      });
-  };
+        }
+      })
+  }
 
   const generateExplorerHTML = (items: ExplorerItem[]): string => {
     return items.map((item) =>
       item.type === 'directory'
         ? generateDirectoryHTML(item)
         : generateFileHTML(item)
-    ).join('');
-  };
+    ).join('')
+  }
 
   const generateDirectoryHTML = (item: ExplorerItem): string => {
-    const folderId = `folder-contents-${item.path.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    const folderId = `folder-contents-${item.path.replace(/[^a-zA-Z0-9]/g, '-')}`
     const icon = item.hasChildren
       ? fileTypeIcons['folder-closed']
-      : fileTypeIcons['folder-childless'];
+      : fileTypeIcons['folder-childless']
 
     const childrenHTML = `<ul id="${folderId}" role="group" style="display: none">${
       generateExplorerHTML(item.children)
-    }</ul>`;
+    }</ul>`
 
     return `
       <li class="rounded p-0 folder" role="treeitem" aria-expanded="false">
@@ -61,11 +61,11 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
         </button>
         ${childrenHTML}
       </li>
-    `;
-  };
+    `
+  }
 
   const generateFileHTML = (item: ExplorerItem): string => {
-    const iconChar = fileTypeIcons[item.extension?.toLowerCase() || ''] ?? fileTypeIcons.default;
+    const iconChar = fileTypeIcons[item.extension?.toLowerCase() || ''] ?? fileTypeIcons.default
 
     return `
       <li class="rounded p-0" role="treeitem">
@@ -74,13 +74,13 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
           <span class="truncate">${item.displayName}</span>
         </a>
       </li>
-    `;
-  };
+    `
+  }
 
   // The returned builder function.
   return (items: VaultMap[]): string => {
-    const explorerStructure = createExplorerStructure(items);
-    const explorerHtml = generateExplorerHTML(explorerStructure);
-    return `<ul id="explorer-list" role="list" class="text-sm p-0">${explorerHtml}</ul>`;
-  };
-};
+    const explorerStructure = createExplorerStructure(items)
+    const explorerHtml = generateExplorerHTML(explorerStructure)
+    return `<ul id="explorer-list" role="list" class="text-sm p-0">${explorerHtml}</ul>`
+  }
+}

@@ -84,13 +84,13 @@ export interface TocItem {
 
 
 export interface ExplorerItem {
-  type: 'directory' | 'file';
-  name: string;
-  path: string;
-  displayName: string;
-  extension: string | null;
-  isActive: boolean;
-  isExpanded: boolean;
-  hasChildren: boolean;
-  children: ExplorerItem[];
+  type: 'directory' | 'file'
+  name: string
+  path: string
+  displayName: string
+  extension: string | null
+  isActive: boolean
+  isExpanded: boolean
+  hasChildren: boolean
+  children: ExplorerItem[]
 }
