@@ -1,8 +1,8 @@
 Priority:
 documentation
+split js loading
 
 Future:
 latex/katex
-font subsetting
 embed alt text/captions
 codeblock copy button

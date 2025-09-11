@@ -8,6 +8,7 @@ import { minify } from "https://esm.sh/html-minifier-terser@7";
 import { config } from "./constants.ts";
 import subsetFont from "./subset-font.ts";
 import { vaultMap } from "./vaultmap.ts";
+import { createExplorerBuilder } from "./build-explorer.ts";
 
 export const nerdFont: Uint8Array = await subsetNerdFont();
 
@@ -45,22 +46,21 @@ export const buildHtmlTemplate = async (): Promise<string> => {
 
   const finalHtml: string = htmlString
     .replace(
-      "<PLACEHOLDER-HEAD/>",
+      "<PLACEHOLDER-HEAD>",
       `<meta name="description" property="og:description" content="${config.description}">
 	  <link rel="stylesheet" href="/!!/photoswipe.css">
 	  <style>${finalCSS}</style>
 	  ${renderWithTwind(htmlString)}
 	  <script>
 		window.config = ${JSON.stringify(config)}
-		const vaultMap = ${JSON.stringify(vaultMap)}
-		const fileTypeIcons = ${JSON.stringify(iconMap)}
 	  </script>`,
     )
     .replace(
-      "<PLACEHOLDER-JS/>",
+      "<PLACEHOLDER-JS>",
       `<script>${transpiledBundle}</script>`,
     )
     .replace("<PLACEHOLDER-TITLE>", config.title)
+    .replace("<PLACEHOLDER-EXPLORER>", createExplorerBuilder(iconMap)(vaultMap.children))
     .replace("\n", config.minify ? "" : "\n");
 
   let outputHtml: string;

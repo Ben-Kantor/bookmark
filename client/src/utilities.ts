@@ -1,17 +1,13 @@
-import { VaultMapDirectory } from '../../server/types.ts'
 import {
 	mainContentEl,
-	explorerList,
 	tocList,
 	toTitleCase,
 	activeIndex,
 } from './constants-client.ts'
 import { wrapImages } from './image.ts'
 import { highlightItem } from './keyboard-nav.ts'
-import { renderExplorer } from './explorer.ts'
+import { updateExplorerState } from './explorer.ts'
 import { generateToc } from './toc.ts'
-
-declare const vaultMap: VaultMapDirectory;
 
 export const navigateTo = async (
   targetURL: string,
@@ -66,15 +62,8 @@ export const navigateTo = async (
     mainContentEl.innerHTML = newMainContentHtml;
   }
 
-  if (explorerList && vaultMap) {
-    explorerList.innerHTML = "";
-    renderExplorer(
-      vaultMap.children,
-      explorerList,
-      "/",
-      decodeURIComponent(path),
-    );
-  }
+  updateExplorerState(decodeURIComponent(path));
+
   if (tocList) {
     tocList.innerHTML = "";
     generateToc();
@@ -87,8 +76,8 @@ export const navigateTo = async (
   updateTitle();
   await wrapImages();
 
-  if (activeIndex === 0 && explorerList) {
-    const newActiveItem = explorerList.querySelector(".active-file-row");
+  if (activeIndex === 0) {
+    const newActiveItem = document.querySelector(".active-file-row");
     if (newActiveItem) highlightItem(newActiveItem as HTMLLIElement);
   }
 };

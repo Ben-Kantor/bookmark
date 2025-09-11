@@ -1,100 +1,246 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="darkreader" content="ignore">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="<PLACEHOLDER-TITLE>">
-    <meta property="og:type" content="website">
-    <meta name="theme-color" content="#692534">
-	<PLACEHOLDER-META/>
-    <link rel="icon" type="image/x-icon" href="/!!/icon-x32.ico">
-    <PLACEHOLDER-HEAD/>
-    
-    <!-- PhotoSwipe Lightbox Module Initilization -->
-    <script defer type="module">import PhotoSwipeLightbox from '/!!/photoswipe-lightbox.esm.min.js'; const lightbox = new PhotoSwipeLightbox({hideAnimationDuration: 0, showAnimationDuration: 0,zoomAnimationDuration: 100,gallery: 'main.content',children: 'a[data-pswp-width]', pswpModule: () => import('/!!/photoswipe.esm.min.js')}); lightbox.init(); globalThis.lightbox = lightbox;</script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="darkreader" content="ignore" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta property="og:title" content="<PLACEHOLDER-TITLE>" />
+		<meta property="og:type" content="website" />
+		<meta name="theme-color" content="#692534" />
+		<PLACEHOLDER-META>
+		<link rel="icon" type="image/x-icon" href="/!!/icon-x32.ico" />
+		<PLACEHOLDER-HEAD>
 
-    <!-- Explorer/Toc State Initilization & Theme Initilization -->
-    <script> const s=[`html.explorer-is-collapsed-initial #explorer,html.toc-is-collapsed-initial #toc-panel{width:0;padding:0;visibility:hidden;overflow:hidden}`],p=(i,k)=>{let c=localStorage.getItem(k+"Collapsed")==="true";if(c)document.documentElement.classList.add(k+"-is-collapsed-initial");else{let w=localStorage.getItem(k+"Width");if(w)s.push(`#${i}{width:${w}px}`)}};p("explorer","explorer"),p("toc-panel","toc");if(s.length){let t=document.createElement("style");t.textContent=s.join(" "),document.head.appendChild(t)}let T=localStorage.getItem("theme");if(!T){T=globalThis.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";localStorage.setItem("theme",T)}document.documentElement.setAttribute("data-theme",T);let H=localStorage.getItem("high-contrast");if(!H){H=globalThis.matchMedia("(prefers-contrast: high)").matches?"true":"false";localStorage.setItem("high-contrast",H)}document.documentElement.setAttribute("data-high-contrast",H) </script>
-</head>
-<body class="h-screen overflow-hidden flex flex-col" style="background: var(--background-primary); color: var(--text-normal);">
-    <div id="page-wrapper" class="flex flex-1 overflow-hidden">
+		<!-- PhotoSwipe Lightbox Module Initilization -->
+		<script defer type="module">
+			import PhotoSwipeLightbox from '/!!/photoswipe-lightbox.esm.min.js'
+			const lightbox = new PhotoSwipeLightbox({
+				hideAnimationDuration: 0,
+				showAnimationDuration: 0,
+				zoomAnimationDuration: 100,
+				gallery: 'main.content',
+				children: 'a[data-pswp-width]',
+				pswpModule: () => import('/!!/photoswipe.esm.min.js'),
+			})
+			lightbox.init()
+			globalThis.lightbox = lightbox
+		</script>
 
-        <!-- Left Column (File Explorer) -->
-        <div id="explorer" role="navigation" aria-label="File Explorer" class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64 overflow-hidden">
-        <div class="banner-container">
-            <div class="banner-html">
-                <img src="/!!/icon-x128.ico" class="logo-img">
-                <span class="logo-text">bookmark</span>
-            </div>
-            <button id="open-palette-button" aria-label="Open command palette">
-                󱁵
-            </button>
-        </div>
-        <div id="explorer-hint" class="rounded p-2 text-xs text-[var(--accent-light)] select-none justify-center flex items-center overflow-hidden no-wrap truncate">
-            Press <span class="font-semibold pl-1 pr-1" style="color: var(--accent-gold);">Alt</span> to open search & commands
-        </div>
-            <div class="flex-1 overflow-y-auto custom-scrollbar">
-                <div>
-                    <ul id="explorer-list" role="list" class="text-sm p-0"></ul>
-                </div>
-            </div>
-        </div>
+		<!-- Explorer/Toc State Initilization & Theme Initilization -->
+		<script>
+			const s = [
+					`html.explorer-is-collapsed-initial #explorer,html.toc-is-collapsed-initial #toc-panel{width:0;padding:0;visibility:hidden;overflow:hidden}`,
+				],
+				p = (i, k) => {
+					let c = localStorage.getItem(k + 'Collapsed') === 'true'
+					if (c)
+						document.documentElement.classList.add(
+							k + '-is-collapsed-initial',
+						)
+					else {
+						let w = localStorage.getItem(k + 'Width')
+						if (w) s.push(`#${i}{width:${w}px}`)
+					}
+				}
+			;(p('explorer', 'explorer'), p('toc-panel', 'toc'))
+			if (s.length) {
+				let t = document.createElement('style')
+				;((t.textContent = s.join(' ')), document.head.appendChild(t))
+			}
+			let T = localStorage.getItem('theme')
+			if (!T) {
+				T =
+					(
+						globalThis.matchMedia('(prefers-color-scheme: light)')
+							.matches
+					) ?
+						'light'
+					:	'dark'
+				localStorage.setItem('theme', T)
+			}
+			document.documentElement.setAttribute('data-theme', T)
+			let H = localStorage.getItem('high-contrast')
+			if (!H) {
+				H =
+					globalThis.matchMedia('(prefers-contrast: high)').matches ?
+						'true'
+					:	'false'
+				localStorage.setItem('high-contrast', H)
+			}
+			document.documentElement.setAttribute('data-high-contrast', H)
+		</script>
+	</head>
+	<body
+		class="h-screen overflow-hidden flex flex-col"
+		style="
+			background: var(--background-primary);
+			color: var(--text-normal);
+		">
+		<div id="page-wrapper" class="flex flex-1 overflow-hidden">
+			<!-- Left Column (File Explorer) -->
+			<div
+				id="explorer"
+				role="navigation"
+				aria-label="File Explorer"
+				class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64 overflow-hidden">
+				<div class="banner-container">
+					<div class="banner-html">
+						<img src="/!!/icon-x128.ico" class="logo-img" />
+						<span class="logo-text">bookmark</span>
+					</div>
+					<button
+						id="open-palette-button"
+						aria-label="Open command palette">
+						󱁵
+					</button>
+				</div>
+				<div
+					id="explorer-hint"
+					class="rounded p-2 text-xs text-[var(--accent-light)] select-none justify-center flex items-center overflow-hidden no-wrap truncate">
+					Press
+					<span
+						class="font-semibold pl-1 pr-1"
+						style="color: var(--accent-gold)"
+						>Alt</span
+					>
+					to open search & commands
+				</div>
+				<div class="flex-1 overflow-y-auto custom-scrollbar">
+					<div><PLACEHOLDER-EXPLORER></div>
+				</div>
+			</div>
 
-        <div id="explorer-handle" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="explorer content-area" aria-label="Resize file explorer panel" class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
-            <div class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
-        </div>
+			<div
+				id="explorer-handle"
+				role="separator"
+				tabindex="0"
+				aria-orientation="vertical"
+				aria-controls="content-area explorer-panel"
+				aria-label="Resize table of contents panel"
+				class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
+				<div
+					class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
+			</div>
 
-        <!-- Center Column (Content Area) -->
-        <div id="content-area-wrapper" class="relative z-10 flex-1 flex flex-col m-4 rounded-lg keyboard-active-column" style="max-width: 100% !important"> 
-            <div id="content-area" class="relative z-10 flex-1 flex flex-col overflow-y-auto custom-scrollbar rounded-lg" style="background: var(--layer-0); max-width: 100%; overflow-x: auto;">
-                <main class="content relative w-full mx-auto flex flex-col flex-1 bg-[var(--layer-0)] overflow-y-auto" style="max-width: 100%;">
-                    $PLACEHOLDER-CONTENT
-                </main>
-            </div>
-        </div>
+			<!-- Center Column (Content Area) -->
+			<div
+				id="content-area-wrapper"
+				class="relative z-10 flex-1 flex flex-col m-4 rounded-lg keyboard-active-column"
+				style="max-width: 100% !important">
+				<div
+					id="content-area"
+					class="relative z-10 flex-1 flex flex-col overflow-y-auto custom-scrollbar rounded-lg"
+					style="
+						background: var(--layer-0);
+						max-width: 100%;
+						overflow-x: auto;
+					">
+					<main
+						class="content relative w-full mx-auto flex flex-col flex-1 bg-[var(--layer-0)] overflow-y-auto"
+						style="max-width: 100%">
+						<PLACEHOLDER-CONTENT>
+					</main>
+				</div>
+			</div>
 
+			<!-- Right Column (Table of Contents) -->
+			<div
+				id="toc-handle"
+				role="separator"
+				tabindex="0"
+				aria-orientation="vertical"
+				aria-controls="content-area toc-panel"
+				aria-label="Resize table of contents panel"
+				class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
+				<div
+					class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
+			</div>
 
-        <!-- Right Column (Table of Contents) -->
-        <div id="toc-handle" role="separator" tabindex="0" aria-orientation="vertical" aria-controls="content-area toc-panel" aria-label="Resize table of contents panel" class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
-            <div class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
-        </div>
+			<div
+				id="toc-panel"
+				role="navigation"
+				aria-label="On this page"
+				class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64">
+				<div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
+					<div
+						class="flex items-center gap-2 px-5 pt-0"
+						style="color: var(--text-bold)">
+						<span
+							style="
+								font-family: 'FiraCode Nerd Font', monospace;
+								font-size: 150%;
+							">
+							󰮫
+						</span>
+						<span class="text-sm font-semibold">On this page</span>
+					</div>
+					<div>
+						<ul id="toc-list" role="tree" class="text-sm"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div id="toc-panel" role="navigation" aria-label="On this page" class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64">
-             <div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
-                <div class="flex items-center gap-2 px-5 pt-0" style="color: var(--text-bold);">
-                     <span style="font-family: 'FiraCode Nerd Font', monospace; font-size: 150%;"> 󰮫 </span>
-                    <span class="text-sm font-semibold">On this page</span>
-                </div>
-                <div>
-                    <ul id="toc-list" role="tree" class="text-sm"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Mobile-Only Header -->
+		<header id="mobile-header" role="banner">
+			<button
+				id="mobile-explorer-button"
+				class="icon mobile-nav-button"
+				aria-label="Toggle file explorer">
+				
+			</button>
+			<div class="mobile-logo-group">
+				<img src="/!!/icon-x128.ico" class="mobile-logo-icon" />
+				<span class="mobile-logo-text">bookmark</span>
+			</div>
+			<div class="mobile-actions-group">
+				<button
+					id="mobile-palette-button"
+					class="icon mobile-nav-button"
+					aria-label="Open command palette">
+					󱁵
+				</button>
+				<button
+					id="mobile-toc-button"
+					class="icon mobile-nav-button"
+					aria-label="Toggle table of contents">
+					󰮫
+				</button>
+			</div>
+		</header>
 
-    <!-- Mobile-Only Header -->
-    <header id="mobile-header" role="banner">
-        <button id="mobile-explorer-button" class="icon mobile-nav-button" aria-label="Toggle file explorer"> </button>
-        <div class="mobile-logo-group">
-            <img src="/!!/icon-x128.ico" class="mobile-logo-icon">
-            <span class="mobile-logo-text">bookmark</span>
-        </div>
-        <div class="mobile-actions-group">
-            <button id="mobile-palette-button" class="icon mobile-nav-button" aria-label="Open command palette"> 󱁵 </button>
-            <button id="mobile-toc-button" class="icon mobile-nav-button" aria-label="Toggle table of contents"> 󰮫 </button>
-        </div>
-    </header>
-
-    <!-- Command Palette -->
-    <div id="command-palette-overlay" class="overlay hidden" style="z-index: 2000;">
-        <div id="command-palette" role="dialog" aria-modal="true" aria-label="Command Palette" class="absolute inset-0 flex items-start justify-center pt-20">
-            <div class="w-full max-w-xl rounded-lg shadow-lg p-4" style="background: var(--layer-1);">
-                <input id="command-palette-input" type="text" placeholder="Type a command or search for a file..." class="w-full bg-transparent focus:outline-none p-2 mb-2" style="border-bottom: 1px solid var(--layer-2); color: var(--on-layer);" aria-controls="command-palette-results" aria-autocomplete="list" />
-                <ul id="command-palette-results" role="listbox" class="max-h-64 overflow-y-auto custom-scrollbar"></ul>
-            </div>
-        </div>
-    </div>
-<PLACEHOLDER-JS/>
-</body>
+		<!-- Command Palette -->
+		<div
+			id="command-palette-overlay"
+			class="overlay hidden"
+			style="z-index: 2000">
+			<div
+				id="command-palette"
+				role="dialog"
+				aria-modal="true"
+				aria-label="Command Palette"
+				class="absolute inset-0 flex items-start justify-center pt-20">
+				<div
+					class="w-full max-w-xl rounded-lg shadow-lg p-4"
+					style="background: var(--layer-1)">
+					<input
+						id="command-palette-input"
+						type="text"
+						placeholder="Type a command or search for a file..."
+						class="w-full bg-transparent focus:outline-none p-2 mb-2"
+						style="
+							border-bottom: 1px solid var(--layer-2);
+							color: var(--on-layer);
+						"
+						aria-controls="command-palette-results"
+						aria-autocomplete="list" />
+					<ul
+						id="command-palette-results"
+						role="listbox"
+						class="max-h-64 overflow-y-auto custom-scrollbar"></ul>
+				</div>
+			</div>
+		</div>
+		<PLACEHOLDER-JS>
+	</body>
 </html>

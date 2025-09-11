@@ -1,10 +1,13 @@
-import { FileTypeIcons, TocItem } from '../../server/types.ts'
+import { TocItem } from '../../server/types.ts'
 
 import { mainContentEl, expandedTocItems } from './constants-client.ts'
 
-declare const fileTypeIcons: FileTypeIcons;
+const headingOpen = '▼'
+const headingClosed = '▶'
+const headingChildless = ''
 
 export const generateToc = (): void => {
+  tocList.innerHTML = "";
   const headings: HTMLHeadingElement[] = Array.from(
     mainContentEl.querySelectorAll<HTMLHeadingElement>(
       ":scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6",
@@ -99,8 +102,8 @@ function renderTocDir(
   li.setAttribute("aria-expanded", String(isExpanded));
 
   const icon: string = isExpanded
-    ? fileTypeIcons["heading-open"]
-    : fileTypeIcons["heading-closed"];
+    ? headingOpen
+    : headingClosed
 
   const button: HTMLButtonElement = document.createElement("button");
   button.className = "flex gap-2 w-full text-left";
@@ -131,8 +134,8 @@ function renderTocDir(
     const iconSpan = button.querySelector(".icon") as HTMLSpanElement | null;
     if (iconSpan) {
       iconSpan.textContent = isNowExpanded
-        ? fileTypeIcons["heading-open"] || ""
-        : fileTypeIcons["heading-closed"] || "";
+        ? headingOpen
+        : headingClosed
     }
   };
 
@@ -154,7 +157,7 @@ function renderTocLeaf(
   li: HTMLLIElement,
   parentEl: HTMLUListElement,
 ): void {
-  const iconChar: string = fileTypeIcons["heading-childless"];
+  const iconChar: string = headingChildless
 
   const anchor: HTMLAnchorElement = document.createElement("a");
   anchor.href = `#${item.id}`;
