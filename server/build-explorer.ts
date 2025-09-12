@@ -54,10 +54,10 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
     }</ul>`
 
     return `
-      <li class="rounded p-0 folder" role="treeitem" aria-expanded="false">
-        <button class="flex gap-2 w-full text-left" style="padding-left: 0" aria-expanded="false" ${item.hasChildren ? `aria-controls="${folderId}"` : ''} data-folder-path="${item.path}">
-          <span class="pl-[0.5em] icon w-6 text-center">${icon || ''}</span>
-          <span class="truncate">${item.name}</span>
+      <li class="explorer-item folder" role="treeitem" aria-expanded="false">
+        <button class="explorer-folder-button" style="padding-left: 0" aria-expanded="false" ${item.hasChildren ? `aria-controls="${folderId}"` : ''} data-folder-path="${item.path}">
+          <span class="item-icon icon">${icon || ''}</span>
+          <span class="item-text">${item.name}</span>
         </button>
         ${childrenHTML}
       </li>
@@ -68,10 +68,10 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
     const iconChar = fileTypeIcons[item.extension?.toLowerCase() || ''] ?? fileTypeIcons.default
 
     return `
-      <li class="rounded p-0" role="treeitem">
-        <a href="${encodeURI(item.path)}" class="flex items-center w-full hover:text-[var(--text-accent)]${iconChar ? ' gap-2' : ''}" style="padding-left: 0">
-          ${iconChar ? `<span class="pl-[0.5em] icon w-6 text-center">${iconChar}</span>` : '&nbsp;&nbsp;'}
-          <span class="truncate">${item.displayName}</span>
+      <li class="explorer-item" role="treeitem">
+        <a href="${encodeURI(item.path)}" class="explorer-file-link${iconChar ? ' has-icon' : ''}" style="padding-left: 0">
+          ${iconChar ? `<span class="item-icon icon">${iconChar}</span>` : '&nbsp;&nbsp;'}
+          <span class="item-text">${item.displayName}</span>
         </a>
       </li>
     `
@@ -81,6 +81,6 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
   return (items: VaultMap[]): string => {
     const explorerStructure = createExplorerStructure(items)
     const explorerHtml = generateExplorerHTML(explorerStructure)
-    return `<ul id="explorer-list" role="list" class="text-sm p-0">${explorerHtml}</ul>`
+    return `<ul id="explorer-list" role="list">${explorerHtml}</ul>`
   }
 }

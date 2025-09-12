@@ -53,7 +53,6 @@ export const buildHtmlTemplate = async (): Promise<string> => {
       `<meta name="description" property="og:description" content="${config.description}">
 	  <link rel="stylesheet" href="/!!/photoswipe.css">
 	  <style>${finalCSS}</style>
-	  ${renderWithTwind(htmlString)}
 	  <script>
 		window.config = ${JSON.stringify(config)}
 	  </script>`,
@@ -97,9 +96,9 @@ export const renderWithTwind = (html: string): string => {
   setup({ sheet, mode: "silent" })
   sheet.reset()
   shim(html)
-  shim(
+/*shim(
     `<div class="rounded gap-2 p-1 items-start hover:text-[var(--text-accent)] font-bold active-file p-2 text-left text-[var(--accent-primary)] text-ellipsis flex items-center pl-[0.2em] icon w-6 text-center truncate expanded pl-[0.5em] block list-item toc-expanded inline-block w-[0.75em] flex-1 whitespace-nowrap overflow-hidden cursor-pointer direction: rtl clickable-header whitespace-pre-wrap break-words"></div>`,
-  )
+    )*/
   const style: string = getStyleTag(sheet)
   return style
 }

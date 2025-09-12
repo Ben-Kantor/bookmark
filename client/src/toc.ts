@@ -73,7 +73,7 @@ function renderTocItems(
 ): void {
   for (const item of items) {
     const li: HTMLLIElement = document.createElement("li")
-    li.className = "rounded p-0"
+    li.className = "toc-item"
     li.setAttribute("role", "treeitem")
 
     item.children.length > 0
@@ -105,11 +105,11 @@ function renderTocDir(
     : headingClosed
 
   const button: HTMLButtonElement = document.createElement("button")
-  button.className = "flex gap-2 w-full text-left"
+  button.className = "toc-folder-button"
   button.style.paddingLeft = "0"
   button.innerHTML =
-    `<span class="pl-[0.5em] icon w-6 text-center">${icon || ""}</span>` +
-    `<span class="truncate">${item.text}</span>`
+    `<span class="item-icon icon">${icon || ""}</span>` +
+    `<span class="item-text">${item.text}</span>`
 
   button.setAttribute("aria-expanded", String(isExpanded))
   button.setAttribute("aria-controls", folderId)
@@ -160,15 +160,13 @@ function renderTocLeaf(
 
   const anchor: HTMLAnchorElement = document.createElement("a")
   anchor.href = `#${item.id}`
-  anchor.className =
-    `flex items-center w-full hover:text-[var(--text-accent)]` +
-    `${iconChar ? " gap-2" : ""}`
+  anchor.className = `toc-link${iconChar ? " has-icon" : ""}`
 
   anchor.style.paddingLeft = "0"
   anchor.innerHTML =
     (iconChar
-      ? `<span class="pl-[0.5em] icon w-6 text-center">${iconChar}</span>`
-      : "&nbsp;&nbsp;") + `<span class="truncate">${item.text}</span>`
+      ? `<span class="item-icon icon">${iconChar}</span>`
+      : "&nbsp;&nbsp;") + `<span class="item-text">${item.text}</span>`
 
   li.appendChild(anchor)
   parentEl.appendChild(li)

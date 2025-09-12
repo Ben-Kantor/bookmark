@@ -1,0 +1,74 @@
+/* ====> print.css <==== */
+@media print {
+	body, html {
+		background: white !important;
+		color: black !important;
+		font-size: 12pt;
+	}
+
+	/* Hide Interactive Elements */
+	#mobile-header, #explorer, #explorer-handle, #toc-panel, #toc-handle, #open-palette-button {
+		display: none !important;
+	}
+	
+	/* Layout Reset for Print */
+	body, #page-wrapper, #content-area-wrapper, #content-area, main.content {
+		display: block !important;
+		width: 100% !important;
+		height: auto !important;
+		overflow: visible !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		box-shadow: none !important;
+		border: none !important;
+		border-radius: 0 !important;
+	}
+	
+	/* Text Color Override */
+	.content *, #content-header h1, #content-header h2 { color: black !important; }
+
+	/* Media Elements */
+	audio, video { display: none !important; }
+	iframe {
+		width: 100vw !important;
+		height: 100vh !important;
+		position: static !important;
+		border: none !important;
+	}
+
+	/* Code Blocks */
+	pre, code {
+		white-space: pre-wrap !important;
+		word-wrap: break-word !important;
+		overflow: visible !important;
+		background: #fdfdfd !important;
+		border: 1px solid #ccc !important;
+		page-break-inside: avoid;
+	}
+
+	/* Links */
+	a[href]:after {
+		content: ' (' attr(href) ')';
+		font-size: 90%;
+		color: #333;
+		display: inline;
+	}
+	
+	a[href^='#']:after, a:has(img):after { content: '' !important; }
+
+	/* Page Break Controls */
+	h1, h2, h3, h4, h5, h6, p, li, pre, code, tr, md-embed { page-break-inside: avoid; }
+	h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
+	p, blockquote { page-break-before: avoid; }
+	p { orphans: 3; widows: 3; }
+	
+	main, main > :last-child, main > :last-child > :last-child {
+		margin-bottom: 0 !important;
+		padding-bottom: 0 !important;
+		page-break-after: auto !important;
+	}
+
+	/* Print-specific Resets */
+	h1::after { display: none !important; }
+	.keyboard-active-column { outline: none !important; }
+}

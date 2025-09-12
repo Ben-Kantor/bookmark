@@ -71,18 +71,16 @@
 		</script>
 	</head>
 	<body
-		class="h-screen overflow-hidden flex flex-col"
 		style="
 			background: var(--background-primary);
 			color: var(--text-normal);
 		">
-		<div id="page-wrapper" class="flex flex-1 overflow-hidden">
+		<div id="page-wrapper">
 			<!-- Left Column (File Explorer) -->
 			<div
 				id="explorer"
 				role="navigation"
-				aria-label="File Explorer"
-				class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64 overflow-hidden">
+				aria-label="File Explorer">
 				<div class="banner-container">
 					<div class="banner-html">
 						<img src="/!!/icon-x128.ico" class="logo-img" />
@@ -94,18 +92,15 @@
 						󱁵
 					</button>
 				</div>
-				<div
-					id="explorer-hint"
-					class="rounded p-2 text-xs text-[var(--accent-light)] select-none justify-center flex items-center overflow-hidden no-wrap truncate">
+				<div id="explorer-hint">
 					Press
 					<span
-						class="font-semibold pl-1 pr-1"
 						style="color: var(--accent-gold)"
 						>Alt</span
 					>
 					to open search & commands
 				</div>
-				<div class="flex-1 overflow-y-auto custom-scrollbar">
+				<div class="flex-1 custom-scrollbar">
 					<div><PLACEHOLDER-EXPLORER></div>
 				</div>
 			</div>
@@ -117,26 +112,25 @@
 				aria-orientation="vertical"
 				aria-controls="content-area explorer-panel"
 				aria-label="Resize table of contents panel"
-				class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
-				<div
-					class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
+				class="handle">
+				<div></div>
 			</div>
 
 			<!-- Center Column (Content Area) -->
 			<div
 				id="content-area-wrapper"
-				class="relative z-10 flex-1 flex flex-col m-4 rounded-lg keyboard-active-column"
+				class="keyboard-active-column"
 				style="max-width: 100% !important">
 				<div
 					id="content-area"
-					class="relative z-10 flex-1 flex flex-col overflow-y-auto custom-scrollbar rounded-lg"
+					class="custom-scrollbar"
 					style="
 						background: var(--layer-0);
 						max-width: 100%;
 						overflow-x: auto;
 					">
 					<main
-						class="content relative w-full mx-auto flex flex-col flex-1 bg-[var(--layer-0)] overflow-y-auto"
+						class="content"
 						style="max-width: 100%">
 						<PLACEHOLDER-CONTENT>
 					</main>
@@ -151,19 +145,17 @@
 				aria-orientation="vertical"
 				aria-controls="content-area toc-panel"
 				aria-label="Resize table of contents panel"
-				class="handle flex-shrink-0 w-1.5 h-full flex items-center justify-center cursor-grab group">
-				<div
-					class="w-px h-8 bg-gray-500 rounded-full group-hover:bg-accent-primary"></div>
+				class="handle">
+				<div></div>
 			</div>
 
 			<div
 				id="toc-panel"
 				role="navigation"
-				aria-label="On this page"
-				class="relative h-full shadow-lg z-20 flex flex-col flex-shrink-0 w-64">
-				<div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
+				aria-label="On this page">
+				<div class="flex-1 custom-scrollbar">
 					<div
-						class="flex items-center gap-2 px-5 pt-0"
+						class="flex items-center"
 						style="color: var(--text-bold)">
 						<span
 							style="
@@ -175,7 +167,7 @@
 						<span class="text-sm font-semibold">On this page</span>
 					</div>
 					<div>
-						<ul id="toc-list" role="tree" class="text-sm"></ul>
+						<ul id="toc-list" role="tree"></ul>
 					</div>
 				</div>
 			</div>
@@ -187,7 +179,7 @@
 				id="mobile-explorer-button"
 				class="icon mobile-nav-button"
 				aria-label="Toggle file explorer">
-				
+
 			</button>
 			<div class="mobile-logo-group">
 				<img src="/!!/icon-x128.ico" class="mobile-logo-icon" />
@@ -218,16 +210,13 @@
 				id="command-palette"
 				role="dialog"
 				aria-modal="true"
-				aria-label="Command Palette"
-				class="absolute inset-0 flex items-start justify-center pt-20">
+				aria-label="Command Palette">
 				<div
-					class="w-full max-w-xl rounded-lg shadow-lg p-4"
 					style="background: var(--layer-1)">
 					<input
 						id="command-palette-input"
 						type="text"
 						placeholder="Type a command or search for a file..."
-						class="w-full bg-transparent focus:outline-none p-2 mb-2"
 						style="
 							border-bottom: 1px solid var(--layer-2);
 							color: var(--on-layer);
@@ -237,7 +226,7 @@
 					<ul
 						id="command-palette-results"
 						role="listbox"
-						class="max-h-64 overflow-y-auto custom-scrollbar"></ul>
+						class="custom-scrollbar"></ul>
 				</div>
 			</div>
 		</div>

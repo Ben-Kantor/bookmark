@@ -156,7 +156,7 @@ const renderContent = async (
 
     case "image":
       return `<div class="relative h-full bg-gray-200">
-<img src="/!/${relativePath}" data-pswp-src="/!/${relativePath}" class="max-w-full h-auto block p-0 lightbox-image">
+<img src="/!/${relativePath}" data-pswp-src="/!/${relativePath}" class="max-w-full h-auto block lightbox-image">
 </div>`
 
     case "literal":
