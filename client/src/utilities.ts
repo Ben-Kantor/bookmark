@@ -20,6 +20,9 @@ export const navigateTo = async (
   const hash = url.hash
 
   if (globalThis.location.pathname === path && !historyNav) {
+    if (!historyNav) {
+      globalThis.history.pushState({}, "", targetURL)
+    }
     requestAnimationFrame(() => {
       scrollToAnchor()
     })
@@ -68,8 +71,11 @@ export const navigateTo = async (
     generateToc()
   }
 
-  globalThis.document.getElementsByTagName("main")[0]?.scrollTo({ top: 0 })
-  scrollToAnchor()
+  if (hash) {
+    scrollToAnchor()
+  } else {
+    globalThis.document.getElementsByTagName("main")[0]?.scrollTo({ top: 0 })
+  }
 
   initHeaderLinks()
   updateTitle()
