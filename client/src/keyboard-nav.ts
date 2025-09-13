@@ -186,8 +186,17 @@ export const handleKeyDown = (e: KeyboardEvent) => {
 			}
 			handled = true
 		} else if (e.key === 'Enter') {
-			if (activeIndex === 0) activeEl?.click()
-			else if (activeIndex === 2 && li)
+			if (activeIndex === 0 && li) {
+				const button = li.querySelector<HTMLButtonElement>('button')
+				if (button) {
+					e.preventDefault()
+					button.click()
+					highlightItem(li)
+				} else {
+					activeEl?.click()
+				}
+				handled = true
+			} else if (activeIndex === 2 && li)
 				li.querySelector<HTMLAnchorElement>('a')?.click()
 			else handled = false
 		} else if (e.key === ' ') {
