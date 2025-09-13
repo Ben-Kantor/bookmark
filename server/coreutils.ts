@@ -1,5 +1,5 @@
-import { contentType } from "https://deno.land/std/media_types/mod.ts"
-import { type ParsedPath } from "https://deno.land/std/path/_interface.ts"
+import { contentType } from "jsr:@std/media-types"
+import { type ParsedPath } from "jsr:@std/path"
 import {
   basename,
   extname,
@@ -7,7 +7,7 @@ import {
   join,
   parse,
   relative,
-} from "https://deno.land/std/path/mod.ts"
+} from "jsr:@std/path"
 
 import {
   absoluteAssetsDir,

@@ -2,9 +2,7 @@
 // Original author: Andreas Lind
 // Original source: https://github.com/papandreou/subset-font
 
-import _ from "https://esm.sh/lodash@4"
-import plimit from "https://esm.sh/p-limit@4"
-import { compress, decompress } from "https://esm.sh/woff2-encoder@1"
+import { compress, decompress } from "npm:woff2-encoder@1"
 
 interface SubsetOptions {
   targetFormat?: "woff2" | "truetype"
@@ -58,17 +56,28 @@ interface HarfbuzzWasm {
   hb_blob_get_length(blob: number): number
 }
 
-const loadAndInitializeHarfbuzz = _.once(async () => {
-  const wasmBuffer = await fetch(
-    "https://cdn.jsdelivr.net/npm/harfbuzzjs@0.4.11/hb-subset.wasm",
-  ).then((res) => res.arrayBuffer())
-  const { instance: { exports: harfbuzzJsWasm } } = await WebAssembly
-    .instantiate(wasmBuffer) as unknown as {
-      instance: { exports: HarfbuzzWasm }
+const loadAndInitializeHarfbuzz = (() => {
+  let promise = null;
+
+  return async () => {
+    if (promise === null) {
+      promise = (async () => {
+        const wasmBuffer = await fetch(
+          "https://cdn.jsdelivr.net/npm/harfbuzzjs@0.4.11/hb-subset.wasm",
+        ).then((res) => res.arrayBuffer());
+
+        const { instance: { exports: harfbuzzJsWasm } } = await WebAssembly
+          .instantiate(wasmBuffer) as unknown as {
+          instance: { exports: HarfbuzzWasm };
+        };
+
+        const heapu8 = new Uint8Array(harfbuzzJsWasm.memory.buffer);
+        return { harfbuzzJsWasm, heapu8 };
+      })();
     }
-  const heapu8 = new Uint8Array(harfbuzzJsWasm.memory.buffer)
-  return { harfbuzzJsWasm, heapu8 }
-})
+    return promise;
+  };
+})();
 
 function HB_TAG(str: string): number {
   return str.split("").reduce(function (a, ch) {
@@ -243,7 +252,17 @@ async function subsetFont(
   }
 }
 
-const limiter = plimit(1)
+const createLimiter = () => {
+  let promiseChain = Promise.resolve();
+
+  return (fn) => {
+    const result = promiseChain.then(() => fn());
+    promiseChain = result.catch(() => {});
+    return result;
+  };
+};
+
+const limiter = createLimiter();
 
 export default (...args: [Uint8Array, string, SubsetOptions?]) =>
   limiter(() => subsetFont(...args))

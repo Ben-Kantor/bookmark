@@ -1,6 +1,6 @@
 import { yellow } from "jsr:@std/fmt/colors"
 import { config, contentDir } from "./constants.ts"
-import { globToRegExp } from "https://deno.land/std/path/glob_to_regexp.ts"
+import { globToRegExp } from "jsr:@std/path"
 import { fileRequestInfo } from "./types.ts"
 
 export const escapeHTML = (str: string): string => {
@@ -13,12 +13,12 @@ export const escapeHTML = (str: string): string => {
 
 export const formatBytes = (bytes: number): string => {
 	if (bytes === 0) return '0 Bytes'
-	
+
 	const k = 1024
 	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 	const i = Math.floor(Math.log(bytes) / Math.log(k))
 	const value = bytes / Math.pow(k, i)
-	
+
 	if (value < 10) return value.toPrecision(3) + ' ' + sizes[i]
 	if (value < 100) return value.toPrecision(3) + ' ' + sizes[i]
 	return Math.round(value) + ' ' + sizes[i]

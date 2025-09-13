@@ -1,5 +1,58 @@
 /* ====> content.css <==== */
-/* Text Styling */
+
+/* Text and Heading Reset Styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0;
+}
+
+a {
+	color: inherit;
+	-webkit-text-decoration: inherit;
+	text-decoration: inherit;
+}
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+sup {
+	top: -0.5em;
+}
+
+p,
+blockquote,
+dl,
+dd,
+figure,
+pre,
+fieldset {
+	margin: 0;
+}
+
+abbr[title] {
+	-webkit-text-decoration: underline dotted;
+	text-decoration: underline dotted;
+}
 .content p {
 	margin-bottom: 0.75em;
 	line-height: 1.5;
@@ -95,6 +148,9 @@ hr {
 	color: var(--accent-light);
 	cursor: pointer;
 }
+.copied {
+	animation: flash-highlight 0.2s ease-in-out;
+}
 
 /* Lists */
 .content ul,
@@ -117,6 +173,7 @@ hr {
 .content ul {
 	list-style-type: disc;
 }
+
 .content ol {
 	list-style-type: decimal;
 }
@@ -141,7 +198,7 @@ hr {
 	text-align: left;
 }
 
-/* Table row striping */
+/* Zebra striping */
 .content table tbody tr:nth-child(odd) {
 	background: color-mix(in srgb, var(--layer-1) 75%, var(--layer-0));
 }
@@ -149,6 +206,7 @@ hr {
 	background: color-mix(in srgb, var(--layer-0) 85%, var(--layer-1));
 }
 
+/* Header row highlight */
 .content table thead tr {
 	background: color-mix(in srgb, var(--accent-primary) 15%, var(--layer-1));
 }
@@ -181,12 +239,15 @@ pre:not(code) {
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
+
 	width: 1.1em;
 	height: 1.1em;
 	border: 2px solid var(--text-normal);
 	border-radius: 3px;
 	margin-right: 0.4em;
+	cursor: not-allowed;
 	vertical-align: middle;
+
 	position: relative;
 }
 
@@ -203,6 +264,7 @@ pre:not(code) {
 	color: var(--background-primary);
 	font-size: 0.9em;
 	font-weight: bold;
+
 	position: absolute;
 	top: -15%;
 	left: 0%;

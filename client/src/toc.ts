@@ -108,11 +108,12 @@ function renderTocDir(
   button.className = "toc-folder-button"
   button.style.paddingLeft = "0"
   button.innerHTML =
-    `<span class="item-icon icon">${icon || ""}</span>` +
+    `<span class="item-icon icon" aria-hidden="true">${icon || ""}</span>` +
     `<span class="item-text">${item.text}</span>`
 
   button.setAttribute("aria-expanded", String(isExpanded))
   button.setAttribute("aria-controls", folderId)
+  button.setAttribute("aria-label", `${item.text} section, ${isExpanded ? 'expanded' : 'collapsed'}`)
 
   button.onclick = (e: MouseEvent) => {
     e.preventDefault()
@@ -165,8 +166,10 @@ function renderTocLeaf(
   anchor.style.paddingLeft = "0"
   anchor.innerHTML =
     (iconChar
-      ? `<span class="item-icon icon">${iconChar}</span>`
-      : "&nbsp;&nbsp;") + `<span class="item-text">${item.text}</span>`
+      ? `<span class="item-icon icon" aria-hidden="true">${iconChar}</span>`
+      : '<span aria-hidden="true">&nbsp;&nbsp;</span>') + `<span class="item-text">${item.text}</span>`
+
+  anchor.setAttribute("aria-label", `Go to ${item.text}`)
 
   li.appendChild(anchor)
   parentEl.appendChild(li)

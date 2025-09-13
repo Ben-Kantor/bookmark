@@ -1,9 +1,9 @@
-import { contentType } from "https://deno.land/std/media_types/mod.ts"
+import { contentType } from "jsr:@std/media-types"
 import {
   basename,
   extname,
   normalize,
-} from "https://deno.land/std/path/mod.ts"
+} from "jsr:@std/path"
 
 import { htmlTemplate, nerdFont } from "./build.ts"
 import { PORT } from "./constants.ts"

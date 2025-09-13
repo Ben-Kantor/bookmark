@@ -12,8 +12,6 @@ import {
 
 import { downloadFile, navigateTo } from './utilities.ts'
 
-declare const vaultMap: import('../../server/types.ts').VaultMapDirectory
-
 type PaletteItem =
 	| { label: string; type: 'command'; run: () => void }
 	| { label: string; type: 'file'; path: string }
@@ -42,7 +40,7 @@ export const closeCommandPalette = (): void  => {
 export const updatePaletteResults = (query: string): void  => {
 	const lower: string = query.toLowerCase()
 
-	const fileMatches: PaletteItem[] = searchFiles(lower, vaultMap.children)
+	const fileMatches: PaletteItem[] = searchFilesFromDOM(lower)
 
 	const commandMatches: PaletteItem[] = commands
 		.filter(
@@ -76,6 +74,7 @@ export const renderPaletteResults = (): void  => {
 		if (item.type === 'command') classNames += ' palette-command'
 
 		li.className = classNames
+		li.setAttribute('aria-label', `${item.type === 'command' ? 'Command' : 'File'}: ${item.label}`)
 		li.innerHTML = [...item.label].reverse().join('')
 
 		li.addEventListener('click', () => executePaletteItem(item))
@@ -95,41 +94,40 @@ export const executePaletteItem = (item: PaletteItem): void  => {
 	else navigateTo(item.path)
 }
 
-export function searchFiles(
-	lowerQuery: string,
-	items: import('../../server/types.ts').VaultMap[],
-	pathPrefix: string = '/'
-): PaletteItem[] {
-	return items.flatMap(item => {
-		if (item.dir && !item.name.startsWith('.')) {
-			const prefix: string = pathPrefix.endsWith('/')
-				? pathPrefix + item.name
-				: pathPrefix + '/' + item.name
+export function searchFilesFromDOM(lowerQuery: string): PaletteItem[] {
+	const explorerList = document.getElementById('explorer-list')
+	if (!explorerList) return []
 
-			return searchFiles(lowerQuery, item.children, prefix)
+	const results: PaletteItem[] = []
+
+	// Search through all file links in the explorer, including those in collapsed folders
+	const fileLinks = explorerList.querySelectorAll('a.explorer-file-link')
+
+	fileLinks.forEach((link) => {
+		const href = (link as HTMLAnchorElement).href
+		if (!href) return
+
+		// Extract the path from the href (remove domain/protocol)
+		const url = new URL(href)
+		const filePath = decodeURI(url.pathname)
+
+		// Get the filename from the path
+		const filename = filePath.split('/').pop() || ''
+
+		// Check if filename matches query
+		if (filename.toLowerCase().includes(lowerQuery)) {
+			results.push({
+				label: filePath,
+				type: 'file',
+				path: encodeURI(filePath),
+			})
 		}
-
-		if (
-			!item.dir &&
-			!item.name.startsWith('.') &&
-			item.name.toLowerCase().includes(lowerQuery)
-		) {
-			const filePath: string = pathPrefix.endsWith('/')
-				? pathPrefix + item.name
-				: pathPrefix + '/' + item.name
-
-			return [
-				{
-					label: filePath,
-					type: 'file',
-					path: encodeURI(filePath),
-				},
-			]
-		}
-
-		return []
 	})
+
+	return results
 }
+
+
 
 export const commands: Command[] = [
 	{

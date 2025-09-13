@@ -3,14 +3,15 @@ import { markedSmartypantsLite } from 'npm:marked-smartypants-lite'
 import { markedHighlight } from 'npm:marked-highlight'
 import markedFootnote from 'npm:marked-footnote'
 import hljs from 'npm:highlight.js'
-import { basename, dirname, extname, join } from 'https://deno.land/std/path/mod.ts'
+import * as sanitizeHtml from 'npm:sanitize-html'
+import { yellow } from 'jsr:@std/fmt/colors'
+import { basename, dirname, extname, join } from 'jsr:@std/path'
+
 import { findFilePath, vaultMap } from './vaultmap.ts'
 import { fileExists, replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
 import * as types from './types.ts'
 import { config } from './constants.ts'
 import { processEmbed } from './embed-processor.ts'
-import { yellow } from 'jsr:@std/fmt/colors'
-import * as sanitizeHtml from 'npm:sanitize-html'
 
 export const renderMarkdown = async (
 	markdown: string,
@@ -95,7 +96,7 @@ export const renderMarkdown = async (
 
 	// Process code blocks with syntax highlighting
 	processedMarkdown = processedMarkdown.replace(
-		/```[\s\S]+?```/g, 
+		/```[\s\S]+?```/g,
 		(match) => escapeBrackets(match)
 	)
 	processedMarkdown = processedMarkdown.replace(

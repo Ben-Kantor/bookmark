@@ -1,4 +1,4 @@
-/* ====> theme.css <==== */
+/* theme.css */
 @font-face {
 	font-family: 'FiraCode Nerd Font';
 	src: url('/nerdFont.woff2') format('woff2');
@@ -13,7 +13,6 @@
 	--font-icons: 'FiraCode Nerd Font', monospace;
 	--font-body: 'FiraCode Nerd Font', monospace;
 
-	/* Dark Theme */
 	--background-primary: #121212;
 	--layer-0: #1c1c1c;
 	--layer-1: #242424;
@@ -28,7 +27,6 @@
 	--text-italic: #f3b7c1;
 	--active-interactable: var(--layer-2);
 
-	/* Code Colors */
 	--code-bg: var(--layer-1);
 	--code-text: var(--text-normal);
 	--code-comment: #777777;
@@ -54,10 +52,12 @@
 	--text-accent: var(--accent-light);
 	--text-bold: var(--accent-gold);
 	--text-italic: #907aa9;
+	--active-interactable: var(--layer-2);
 
 	--code-bg: var(--layer-1);
 	--code-text: var(--text-normal);
 	--code-comment: #8a8a8a;
+	--code-keyword: var(--accent-gold);
 	--code-string: var(--accent-light);
 	--code-function: var(--accent-primary);
 	--code-number: #d19a66;
@@ -79,6 +79,7 @@
 	--text-accent: var(--accent-gold);
 	--text-bold: var(--accent-gold);
 	--text-italic: #00ffff;
+	--active-interactable: var(--layer-2);
 
 	--code-bg: #111111;
 	--code-text: #ffffff;
@@ -105,6 +106,7 @@
 	--text-accent: var(--accent-primary);
 	--text-bold: var(--accent-gold);
 	--text-italic: #00ffbf;
+	--active-interactable: var(--layer-2);
 
 	--code-bg: #f5f5f5;
 	--code-text: #000000;

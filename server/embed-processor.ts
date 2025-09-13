@@ -3,7 +3,7 @@ import {
   dirname,
   extname,
   join,
-} from "https://deno.land/std/path/mod.ts";
+} from "jsr:@std/path";
 
 import { config } from "./constants.ts";
 import { loadFileToHTML } from "./coreutils.ts";

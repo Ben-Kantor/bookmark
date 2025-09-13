@@ -1,4 +1,4 @@
-/* ====> print.css <==== */
+/* print.css */
 @media print {
 	body,
 	html {
@@ -7,17 +7,13 @@
 		font-size: 12pt;
 	}
 
-	/* Hide Interactive Elements */
 	#mobile-header,
-	#explorer,
-	#explorer-handle,
-	#toc-panel,
-	#toc-handle,
-	#open-palette-button {
+    #explorer, #explorer-handle, 
+    #toc-panel, #toc-handle,
+    #open-palette-button {
 		display: none !important;
 	}
-
-	/* Layout Reset for Print */
+    
 	body,
 	#page-wrapper,
 	#content-area-wrapper,
@@ -33,19 +29,37 @@
 		border: none !important;
 		border-radius: 0 !important;
 	}
-
-	/* Text Color Override */
+	
 	.content *,
 	#content-header h1,
 	#content-header h2 {
 		color: black !important;
 	}
 
-	/* Media Elements */
+	md-embed {
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+		margin: 0 0 1em 0 !important;
+		width: 100% !important;
+		page-break-inside: avoid;
+	}
+	
+	md-embed[title]:not([title=''])::before {
+		display: none !important;
+	}
+
+	md-embed img,
+	md-embed video {
+		max-width: 100% !important;
+		height: auto !important;
+	}
+
 	audio,
 	video {
 		display: none !important;
 	}
+
 	iframe {
 		width: 100vw !important;
 		height: 100vh !important;
@@ -53,7 +67,6 @@
 		border: none !important;
 	}
 
-	/* Code Blocks */
 	pre,
 	code {
 		white-space: pre-wrap !important;
@@ -64,49 +77,28 @@
 		page-break-inside: avoid;
 	}
 
-	/* Links */
 	a[href]:after {
 		content: ' (' attr(href) ')';
 		font-size: 90%;
 		color: #333;
 		display: inline;
 	}
-
+	
 	a[href^='#']:after,
 	a:has(img):after {
 		content: '' !important;
 	}
+	main {
+		padding: 0 !important;
+	}
 
-	/* Page Break Controls */
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6,
-	p,
-	li,
-	pre,
-	code,
-	tr,
+	.keyboard-active-column {
+		outline: none !important;
+	}
+
 	md-embed {
-		page-break-inside: avoid;
-	}
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		page-break-after: avoid;
-	}
-	p,
-	blockquote {
-		page-break-before: avoid;
-	}
-	p {
-		orphans: 3;
-		widows: 3;
+		border: none !important;
+		box-shadow: none !important;
 	}
 
 	main,
@@ -117,11 +109,33 @@
 		page-break-after: auto !important;
 	}
 
-	/* Print-specific Resets */
-	h1::after {
-		display: none !important;
+    h1, h2, h3, h4, h5, h6, p, li,
+    pre, code, tr,
+    md-embed {
+        page-break-inside: avoid;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+
+    p, blockquote {
+        page-break-before: avoid;
+    }
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+    h1::after {
+        display: none !important;
+    }
+    #content-area-wrapper,
+	#content-area {
+		box-shadow: none !important;
+        border: none !important;
 	}
 	.keyboard-active-column {
 		outline: none !important;
 	}
 }
+

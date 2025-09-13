@@ -12,7 +12,7 @@ Avoid nesting beyond three levels of indentation where possible to prevent compl
 
 ## Syntax Preferences
 
-Eliminate semicolons and braces wherever the language permits. Use `const` for all function definitions to emphasize immutability.
+Eliminate semicolons and braces where possible in typescript. Use `const` for all function definitions to emphasize immutability.
 
 Skip brackets in single-statement code blocks. Pad inline square and curly brackets but not parantheses with spaces for improved readability.
 
@@ -44,7 +44,7 @@ Maintain existing code flow and methods unless modifications are specifically ju
 
 ## Imports and Dependencies
 
-Prioritize deno.land module imports, followed by esm.sh as secondary preference. This ensures compatibility with Deno's ecosystem and reduces external dependencies.
+Prioritize jsr: module imports, followed by npm: as secondary preference. This ensures compatibility with Deno's ecosystem and reduces external dependencies.
 
 ## Spacing Conventions
 

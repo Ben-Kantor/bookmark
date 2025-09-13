@@ -1,4 +1,4 @@
-import { resolve } from "https://deno.land/std/path/resolve.ts"
+import { resolve } from "jsr:@std/path"
 
 import { SiteConfig } from "./types.ts"
 

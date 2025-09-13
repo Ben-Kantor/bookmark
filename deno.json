@@ -4,10 +4,17 @@
 		"start": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
 		"update": "git stash && git pull --rebase && git stash pop && deno update"
 	},
-	"compilerOptions": {
-		"lib": ["dom", "deno.ns"]
-	},
 	"lint": {
-		"exclude": ["./assets/"]
+		"exclude": ["./assets/", "./content/"]
+	},
+	"fmt": {
+		"useTabs": false,
+		"lineWidth": 100,
+		"indentWidth": 4,
+		"semiColons": false,
+		"singleQuote": true,
+		"proseWrap": "preserve",
+		"useBraces": "preferNone",
+		"operatorPosition": "maintain"
 	}
 }
