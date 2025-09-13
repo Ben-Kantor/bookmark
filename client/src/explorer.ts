@@ -30,8 +30,32 @@ export const updateExplorerState = (activePath: string) => {
     }
   })
 
-  // Set new active file
-  const newActiveLink = document.querySelector(`a[href="${encodeURI(activePath)}"]`) as HTMLElement
+  // Set new active file - try multiple path formats to ensure matching
+  let newActiveLink = document.querySelector(`a[href="${encodeURI(activePath)}"]`) as HTMLElement
+
+  // If not found, try without encoding
+  if (!newActiveLink) {
+    newActiveLink = document.querySelector(`a[href="${activePath}"]`) as HTMLElement
+  }
+
+  // If still not found, try with .md extension removed
+  if (!newActiveLink && activePath.endsWith('.md')) {
+    const pathWithoutMd = activePath.replace(/\.md$/, '')
+    newActiveLink = document.querySelector(`a[href="${encodeURI(pathWithoutMd)}"]`) as HTMLElement
+    if (!newActiveLink) {
+      newActiveLink = document.querySelector(`a[href="${pathWithoutMd}"]`) as HTMLElement
+    }
+  }
+
+  // If still not found, try adding .md extension
+  if (!newActiveLink && !activePath.endsWith('.md')) {
+    const pathWithMd = activePath + '.md'
+    newActiveLink = document.querySelector(`a[href="${encodeURI(pathWithMd)}"]`) as HTMLElement
+    if (!newActiveLink) {
+      newActiveLink = document.querySelector(`a[href="${pathWithMd}"]`) as HTMLElement
+    }
+  }
+
   if (newActiveLink) {
     const parentLi = newActiveLink.parentElement
     if (parentLi) {
@@ -184,9 +208,7 @@ export function initResizablePanel(
 
 export const initExplorer = () => {
     const explorerList = document.getElementById('explorer-list') as HTMLUListElement
-    if (explorerList) {
-        setupExplorerEventDelegation(explorerList)
-        initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
-        updateExplorerState(decodeURIComponent(window.location.pathname))
-    }
+    updateExplorerState(decodeURIComponent(window.location.pathname))
+    setupExplorerEventDelegation(explorerList)
+    initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
 }

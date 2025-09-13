@@ -20,7 +20,6 @@ export const navigateTo = async (
   const hash = url.hash
 
   if (globalThis.location.pathname === path && !historyNav) {
-    // If same path, non-history nav, only scroll to hash.
     requestAnimationFrame(() => {
       scrollToAnchor()
     })

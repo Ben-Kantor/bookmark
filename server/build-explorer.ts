@@ -10,12 +10,24 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
     items: VaultMap[],
     pathPrefix = '/',
   ): ExplorerItem[] => {
-    return items
-      .filter((item) => !item.name.startsWith('.'))
-      .sort((a, b) => {
-        if (a.dir !== b.dir) return a.dir ? -1 : 1
-        return a.name.localeCompare(b.name)
-      })
+    const filtered = items.filter((item) => !item.name.startsWith('.'))
+
+    // Separate directories and files
+    const dirs = filtered.filter(item => item.dir)
+    const files = filtered.filter(item => !item.dir)
+
+    // Sort each group: capital letters first, then natural numeric sort
+    const sortGroup = (group: VaultMap[]) => {
+      const capital = group.filter(item => item.name.charAt(0).toUpperCase() === item.name.charAt(0) && item.name.charAt(0).toLowerCase() !== item.name.charAt(0))
+      const lowercase = group.filter(item => !(item.name.charAt(0).toUpperCase() === item.name.charAt(0) && item.name.charAt(0).toLowerCase() !== item.name.charAt(0)))
+
+      capital.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+      lowercase.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }))
+
+      return [...capital, ...lowercase]
+    }
+
+    return [...sortGroup(dirs), ...sortGroup(files)]
       .map((item) => {
         const currentPath = `${pathPrefix}${item.name}${item.dir ? '/' : ''}`
 

@@ -32,6 +32,8 @@ Define explicit types for all variables and function parameters. Completely avoi
 
 All functions must declare return types explicitly to maintain type safety and code documentation.
 
+Edge cases where a key html element is not found can be ignored, so assuring their presesence with a ! in the definitions is reccomended.
+
 ## Comments and Documentation
 
 Reserve comments exclusively for non-self-explanatory code sections. Well-written code should communicate intent through clear naming and structure rather than extensive commentary.
