@@ -13,18 +13,18 @@ const logTask = async <T>(taskName: string, promise: Promise<T>): Promise<T> => 
 	try {
 		const result = await promise
 		const elapsedTime = (performance.now() - buildStartTime).toFixed(2)
-		console.log(`✅ T+${elapsedTime}ms: ${taskName}`)
+		console.log(`✅ ${elapsedTime}ms: Finished ${taskName}`)
 		return result
 	} catch (error) {
 		const elapsedTime = (performance.now() - buildStartTime).toFixed(2)
-		console.error(`❌ T+${elapsedTime}ms: ${taskName}`)
+		console.error(`❌ ${elapsedTime}ms: ${taskName}`)
 		throw error
 	}
 }
 
 const tasks = {
 	bundle: logTask(
-		'Bundling client code',
+		'bundle client code',
 		Deno.bundle({
 			entrypoints: ['./client/src/init-client.ts'],
 			minify: CONFIG.MINIFY,
@@ -36,7 +36,7 @@ const tasks = {
 	),
 
 	font: logTask(
-		'Subsetting Nerd Font',
+		'subset Nerd Font',
 		Promise.all([
 			Deno.readTextFile('assets/charList.txt'),
 			fetch(
@@ -49,16 +49,16 @@ const tasks = {
 	),
 
 	css: logTask(
-		'Concatenating CSS',
+		'concatenate CSS',
 		Promise.all(
 			[...Deno.readDirSync('./client/styles')]
 				.map(({ name }) => Deno.readTextFile(join('./client/styles', name))),
 		).then((contents) => '\n' + contents.join('\n')),
 	),
 
-	html: logTask('Reading HTML template', Deno.readTextFile('./client/client.html')),
+	html: logTask('read HTML template', Deno.readTextFile('./client/client.html')),
 	iconMap: logTask(
-		'Parsing icon map',
+		'parse icon map',
 		Deno.readTextFile('./assets/iconMap.json').then(JSON.parse),
 	),
 }
@@ -94,7 +94,7 @@ const buildHtmlTemplate = async (): Promise<string> => {
 
 	return CONFIG.MINIFY
 		? logTask(
-			'Minifying final HTML',
+			'minify final HTML',
 			minify(finalHtml, {
 				collapseWhitespace: true,
 				removeComments: true,
@@ -107,4 +107,5 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		: finalHtml
 }
 
-export const htmlTemplate = await logTask('Building final HTML template', buildHtmlTemplate())
+export const htmlTemplate = await buildHtmlTemplate()
+export const nerdFont = await tasks.font
