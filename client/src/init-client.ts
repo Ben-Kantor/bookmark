@@ -4,7 +4,6 @@ import {
   paletteResults,
   paletteSelectedIndex,
   setPaletteSelectedIndex,
-  tocList,
 } from './constants-client.ts'
 
 import { initKeyboardNav } from './keyboard-nav.ts'

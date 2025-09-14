@@ -199,7 +199,7 @@ export const checkLineWrapping = (embeddedHTML: string): boolean => {
   return overflowCharacters > textContent.length / 4
 }
 
-export const hideEmptyHeaders = () => {
+export const hideEmptyHeaders = (): void => {
   const tables = document.querySelectorAll(".content table")
   tables.forEach((table) => {
     const header = table.querySelector("thead")

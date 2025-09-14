@@ -13,13 +13,11 @@ import * as types from './types.ts'
 import { config } from './constants.ts'
 import { processEmbed } from './embed-processor.ts'
 
-export const renderMarkdown = async (
+const preprocessMarkdown = (
 	markdown: string,
 	currentPath: string,
-	noEmbeds?: boolean,
 	addTitle?: boolean
-): Promise<string> => {
-	if(!markdown) return ''
+): string => {
 	if (addTitle && !markdown.startsWith('# ')) {
 		markdown = `# ${toTitleCase(basename(currentPath))}\n\n${markdown}`
 	}
@@ -30,33 +28,41 @@ export const renderMarkdown = async (
 	}
 	markdown = replaceUnicode(markdown)
 	markdown = markdown.replace(/<br>/g, '\n')
+	return markdown
+}
 
+const processEmbedsAndCode = async (
+	markdown: string,
+	currentPath: string,
+	noEmbeds?: boolean
+): Promise<{
+	processedMarkdown: string
+	resolvedEmbeds: { placeholder: string; content: string }[]
+}> => {
 	// Store code blocks and inline code with placeholders BEFORE processing embeds
 	const codeElements: { placeholder: string; content: string }[] = []
 	let codeCounter = 0
 
-	// Replace code blocks first
-	markdown = markdown.replace(/```[\s\S]+?```/g, (match) => {
+	// Replace code blocks
+	let processedMarkdown = markdown.replace(/```[\s\S]+?```/g, (match) => {
 		const placeholder = `__CODE_BLOCK_${codeCounter++}__`
 		codeElements.push({ placeholder, content: match })
 		return placeholder
 	})
 
 	// Replace inline code
-	markdown = markdown.replace(/`[^`\n]+`/g, (match) => {
+	processedMarkdown = processedMarkdown.replace(/`[^`\n]+`/g, (match) => {
 		const placeholder = `__INLINE_CODE_${codeCounter++}__`
 		codeElements.push({ placeholder, content: match })
 		return placeholder
 	})
 
-	// Now process embeds (code elements are safely placeholder-ed)
 	const embedPromises: Promise<{ placeholder: string; content: string }>[] = []
 	const embedPlaceholders: string[] = []
-	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[(?!\^)([^\]]+)\](?:\(([^\)]+)\))?)/g
+	const embedRegex = /(!)?(?:\[\[([^\]]+)\]\]|\[(?!^)([^\]]+)\](?:\(([^\)]+)\))?)/g
 	let match
-	let processedMarkdown = markdown
 
-	while ((match = embedRegex.exec(markdown)) !== null) {
+	while ((match = embedRegex.exec(processedMarkdown)) !== null) {
 		const [
 			raw,
 			linkPrefix,
@@ -94,14 +100,26 @@ export const renderMarkdown = async (
 		processedMarkdown = processedMarkdown.replace(placeholder, content)
 	}
 
+	const resolvedEmbeds = await Promise.all(embedPromises)
+
+	return { processedMarkdown, resolvedEmbeds }
+}
+
+const finalizeMarkdown = (
+	markdown: string,
+	currentPath: string,
+	resolvedEmbeds: { placeholder: string; content: string }[]
+): string => {
 	// Process code blocks with syntax highlighting
-	processedMarkdown = processedMarkdown.replace(
+	let processedMarkdown = markdown.replace(
 		/```[\s\S]+?```/g,
 		(match) => escapeBrackets(match)
 	)
 	processedMarkdown = processedMarkdown.replace(
-		/\`\`\`([^\n\\]+)([\n\\][^\`]+)\`\`\`/gm,
+		/\`\`\`([^\n\\]+)([\n\\][^\\]+)\\\`\\]/gm,
 		(_match, lang, code) => {
+		    if(lang.startsWith("#!")) //handle shebang
+				lang = lang.slice(2).split(/[\/\\]/gm).pop().replace(/^env\s/, '').replace(/\-\-?[^\s]+/, '').split(' ')[0]
 			if (hljs.getLanguage(lang)) {
 				return '```' + lang + '\n' + code.trim() + '\n```'
 			} else if (lang) {
@@ -114,7 +132,6 @@ export const renderMarkdown = async (
 		}
 	)
 
-	const resolvedEmbeds = await Promise.all(embedPromises)
 	const markedInstance = new Marked()
 	markedInstance
 	.use(markedSmartypantsLite())
@@ -142,7 +159,7 @@ export const renderMarkdown = async (
 				} catch {
 					return hljs.highlight(code, { language: 'plaintext' }).value
 				}
-			},
+			}
 		})
 	).setOptions({
 		gfm: true,
@@ -156,10 +173,39 @@ export const renderMarkdown = async (
 		result = result.replace(placeholder, content)
 	}
 
-	const finalResult =result
+	const finalResult = result
 		.replace(/\\(?:<[^>]+>)*([\[\]])/g,(_, bracket) => bracket) //unescape brackets
-		.replace(/\\\`/gm,"`") //unescape backticks
+		.replace(/\\\`/gm,"`")
 	if(config.sanitize) return sanitizeHtml(finalResult)
+	return finalResult
+}
+
+export const renderMarkdown = async (
+	markdown: string,
+	currentPath: string,
+	noEmbeds?: boolean,
+	addTitle?: boolean
+): Promise<string> => {
+	if (!markdown) return ''
+
+	const preprocessedMarkdown = preprocessMarkdown(
+		markdown,
+		currentPath,
+		addTitle
+	)
+
+	const { processedMarkdown, resolvedEmbeds } = await processEmbedsAndCode(
+		preprocessedMarkdown,
+		currentPath,
+		noEmbeds
+	)
+
+	const finalResult = finalizeMarkdown(
+		processedMarkdown,
+		currentPath,
+		resolvedEmbeds
+	)
+
 	return finalResult
 }
 export const createCustomLinksExtension = (

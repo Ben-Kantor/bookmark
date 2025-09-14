@@ -4,7 +4,7 @@ import {
   FOLDER_OPEN_ICON,
 } from './constants-client.ts'
 
-export const updateExplorerState = (activePath: string) => {
+export const updateExplorerState = (activePath: string): void => {
   // Reset currently active file
   const currentActiveFile = document.querySelector('.active-file-row')
   if (currentActiveFile) {
@@ -83,8 +83,8 @@ export const updateExplorerState = (activePath: string) => {
   }
 }
 
-const setupExplorerEventDelegation = (parentEl: HTMLUListElement): void => {
-  parentEl.addEventListener('click', (e: MouseEvent) => {
+const setupExplorerEventDelegation = (explorerList: HTMLUListElement): void => {
+  explorerList.addEventListener('click', (e: MouseEvent) => {
     const button = (e.target as Element).closest(
       'button[data-folder-path]',
     ) as HTMLButtonElement
@@ -206,9 +206,9 @@ export function initResizablePanel(
   handle.addEventListener('mousedown', startResize)
 }
 
-export const initExplorer = () => {
+export const initExplorer = (): void => {
     const explorerList = document.getElementById('explorer-list') as HTMLUListElement
-    updateExplorerState(decodeURIComponent(window.location.pathname))
+    updateExplorerState(decodeURIComponent(globalThis.location.pathname))
     setupExplorerEventDelegation(explorerList)
     initResizablePanel('explorer', 'explorer-handle', 'explorer', 'left')
 }

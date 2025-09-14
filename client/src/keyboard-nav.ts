@@ -9,7 +9,7 @@ import {
 	setCols,
 } from './constants-client.ts'
 
-export const highlightItem = (item: HTMLLIElement | null) => {
+export const highlightItem = (item: HTMLLIElement | null): void => {
 	if (lastFocusedItem) {
 		lastFocusedItem.querySelector('.keyboard-focus')?.classList.remove('keyboard-focus')
 	}
@@ -85,7 +85,7 @@ export const setActive = (
 	else newCol.focus({ preventScroll: true })
 }
 
-export const initPanelFocus = () => {
+export const initPanelFocus = (): void => {
 	if (activeIndex === 0) {
 		const li =
 			cols[0]?.querySelector<HTMLLIElement>('.active-file-row') ||
@@ -101,7 +101,7 @@ export const initPanelFocus = () => {
 	}
 }
 
-const navigatePanel = (dir: 'up' | 'down') => {
+const navigatePanel = (dir: 'up' | 'down'): void => {
 	if (activeIndex === 1) return
 
 	const panel = cols[activeIndex] as HTMLElement
@@ -126,7 +126,7 @@ const navigatePanel = (dir: 'up' | 'down') => {
 	highlightItem(items[ni])
 }
 
-export const handleKeyDown = (e: KeyboardEvent) => {
+export const handleKeyDown = (e: KeyboardEvent): void => {
 	const t = e.target as HTMLElement
 	if (
 		/INPUT|TEXTAREA/.test(t.tagName) ||
@@ -220,7 +220,7 @@ export const handleKeyDown = (e: KeyboardEvent) => {
 	if (handled) e.preventDefault()
 }
 
-export const initKeyboardNav = () => {
+export const initKeyboardNav = (): void => {
 	setCols(columnIds.map(id => document.getElementById(id)))
 	if (cols.some(c => !c)) return
 

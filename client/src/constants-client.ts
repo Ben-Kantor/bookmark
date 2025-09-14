@@ -39,11 +39,11 @@ export const paletteResultsEl = document.getElementById('command-palette-results
 })
 
 
-export const setActiveIndex = (index: number) => activeIndex = index
-export const setLastFocusedItem = (item: HTMLElement | null) => lastFocusedItem = item
-export const setCols = (columns: (HTMLElement | null)[]) => cols = columns
-export const setPaletteResults = (results: PaletteResult[]) => paletteResults = results
-export const setPaletteSelectedIndex = (index: number) => paletteSelectedIndex = index
+export const setActiveIndex = (index: number): number => activeIndex = index
+export const setLastFocusedItem = (item: HTMLElement | null): HTMLElement | null => lastFocusedItem = item
+export const setCols = (columns: (HTMLElement | null)[]): (HTMLElement | null)[] => cols = columns
+export const setPaletteResults = (results: PaletteResult[]): PaletteResult[] => paletteResults = results
+export const setPaletteSelectedIndex = (index: number): number => paletteSelectedIndex = index
 
 export const FOLDER_OPEN_ICON = '\uf07c'
 export const FOLDER_CLOSED_ICON = '\uf07b'

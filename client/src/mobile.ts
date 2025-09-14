@@ -2,7 +2,7 @@ import { openCommandPalette } from './palette.ts'
 
 const get = (id: string): HTMLElement | null => document.getElementById(id)
 
-export const closePanels = () => {
+export const closePanels = (): void => {
 	const explorer = get('explorer')
 	const toc = get('toc-panel')
 	const overlay = get('mobile-overlay')
@@ -14,7 +14,7 @@ export const closePanels = () => {
 	overlay.style.pointerEvents = 'none'
 }
 
-export const initMobileHeader = () => {
+export const initMobileHeader = (): void => {
 	const explorer = get('explorer')
 	const toc = get('toc-panel')
 
@@ -29,7 +29,7 @@ export const initMobileHeader = () => {
 
 	const overlay = get('mobile-overlay')!
 
-	const openExplorer = (e: Event) => {
+	const openExplorer = (e: Event): void => {
 		e.preventDefault()
 		explorer?.classList.remove('panel-collapsed')
 		explorer?.classList.add('visible')
@@ -37,7 +37,7 @@ export const initMobileHeader = () => {
 		overlay.style.pointerEvents = 'auto'
 	}
 
-	const openToc = (e: Event) => {
+	const openToc = (e: Event): void => {
 		e.preventDefault()
 		toc?.classList.remove('panel-collapsed')
 		toc?.classList.add('visible')
@@ -45,7 +45,7 @@ export const initMobileHeader = () => {
 		overlay.style.pointerEvents = 'auto'
 	}
 
-	const openPalette = (e: Event) => {
+	const openPalette = (e: Event): void => {
 		e.preventDefault()
 		openCommandPalette()
 	}
@@ -68,7 +68,7 @@ export const initMobileHeader = () => {
 	})
 }
 
-export const setupCloseOnLinkClick = () => {
+export const setupCloseOnLinkClick = (): void => {
 	const handleLinkClick = (e: MouseEvent) => {
 		if (e.target instanceof Element && e.target.closest('a')) closePanels()
 	}
@@ -77,7 +77,7 @@ export const setupCloseOnLinkClick = () => {
 	get('toc-panel')?.addEventListener('click', handleLinkClick)
 }
 
-export const initSwipeDetection = () => {
+export const initSwipeDetection = (): void => {
 	const handlers = { onSwipeLeft: swipeLeft, onSwipeRight: swipeRight }
 	let touchStartX = 0
 	let touchStartY = 0
@@ -119,7 +119,7 @@ export const initSwipeDetection = () => {
 		return null
 	}
 
-	const handleTouchStart = (e: TouchEvent) => {
+	const handleTouchStart = (e: TouchEvent): void => {
 		if (e.touches.length > 1) return
 		const { clientX, clientY } = e.touches[0]
 		touchStartX = clientX
@@ -127,7 +127,7 @@ export const initSwipeDetection = () => {
 		startTarget = e.target as Element
 	}
 
-	const handleTouchEnd = (e: TouchEvent) => {
+	const handleTouchEnd = (e: TouchEvent): void => {
 		if (e.changedTouches.length > 1) return
 
 		const { clientX, clientY } = e.changedTouches[0]
@@ -156,7 +156,7 @@ export const initSwipeDetection = () => {
 	document.addEventListener('touchend', handleTouchEnd, { passive: true })
 }
 
-const swipeLeft = () => {
+const swipeLeft = (): void => {
 	const explorer = get('explorer')!
 	const toc = get('toc-panel')!
 	const overlay = get('mobile-overlay')!
@@ -174,7 +174,7 @@ const swipeLeft = () => {
 	}
 }
 
-const swipeRight = () => {
+const swipeRight = (): void => {
 	const explorer = get('explorer')!
 	const toc = get('toc-panel')!
 	const overlay = get('mobile-overlay')!

@@ -57,9 +57,9 @@ interface HarfbuzzWasm {
 }
 
 const loadAndInitializeHarfbuzz = (() => {
-  let promise = null;
+  let promise: Promise<{ harfbuzzJsWasm: HarfbuzzWasm; heapu8: Uint8Array }> | null = null;
 
-  return async () => {
+  return async (): Promise<{ harfbuzzJsWasm: HarfbuzzWasm; heapu8: Uint8Array }> => {
     if (promise === null) {
       promise = (async () => {
         const wasmBuffer = await fetch(
@@ -252,10 +252,10 @@ async function subsetFont(
   }
 }
 
-const createLimiter = () => {
+const createLimiter = (): ((fn: () => Promise<any>) => Promise<any>) => {
   let promiseChain = Promise.resolve();
 
-  return (fn) => {
+  return (fn: () => Promise<any>): Promise<any> => {
     const result = promiseChain.then(() => fn());
     promiseChain = result.catch(() => {});
     return result;

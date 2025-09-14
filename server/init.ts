@@ -53,12 +53,8 @@ const handler = async (request: Request): Promise<Response> => {
 
     const htmlContent = await loadFileToHTML(filePathResult.filePath)
     const page = htmlTemplate
-      .replace(
-        "/$PLACEHOLDER-PATH/",
-        filePathResult.preferredAddress || basename(request.url),
-      )
-      .replace("<PLACEHOLDER-META>", generateOgTags(filePathResult))
-      .replace("<PLACEHOLDER-CONTENT>", htmlContent)
+      .replace("$PLACEHOLDER-META", generateOgTags(filePathResult))
+      .replace("$PLACEHOLDER-CONTENT", htmlContent)
 
     const headers: { [key: string]: string } = { "Content-Type": "text/html" }
     if (filePathResult.preferredAddress) {

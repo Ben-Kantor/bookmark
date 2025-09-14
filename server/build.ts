@@ -48,14 +48,14 @@ const buildHtmlTemplate = async (): Promise<string> => {
   ])
 
   const finalHtml = htmlString
-    .replace("<PLACEHOLDER-HEAD>",
+    .replace("$PLACEHOLDER-HEAD",
       `<meta name="description" property="og:description" content="${config.description}">
 	  <link rel="stylesheet" href="/!!/photoswipe.css">
 	  <style>${clientCSS}</style>
 	  <script>window.config = ${JSON.stringify(config)}</script>`)
-    .replace("<PLACEHOLDER-JS>", `<script>${transpiledBundle}</script>`)
-    .replace("<PLACEHOLDER-TITLE>", config.title)
-    .replace("<PLACEHOLDER-EXPLORER>", createExplorerBuilder(iconMap)(vaultMap.children))
+    .replace("$PLACEHOLDER-JS", `<script>${transpiledBundle}</script>`)
+    .replace("$PLACEHOLDER-TITLE", config.title)
+    .replace("$PLACEHOLDER-EXPLORER", createExplorerBuilder(iconMap)(vaultMap.children))
     .replace("\n", config.minify ? "" : "\n")
 
   return config.minify
@@ -64,6 +64,8 @@ const buildHtmlTemplate = async (): Promise<string> => {
         removeComments: true,
         minifyCSS: false,
         minifyJS: false,
+        keepClosingSlash: true,
+        caseSensitive: true
       })
     : finalHtml
 }

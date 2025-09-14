@@ -1,6 +1,7 @@
 import { TocItem } from '../../server/types.ts'
 
 import { mainContentEl, expandedTocItems } from './constants-client.ts'
+import { initResizablePanel } from './explorer.ts'
 
 const headingOpen = '▼'
 const headingClosed = '▶'
@@ -48,6 +49,7 @@ export const generateToc = (): void => {
 
   const hierarchy: TocItem[] = buildTocHierarchy(tocItems)
   renderTocItems(hierarchy, tocList as HTMLUListElement, 0)
+  initResizablePanel("toc-panel", "toc-handle", "toc", "right")
 }
 
 const buildTocHierarchy = (items: TocItem[]): TocItem[] => {

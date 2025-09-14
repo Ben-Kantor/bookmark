@@ -5,7 +5,7 @@ import {
 } from './types.ts'
 
 // Factory function to create an explorer builder with a given icon set.
-export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
+export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons): (items: VaultMap[]) => string => {
   const createExplorerStructure = (
     items: VaultMap[],
     pathPrefix = '/',
@@ -17,7 +17,7 @@ export const createExplorerBuilder = (fileTypeIcons: FileTypeIcons) => {
     const files = filtered.filter(item => !item.dir)
 
     // Sort each group: capital letters first, then natural numeric sort
-    const sortGroup = (group: VaultMap[]) => {
+    const sortGroup = (group: VaultMap[]): VaultMap[] => {
       const capital = group.filter(item => item.name.charAt(0).toUpperCase() === item.name.charAt(0) && item.name.charAt(0).toLowerCase() !== item.name.charAt(0))
       const lowercase = group.filter(item => !(item.name.charAt(0).toUpperCase() === item.name.charAt(0) && item.name.charAt(0).toLowerCase() !== item.name.charAt(0)))
 
