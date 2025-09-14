@@ -201,9 +201,9 @@ pre:not(code) {
     input[type="checkbox"]:checked::after {
     content: "✓";
     color: var(--background-primary);
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: bold;
     position: absolute;
-    top: -15%;
-    left: 0%;
+    top: -40%;
+    left: 15%;
 }
