@@ -1,7 +1,7 @@
 import { basename, dirname, extname, fromFileUrl, join, resolve } from 'jsr:@std/path@1'
 import * as types from './types.ts'
 import { toTitleCase } from './lib.ts'
-import { contentDir } from './constants.ts'
+import * as CONFIG from './config.ts'
 
 export const buildVaultMap_ = (
 	dir: string = './',
@@ -110,4 +110,4 @@ function sortVaultMap(node: types.VaultMap): types.VaultMap {
 	return node
 }
 
-export const vaultMap = buildVaultMap(contentDir) as types.VaultMapDirectory
+export const vaultMap = buildVaultMap(CONFIG.CONTENT_DIR) as types.VaultMapDirectory

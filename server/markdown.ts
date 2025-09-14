@@ -10,7 +10,7 @@ import { basename, dirname, extname, join } from 'jsr:@std/path@1'
 import { findFilePath, vaultMap } from './vaultmap.ts'
 import { fileExists, replaceUnicode, toHTTPLink, toTitleCase, warn } from './lib.ts'
 import * as types from './types.ts'
-import { config } from './constants.ts'
+import * as CONFIG from './config.ts'
 import { processEmbed } from './embed-processor.ts'
 
 const preprocessMarkdown = (
@@ -84,7 +84,7 @@ const processEmbedsAndCode = async (
 				bracketTerm,
 				parenthesesTerm,
 				currentPath,
-				config.paths.contentDir,
+				CONFIG.CONTENT_DIR,
 			).then((content) => ({
 				placeholder,
 				content,
@@ -145,7 +145,7 @@ const finalizeMarkdown = (
 				createCustomLinksExtension(
 					currentPath,
 					vaultMap,
-					config.paths.contentDir,
+					CONFIG.CONTENT_DIR,
 				),
 			],
 		})
@@ -178,7 +178,7 @@ const finalizeMarkdown = (
 	const finalResult = result
 		.replace(/\\(?:<[^>]+>)*([\[\]])/g, (_, bracket) => bracket) //unescape brackets
 		.replace(/\\\`/gm, '`')
-	if (config.sanitize) return sanitizeHtml(finalResult)
+	if (CONFIG.SANITIZE) return sanitizeHtml(finalResult)
 	return finalResult
 }
 

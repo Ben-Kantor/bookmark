@@ -1,6 +1,6 @@
 import { join } from 'jsr:@std/path@1'
 import { minify } from 'npm:html-minifier-terser@7'
-import { config, verbose } from './constants.ts'
+import * as CONFIG from './config.ts'
 import subsetFont from './subset-font.ts'
 import { vaultMap } from './vaultmap.ts'
 import { createExplorerBuilder } from './build-explorer.ts'
@@ -8,7 +8,7 @@ import { createExplorerBuilder } from './build-explorer.ts'
 const buildStartTime = performance.now()
 
 const logTask = async <T>(taskName: string, promise: Promise<T>): Promise<T> => {
-	if (!verbose)
+	if (!CONFIG.VERBOSE)
 		return promise
 	try {
 		const result = await promise
@@ -27,11 +27,11 @@ const tasks = {
 		'Bundling client code',
 		Deno.bundle({
 			entrypoints: ['./client/src/init-client.ts'],
-			minify: config.minify,
+			minify: CONFIG.MINIFY,
 			write: false,
 			platform: 'browser' as Deno.bundle.Platform,
 			format: 'iife' as Deno.bundle.Format,
-			sourcemap: config.sourceMap ? 'inline' : undefined,
+			sourcemap: CONFIG.SOURCE_MAP ? 'inline' : undefined,
 		}),
 	),
 
@@ -82,17 +82,17 @@ const buildHtmlTemplate = async (): Promise<string> => {
 	const finalHtml = htmlString
 		.replace(
 			'$PLACEHOLDER-HEAD',
-			`<meta name="description" property="og:description" content="${config.description}">
+			`<meta name="description" property="og:description" content="${CONFIG.DESCRIPTION}">
       <link rel="stylesheet" href="/!!/photoswipe.css">
       <style>${clientCSS}</style>
-      <script>window.config = ${JSON.stringify(config)}</script>`,
+      <script>window.config = ${JSON.stringify(CONFIG)}</script>`,
 		)
 		.replace('$PLACEHOLDER-JS', `<script>${resolvedBundle}</script>`)
-		.replace('$PLACEHOLDER-TITLE', config.title)
+		.replace('$PLACEHOLDER-TITLE', CONFIG.TITLE)
 		.replace('$PLACEHOLDER-EXPLORER', createExplorerBuilder(iconMap)(vaultMap.children))
-		.replace('\n', config.minify ? '' : '\n')
+		.replace('\n', CONFIG.MINIFY ? '' : '\n')
 
-	return config.minify
+	return CONFIG.MINIFY
 		? logTask(
 			'Minifying final HTML',
 			minify(finalHtml, {
@@ -107,7 +107,4 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		: finalHtml
 }
 
-export const [htmlTemplate, nerdFont] = await Promise.all([
-	logTask('Building final HTML template', buildHtmlTemplate()),
-	tasks.font,
-])
+export const htmlTemplate = await logTask('Building final HTML template', buildHtmlTemplate())

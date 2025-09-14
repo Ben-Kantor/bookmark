@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "serve": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
+    "serve": "deno run --unstable-bundle --allow-env --allow-net --watch --watch-exclude='.**' --allow-read=./,.cache --allow-write='*.cache' ./server/init.ts",
     "update": "git add content/ 2>/dev/null || true && git stash push -m 'preserve content' -- content/ 2>/dev/null || true && git pull --rebase && deno update"
   },
   "lint": {

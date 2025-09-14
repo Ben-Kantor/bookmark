@@ -1,5 +1,5 @@
 import { yellow } from 'jsr:@std/fmt@1/colors'
-import { config, contentDir, verbose } from './constants.ts'
+import * as CONFIG from './config.ts'
 import { globToRegExp } from 'jsr:@std/path@1'
 import { fileRequestInfo } from './types.ts'
 
@@ -29,7 +29,7 @@ export const toHTTPLink = (link: string | null | undefined): string | null => {
 	if (!trimmed)
 		return null
 
-	const hasCommonTld = /\.(com|org|net|io|dev|app|ai|co|uk|gov|edu|me|xyz|tv|gg)([/_?#\s]|$)/
+	const hasCommonTld = /\.(com|org|net|io|dev|app|ai|co|uk|gov|edu|me|xyz|tv|gg)([/_?#\s]|$)/i
 		.test(trimmed)
 	const startsWithHttp = /^https?:\/\//.test(trimmed)
 	const isLocalhost = trimmed.startsWith('localhost')
@@ -55,7 +55,7 @@ export const zipContent = async (): Promise<Uint8Array> => {
 
 	const zip = new JSZip()
 
-	for await (const entry of walk(contentDir, { includeDirs: false })) {
+	for await (const entry of walk(CONFIG.CONTENT_DIR, { includeDirs: false })) {
 		const data = await Deno.readFile(entry.path)
 		const relative = entry.path.replace(/^content[\/\\]/, '')
 		zip.file(relative, data)
@@ -143,12 +143,12 @@ export const pathMatchesGlob = (path: string, glob: string): boolean => {
 }
 
 export const warn = (message: string): void => {
-	if (config.logWarnings || verbose) console.warn(yellow(message))
+	if (CONFIG.LOG_WARNINGS || CONFIG.VERBOSE) console.warn(yellow(message))
 }
 
 export const generateOgTags = memoize((file: fileRequestInfo): string => {
 	return `
-    <meta property="og:title" content="${config.title}">
+    <meta property="og:title" content="${CONFIG.TITLE}">
     <meta property="og:description" content="${
 		escapeHTML(`File: ${file.filePath?.split('/').pop()}`)
 	}">

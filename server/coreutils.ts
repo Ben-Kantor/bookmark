@@ -2,7 +2,7 @@ import { contentType } from 'jsr:@std/media-types@1'
 import { type ParsedPath } from 'jsr:@std/path@1'
 import { basename, extname, isAbsolute, join, parse, relative } from 'jsr:@std/path@1'
 
-import { absoluteAssetsDir, absoluteContentDir, config, contentDir } from './constants.ts'
+import * as CONFIG from './config.ts'
 import { formatBytes, memoize, pathMatchesGlob, toHTTPLink, warn } from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import * as types from './types.ts'
@@ -12,10 +12,10 @@ export const resolveFileRequest = async (
 ): Promise<types.fileRequestInfo> => {
 	let absolutePath: string | undefined
 	if (path.startsWith('/!!'))
-		absolutePath = join(Deno.cwd(), config.paths.assetsDir, path.slice(3))
+		absolutePath = join(Deno.cwd(), CONFIG.ASSETS_DIR_PATH, path.slice(3))
 	else {absolutePath = join(
 			Deno.cwd(),
-			config.paths.contentDir,
+			CONFIG.CONTENT_DIR_PATH,
 			path.replace(/^\/\!/g, ''),
 		)}
 
@@ -28,8 +28,8 @@ export const resolveFileRequest = async (
 	const parsedPath = parse(absolutePath)
 
 	if (
-		!parsedPath.dir.startsWith(absoluteContentDir) &&
-		!parsedPath.dir.startsWith(absoluteAssetsDir)
+		!parsedPath.dir.startsWith(CONFIG.ABSOLUTE_CONTENT_DIR) &&
+		!parsedPath.dir.startsWith(CONFIG.ABSOLUTE_ASSETS_DIR)
 	) {
 		return { status: 403 }
 	}
@@ -65,12 +65,12 @@ export const resolveFileRequest = async (
 }
 
 const determineRenderingType = (filePath: string): string | undefined => {
-	const renderOverrides: Record<string, string[]> = config.renderOverrides
+	const renderOverrides: Record<string, string[]> = CONFIG.renderOverrides
 
 	// Check render overrides first
 	for (const [type, patterns] of Object.entries(renderOverrides)) {
 		for (let pattern of patterns) {
-			if (!isAbsolute(pattern)) pattern = join(contentDir, pattern)
+			if (!isAbsolute(pattern)) pattern = join(CONFIG.CONTENT_DIR, pattern)
 			if (pathMatchesGlob(filePath, pattern)) return type
 		}
 	}
@@ -108,7 +108,7 @@ const renderContent = async (
 ): Promise<string> => {
 	const fileExt: string = extname(filePath).toLowerCase()
 	const fileBaseName: string = basename(filePath, fileExt)
-	const relativePath: string = relative(contentDir, filePath)
+	const relativePath: string = relative(CONFIG.CONTENT_DIR, filePath)
 
 	switch (renderingType) {
 		case 'markdown':
@@ -184,7 +184,8 @@ const renderDownloadContent = async (
 			formatBytes(
 				fileInfo.size,
 			)
-		}</strong></p>
+		}
+			</strong></p>
 			<a href="/!/${relativePath}" download="${basename(filePath)}"
 				style="color: var(--layer-0)" class="download-button mt-4 px-6 py-2 font-semibold rounded-lg shadow-md">Download File</a>
 			</div>`
@@ -225,8 +226,8 @@ const handleWebLink = (path: string): types.fileRequestInfo | null => {
 const handleRootPath = (path: string): types.fileRequestInfo | null => {
 	if (path === '/' || !path) {
 		return {
-			filePath: join(contentDir, config.paths.indexFile),
-			preferredAddress: config.paths.indexFile.replace('.', ''),
+			filePath: join(CONFIG.CONTENT_DIR, CONFIG.INDEX_FILE),
+			preferredAddress: CONFIG.INDEX_FILE.replace('.', ''),
 		}
 	}
 	return null
@@ -243,7 +244,7 @@ const handleExistingFile = (
 		return {
 			filePath: filePath,
 			isLiteralRequest: path.includes('/!'),
-			preferredAddress: '/' + relative(contentDir, filePath),
+			preferredAddress: '/' + relative(CONFIG.CONTENT_DIR, filePath),
 		}
 	}
 	return null
@@ -268,7 +269,7 @@ const handleDirectory = async (
 				return {
 					filePath: filePath,
 					isLiteralRequest: path.includes('/!'),
-					preferredAddress: '/' + relative(contentDir, filePath),
+					preferredAddress: '/' + relative(CONFIG.CONTENT_DIR, filePath),
 				}
 			}
 		}
@@ -278,7 +279,7 @@ const handleDirectory = async (
 			return {
 				filePath: filePath,
 				isLiteralRequest: path.includes('/!'),
-				preferredAddress: '/' + relative(contentDir, filePath),
+				preferredAddress: '/' + relative(CONFIG.CONTENT_DIR, filePath),
 			}
 		}
 
@@ -288,7 +289,7 @@ const handleDirectory = async (
 			filePath: filePath,
 			isLiteralRequest: path.includes('/!'),
 			preferredAddress: '/' +
-				relative(contentDir, parsedPath.dir + '/' + parsedPath.base),
+				relative(CONFIG.CONTENT_DIR, parsedPath.dir + '/' + parsedPath.base),
 		}
 	}
 	return null
@@ -313,7 +314,7 @@ const findFileByPrefix = async (
 				return {
 					filePath: filePath,
 					isLiteralRequest: path.includes('/!'),
-					preferredAddress: '/' + relative(contentDir, filePath),
+					preferredAddress: '/' + relative(CONFIG.CONTENT_DIR, filePath),
 				}
 			}
 		}
@@ -325,7 +326,7 @@ const findFileByPrefix = async (
 
 const handle404 = (): types.fileRequestInfo => {
 	return {
-		filePath: join(contentDir, '.404.md'),
+		filePath: join(CONFIG.CONTENT_DIR, '.404.md'),
 		status: 404,
 	}
 }

@@ -1,6 +1,6 @@
 import { basename, dirname, extname, join } from 'jsr:@std/path@1'
 
-import { config } from './constants.ts'
+import * as CONFIG from './config.ts'
 import { loadFileToHTML } from './coreutils.ts'
 import {
 	addLineNumbers,
@@ -193,7 +193,7 @@ const resolveTargetPath = (
 	}
 
 	const prospectivePath = join(dirname(currentPath), rawLinkTarget)
-	if (fileExists(join(config.paths.contentDir || '', prospectivePath)))
+	if (fileExists(join(CONFIG.CONTENT_DIR || '', prospectivePath)))
 		return prospectivePath
 
 	const base = basename(rawLinkTarget, extname(rawLinkTarget))
