@@ -33,7 +33,6 @@ import { initMobileHeader, initSwipeDetection, setupCloseOnLinkClick } from './m
 import { generateToc } from './toc.ts'
 
 const init = async (): Promise<void> => {
-    normalizeURL()
     scrollToAnchor()
     generateToc()
     initExplorer()
@@ -142,19 +141,6 @@ const setupNavigationHandlers = (): void => {
         const currentUrl = globalThis.location.pathname + globalThis.location.hash
         navigateTo(currentUrl, true)
     })
-}
-
-const normalizeURL = (): void => {
-    const currentPath = decodeURIComponent(globalThis.location.pathname)
-    const canonicalPath = currentPath.replace(/\.md$/, '')
-
-    if (currentPath !== canonicalPath) {
-        globalThis.history.replaceState(
-            {},
-            '',
-            canonicalPath + globalThis.location.hash,
-        )
-    }
 }
 
 const preventDragging = (): void => {

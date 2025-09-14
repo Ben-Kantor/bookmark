@@ -10,7 +10,7 @@ export const config: SiteConfig = {
     paths: {
         contentDir: './content/',
         assetsDir: './assets/',
-        indexFile: './index.md',
+        indexFile: 'Readme.md',
     },
 
     title: 'Bookmark',

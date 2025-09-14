@@ -2,7 +2,7 @@ import { contentType } from 'jsr:@std/media-types@1'
 import { extname, normalize } from 'jsr:@std/path@1'
 
 import { htmlTemplate, nerdFont } from './build.ts'
-import { PORT } from './constants.ts'
+import { config, PORT } from './constants.ts'
 import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
 import { generateOgTags, zipContent } from './lib.ts'
 
@@ -21,6 +21,14 @@ const handler = async (request: Request): Promise<Response> => {
             const zipData = await zipContent()
             return new Response(zipData as BodyInit, {
                 headers: { 'Content-Type': 'application/zip' },
+            })
+        }
+
+        if (normalizedPath === '/') {
+            //redirect to index.html
+            return new Response(null, {
+                status: 302,
+                headers: { 'Location': config.paths.indexFile },
             })
         }
 
