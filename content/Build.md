@@ -1,23 +1,34 @@
-In order to decrease developer overhead, Bookmark has no dedicated build step, and instead performs most necessary build tasks when a server instance starts up. Because the server runs on the [Deno](https://deno.com/) runtime, only the client-side code needs to be transpiled and bundled. The only build task, therefore, is to assemble the final HTML page which will be sent to the client.
+# Build Process Documentation
 
-This process is handled by the *build.ts* file. Below, each step it performs is explained in detail.
+Bookmark performs build tasks at server startup to decrease developer overhead. Since the server runs on [Deno](https://deno.com/), only client-side code needs transpilation and bundling. The *build.ts* file handles assembling the final HTML page and preparing assets.
+
 ## TypeScript Bundling
 
-The first task is to process the client-side TypeScript code using the exceptionally fast [esbuild](https://esbuild.github.io/) bundler. The process begins with the *init-client.ts* file as its entry point. From there, esbuild follows all import statements and bundles the entire client-side application into a single, JavaScript file. The output is configured to target the `es2020` JavaScript standard for modern browser compatibility. For development, inline source maps can be enabled via `config.sourceMap` to simplify debugging, while in production, the code is minified if `config.minify` is set to `true`.
+Deno's built-in bundler processes client-side TypeScript starting from *init-client.ts*. It follows imports and bundles everything into a single JavaScript IIFE targeting browsers. Source maps can be enabled via `config.sourceMap` for debugging, and minification via `config.minify` for production.
+
+## Font Subsetting
+
+FiraCode Nerd Font is fetched from CDN and subset using characters from `assets/charList.txt`. The font is converted to WOFF2 format, including only needed glyphs to reduce file size.
 
 ## CSS Processing
 
-Next, all client-side CSS files are loaded and combined into a single stylesheet. The build script reads all files from ./client/styles and concatenates their contents. To aid debugging during development, a helpful comment header like "*/\* ====> styles.css <==== \*/*" is added before the content of each individual file. If minification is enabled in the server configuration, this combined CSS string is then processed by esbuild, which removes all unnecessary whitespace, comments, and characters to reduce its size.
+All CSS files from `./client/styles` are loaded and concatenated into a single stylesheet with newline separators.
 
 ## HTML Template Assembly
 
-The html template file for delivery to the user is then assembled by loading *client.html*, and dynamically injecting the previously generated assets into it through placeholder replacement. Only one html file is used because bookmark is a single-page application.
+The *client.html* template is loaded and assets are injected via placeholder replacement:
 
-The `<PLACEHOLDER-HEAD/>` placeholder is replaced with a block of essential tags and data. This includes a meta tag for the site description, a link to the external PhotoSwipe stylesheet for the image gallery, and the application's combined CSS, which is injected directly into a `<style>` tag to avoid an extra network request. Additionally, [Twind](https://twind.style/) scans the HTML for TailwindCSS classes and injects a second style tag containing the necessary just-in-time generated styles. Finally, the *vaultMap* and *fileTypeIcons* objects needed by the client in order to display the explorer are serialized as JSON and placed in a script tag to make them available to the client.
+- `$PLACEHOLDER-HEAD`: Meta tags, PhotoSwipe stylesheet link, combined CSS in a `<style>` tag, and serialized config in a `<script>` tag
+- `$PLACEHOLDER-JS`: Transpiled JavaScript bundle in a `<script>` tag
+- `$PLACEHOLDER-TITLE`: Configured site title
+- `$PLACEHOLDER-EXPLORER`: Pre-built explorer HTML from vault map and icon mappings
 
-The second placeholder, `<PLACEHOLDER-JS/>`, located just before the closing `</body>` tag, is replaced with a `<script>` tag containing the transpiled JavaScript bundle generated in the first step.
+If minification is enabled, [html-minifier-terser](https://github.com/terser/html-minifier-terser) processes the complete HTML to collapse whitespace and remove comments.
 
-As a final optimization, if minification is enabled, the complete HTML string is processed by [html-minifier-terser](https://github.com/terser/html-minifier-terser). This step further reduces the page size by collapsing whitespace and removing any remaining comments, making the file as lightweight as possible before it's sent to the user.
+## Concurrent Processing
+
+Tasks run in parallel using Promises: bundling, font processing, CSS/HTML/icon loading. Final assembly waits for required dependencies.
+
 ## Result
 
-The output of this entire process is a single, self-contained HTML string stored in the `htmlTemplate` constant. When a user connects to the server, this template is sent with the `\$PLACEHOLDER-CONTENT` tag replaced with the content of the first requested page.
+Exports `htmlTemplate` (self-contained HTML string) and `nerdFont` (subsetted font buffer). The template can be customized with page-specific content before delivery.

@@ -22,17 +22,17 @@ This is another paragraph.
 This is a paragraph with a soft line break here >
 < It will render as a single line.
 
-This is a paragraph ending in two spaces for a hard line break.  
+This is a paragraph ending in two spaces for a hard line break.
 This line should appear directly below the first one.
 ## Emphasis
 
-*This text is emphasized with asterisks (italics).*  
+*This text is emphasized with asterisks (italics).*
 _This text is emphasized with underscores (italics)._
 
-**This text is strongly emphasized with double asterisks (bold).**  
+**This text is strongly emphasized with double asterisks (bold).**
 __This text is strongly emphasized with double underscores (bold).__
 
-***This text is both strongly emphasized and emphasized with tripe asterisks (bold italics).***  
+***This text is both strongly emphasized and emphasized with tripe asterisks (bold italics).***
 ___This text is both strongly emphasized and emphasized with tripe underscores (bold italics).___
 
 **_This text is emphasized with underscores inside double asterisks. (bold italics in italic color)._**
@@ -75,7 +75,7 @@ ___This text is both strongly emphasized and emphasized with tripe underscores (
     - [x] Nested completed task.
     - [ ] Nested uncompleted task.
 ## Images
-Images and other media can be embedded by putting a local or remote link inside square brackets, preceded by an exclamation mark. More information can be found in the page on [[Embeds]].  
+Images and other media can be embedded by putting a local or remote link inside square brackets, preceded by an exclamation mark. More information can be found in the page on [[Embeds]].
 
 `![https:\//upload.wikimedia.org\/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]`
 
@@ -150,17 +150,17 @@ const data = {
 
 To display characters that have special meaning,1 you can escape them with a backslash.
 
-\* Not an italic \*  
-\_ Not an italic \_  
-\` Not inline code \`  
-\[ Not a link \[  
-\< Not a tag \>  
-\\ A backslash \\  
-\# Not a heading \#  
-\+ Not a list item \+  
-\- Not a list item \-  
-\. Not an ordered list item \.  
-\! Not an image \!  
+\* Not an italic \*
+\_ Not an italic \_
+\` Not inline code \`
+\[ Not a link \[
+\< Not a tag \>
+\\ A backslash \\
+\# Not a heading \#
+\+ Not a list item \+
+\- Not a list item \-
+\. Not an ordered list item \.
+\! Not an image \!
 \| Not a table \|
 
 ## Raw HTML

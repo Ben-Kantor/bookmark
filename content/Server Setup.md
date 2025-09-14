@@ -2,7 +2,6 @@
 
 The configuration is stored in the *constants.ts* file, below each option is explained.
 
-
 - **port** - Port to host the server on.
 - **minify** - Whether to minify html, js, and css sent to the client.
 - **sourceMap** - Whether to include source maps to allow debugging typescript on the client.

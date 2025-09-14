@@ -1,8 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run --unstable-bundle --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
-    "start": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
-    "update": "git stash && git pull --rebase && git stash pop && deno update"
+    "serve": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
+    "update": "git add content/ 2>/dev/null || true && git stash push -m 'preserve content' -- content/ 2>/dev/null || true && git pull --rebase && deno update"
   },
   "lint": {
     "exclude": ["./assets/", "./content/", "./server/subset-font.ts"],
@@ -11,7 +10,7 @@
     }
   },
   "fmt": {
-    "useTabs": false,
+    "useTabs": true,
     "lineWidth": 100,
     "indentWidth": 4,
     "semiColons": false,

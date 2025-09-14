@@ -3,35 +3,35 @@ import { resolve } from 'jsr:@std/path@1'
 import { SiteConfig } from './types.ts'
 
 export const config: SiteConfig = {
-    port: 8000,
-    minify: false,
-    sourceMap: false,
-    sanitize: false,
-    paths: {
-        contentDir: './content/',
-        assetsDir: './assets/',
-        indexFile: 'Readme.md',
-    },
+	port: 8000,
+	minify: true,
+	sourceMap: false,
+	sanitize: false,
+	paths: {
+		contentDir: './content/',
+		assetsDir: './assets/',
+		indexFile: 'Readme.md',
+	},
 
-    title: 'Bookmark',
-    description: 'A dynamic markdown webserver and file explorer',
+	title: 'Bookmark',
+	description: 'A dynamic markdown webserver and file explorer',
 
-    renderOverrides: {
-        'iframe': [],
-        'codeblock': ['./**.html'],
-    },
-    logWarnings: true,
+	renderOverrides: {
+		'iframe': [],
+		'codeblock': ['./**.html'],
+	},
+	logWarnings: true,
 }
 
 export const PORT: number = parseInt(
-    Deno.env.get('PORT') ?? config.port.toString(),
+	Deno.env.get('PORT') ?? config.port.toString(),
 )
 export const contentDir: string = resolve(config.paths.contentDir)
 export const absoluteContentDir: string = resolve(
-    Deno.cwd(),
-    config.paths.contentDir,
+	Deno.cwd(),
+	config.paths.contentDir,
 )
 export const absoluteAssetsDir: string = resolve(
-    Deno.cwd(),
-    config.paths.assetsDir,
+	Deno.cwd(),
+	config.paths.assetsDir,
 )
