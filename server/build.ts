@@ -66,8 +66,8 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		? await minify(finalHtml, {
 			collapseWhitespace: true,
 			removeComments: true,
-			minifyCSS: false,
-			minifyJS: false,
+			minifyCSS: true,
+			minifyJS: true,
 			keepClosingSlash: true,
 			caseSensitive: true,
 		})

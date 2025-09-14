@@ -58,7 +58,7 @@ export const createEmbedWithProperties = (
 	const display = properties.noTitle ? '' : (displayText || properties.title || '')
 	return `<md-embed role="group" style="${style}"	title="${
 		escapeHTML(display)
-	}">${content}</md-embed>`
+	}">${content}</md-embed>`.replace(/<body>/g, '').replace(/<\/body>/g, '')
 }
 
 export const extractEmbedProperties = (s: string): types.EmbedProperties => {

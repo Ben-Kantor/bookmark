@@ -175,7 +175,7 @@ const renderDownloadContent = async (
 	try {
 		const fileInfo = await Deno.stat(filePath)
 		const fileExt = extname(filePath).toLowerCase()
-		return `<div class="flex flex-col p-4 items-center text-center">
+		const html = `<div class="flex flex-col p-4 items-center text-center">
 			<h2 class="text-xl font-bold">${fileBaseName}</h2>
 			<p class="mt-2">Media type: <i style="color: var(--accent-gold)">
 				${contentType(fileExt) || 'unknown'}
@@ -188,6 +188,7 @@ const renderDownloadContent = async (
 			<a href="/!/${relativePath}" download="${basename(filePath)}"
 				style="color: var(--layer-0)" class="download-button mt-4 px-6 py-2 font-semibold rounded-lg shadow-md">Download File</a>
 			</div>`
+		return html
 	} catch (err) {
 		console.error(`Could not stat file ${filePath}:`, err)
 		return `<h1 class="text-2xl font-bold">Error</h1>
