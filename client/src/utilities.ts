@@ -23,16 +23,13 @@ export const navigateTo = async (
         return
     }
 
-    try {
-        const response = await globalThis.fetch(path)
-        if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`)
-    } catch (error) {
-        console.error('Error fetching page content:', error)
-        globalThis.location.href = targetURL
+    const response = await globalThis.fetch(path)
+
+    if (!response) {
+        alert('Failed to fetch page content\nPlease report this issue to the developers.')
+        throw new Error('Failed to fetch page content')
     }
 
-    const response = await globalThis.fetch(path)
     if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`)
 
