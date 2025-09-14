@@ -285,8 +285,10 @@ div:has(> #toc-list) {
 }
 
 /* Keyboard Navigation */
-.keyboard-active-column {
-    outline: 2px solid var(--layer-2) !important;
+@media (min-width: 320px) {
+    .keyboard-active-column {
+        outline: 2px solid var(--layer-2) !important;
+    }
 }
 
 #explorer.keyboard-active-column {
