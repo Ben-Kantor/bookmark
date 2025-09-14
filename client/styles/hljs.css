@@ -1,160 +1,160 @@
 /* ====> hljs.css <==== */
 pre code.hljs {
-	display: block;
-	overflow-x: auto;
-	padding: 1em;
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
 }
 code.hljs {
-	padding: 3px 5px;
+    padding: 3px 5px;
 }
 
 .hljs {
-	background: var(--code-bg);
+    background: var(--code-bg);
 }
 .hljs,
 .hljs-subst {
-	color: var(--code-text);
+    color: var(--code-text);
 }
 
 /* Tags & Selectors */
 .hljs-selector-tag {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-selector-id {
-	font-weight: 700;
+    font-weight: 700;
 }
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-property,
 .hljs-selector-pseudo {
-	color: var(--code-variable);
+    color: var(--code-variable);
 }
 
 /* Diff Highlighting */
 .hljs-addition {
-	background-color: rgba(184, 187, 38, 0.3);
+    background-color: rgba(184, 187, 38, 0.3);
 }
 .hljs-deletion {
-	background-color: rgba(209, 75, 104, 0.3);
+    background-color: rgba(209, 75, 104, 0.3);
 }
 
 /* Language Elements */
 .hljs-built_in,
 .hljs-class,
 .hljs-type {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-function,
 .hljs-function > .hljs-title,
 .hljs-title.hljs-function {
-	color: var(--code-function);
+    color: var(--code-function);
 }
 .hljs-keyword,
 .hljs-literal,
 .hljs-symbol {
-	color: var(--code-keyword);
+    color: var(--code-keyword);
 }
 .hljs-number,
 .hljs-regexp {
-	color: var(--code-number);
+    color: var(--code-number);
 }
 .hljs-string {
-	color: var(--code-string);
+    color: var(--code-string);
 }
 .hljs-title {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-params {
-	color: var(--code-text);
+    color: var(--code-text);
 }
 .hljs-bullet {
-	color: var(--code-operator);
+    color: var(--code-operator);
 }
 .hljs-code {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-formula {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-template-variable,
 .hljs-variable {
-	color: var(--code-variable);
+    color: var(--code-variable);
 }
 .hljs-template-tag {
-	color: var(--code-operator);
+    color: var(--code-operator);
 }
 
 /* Comments & Documentation */
 .hljs-comment,
 .hljs-quote {
-	color: var(--code-comment);
+    color: var(--code-comment);
 }
 .hljs-doctag {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 
 /* Meta & Attributes */
 .hljs-meta,
 .hljs-meta .hljs-keyword {
-	color: var(--code-operator);
+    color: var(--code-operator);
 }
 .hljs-meta .hljs-string {
-	color: var(--code-string);
+    color: var(--code-string);
 }
 .hljs-attr {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-attribute {
-	color: var(--code-text);
+    color: var(--code-text);
 }
 .hljs-name {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 .hljs-section,
 .language-abnf .hljs-attribute {
-	color: var(--code-function);
+    color: var(--code-function);
 }
 .hljs-tag {
-	color: var(--code-type);
+    color: var(--code-type);
 }
 
 /* Formatting */
 .hljs-emphasis {
-	font-style: italic;
+    font-style: italic;
 }
 .hljs-strong {
-	font-weight: 700;
+    font-weight: 700;
 }
 .hljs-link:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 /* ====> overlay.css <==== */
 .overlay {
-	position: fixed;
-	inset: 0;
-	transition: opacity 0.2s ease-in-out;
-	pointer-events: none;
-	z-index: 90;
+    position: fixed;
+    inset: 0;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+    z-index: 90;
 }
 
 .overlay,
 .pswp__bg {
-	background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
-[data-theme='light'] .overlay,
-[data-theme='light'] .pswp__bg {
-	background-color: rgba(0, 0, 0, 0.4);
+[data-theme="light"] .overlay,
+[data-theme="light"] .pswp__bg {
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .pswp {
-	--pswp-icon-color: var(--accent-light);
-	--pswp-icon-color-secondary: var(--accent-dark);
-	--pswp-icon-stroke-color: var(--accent-dark);
-	--pswp-error-text-color: var(--accent-light);
-	--pswp-preloader-color-secondary: var(--accent-light);
+    --pswp-icon-color: var(--accent-light);
+    --pswp-icon-color-secondary: var(--accent-dark);
+    --pswp-icon-stroke-color: var(--accent-dark);
+    --pswp-error-text-color: var(--accent-light);
+    --pswp-preloader-color-secondary: var(--accent-light);
 }

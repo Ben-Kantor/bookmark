@@ -1,5 +1,5 @@
 Embeds are the most powerful feature in bookmark, they allow a variety of types of content to be embedded in a markdown file. This page documents how to construct them and all the options that can be used to customize them.
- 
+
 ## Construction
 
 The recommended way to construct an embed is as follows:
@@ -18,7 +18,7 @@ The accepted file types for embeds are the same as the file types which can be d
 
 Embed links can also include an http url to a remote file to embed. The mime type of the file will be checked, and it will be displayed accordingly, with text/plain files without a .txt being assumed to be code and displayed as a single codeblock.
 
-Videos hosted on youtube or vimeo have a special carve-out to embed in a properly formatted iframe if detected. 
+Videos hosted on youtube or vimeo have a special carve-out to embed in a properly formatted iframe if detected.
 
 Images, Video, and Audio will all be placed in an appropriate html element with a src attribute, HTML pages and PDFs will use an iframe.
 

@@ -1,183 +1,183 @@
 /* ====> mobile.css <==== */
 #mobile-header {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 56px;
-	padding: 0.5rem 0.5rem;
-	align-items: center;
-	justify-content: space-between;
-	z-index: 50;
-	background-color: var(--layer-1);
-	border-bottom: 1px solid var(--layer-2);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	min-width: 0;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    padding: 0.5rem 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+    background-color: var(--layer-1);
+    border-bottom: 1px solid var(--layer-2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 0;
 }
 
 .mobile-logo-group {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	flex-shrink: 1;
-	min-width: 0;
-	overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .mobile-logo-icon {
-	height: 28px;
-	width: 28px;
-	flex-shrink: 0;
+    height: 28px;
+    width: 28px;
+    flex-shrink: 0;
 }
 
 .mobile-logo-text {
-	display: none;
-	font-family: 'DM Serif Text', serif;
-	font-size: 18px;
-	font-weight: 600;
-	letter-spacing: 0.4px;
-	color: var(--text-accent);
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    display: none;
+    font-family: "DM Serif Text", serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: var(--text-accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mobile-actions-group {
-	display: flex;
-	align-items: center;
-	gap: 0.25rem;
-	flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
 }
 
 .mobile-nav-button {
-	font-family: 'FiraCode Nerd Font', monospace !important;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 36px;
-	height: 36px;
-	font-size: 1.3rem;
-	color: var(--text-accent);
-	background-color: transparent;
-	border-radius: 0;
-	transition: color 0.2s ease-in-out;
-	-webkit-tap-highlight-color: transparent;
-	outline: none;
-	flex-shrink: 0;
+    font-family: "FiraCode Nerd Font", monospace !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+    color: var(--text-accent);
+    background-color: transparent;
+    border-radius: 0;
+    transition: color 0.2s ease-in-out;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    flex-shrink: 0;
 }
 
 .mobile-nav-button:hover,
 .mobile-nav-button:focus {
-	color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 
 .mobile-palette-button,
 .mobile-toc-button {
-	color: var(--text-accent);
+    color: var(--text-accent);
 }
 
 #mobile-toc-button.is-empty {
-	opacity: 0.3;
-	cursor: not-allowed;
-	pointer-events: none;
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* Mobile Layout Adjustments */
 @media (min-width: 400px) {
-	.mobile-logo-text {
-		display: block;
-	}
+    .mobile-logo-text {
+        display: block;
+    }
 }
 
 @media (max-width: 320px) {
-	#mobile-header {
-		padding: 0.5rem 0.25rem;
-	}
+    #mobile-header {
+        padding: 0.5rem 0.25rem;
+    }
 
-	.mobile-logo-group {
-		gap: 0.25rem;
-	}
+    .mobile-logo-group {
+        gap: 0.25rem;
+    }
 
-	.mobile-nav-button {
-		width: 32px;
-		height: 32px;
-		font-size: 1.2rem;
-	}
+    .mobile-nav-button {
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+    }
 
-	.mobile-logo-icon {
-		height: 24px;
-		width: 24px;
-	}
+    .mobile-logo-icon {
+        height: 24px;
+        width: 24px;
+    }
 
-	.mobile-actions-group {
-		gap: 0.1rem;
-	}
+    .mobile-actions-group {
+        gap: 0.1rem;
+    }
 }
 
 @media screen and (max-width: 768px) {
-	#mobile-header {
-		display: flex;
-	}
+    #mobile-header {
+        display: flex;
+    }
 
-	#page-wrapper {
-		flex-direction: column;
-	}
+    #page-wrapper {
+        flex-direction: column;
+    }
 
-	#content-area-wrapper,
-	#content-area {
-		margin: 0 !important;
-		border-radius: 0 !important;
-	}
+    #content-area-wrapper,
+    #content-area {
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
 
-	#content-area-wrapper {
-		padding-top: 56px;
-		height: 100%;
-	}
+    #content-area-wrapper {
+        padding-top: 56px;
+        height: 100%;
+    }
 
-	/* Sidebar Mobile Positioning */
-	#explorer,
-	#toc-panel {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		height: 100%;
-		width: 80%;
-		max-width: 80%;
-		padding: 0.75rem;
-		transition: transform 0.2s ease-in-out;
-		z-index: 100;
-	}
+    /* Sidebar Mobile Positioning */
+    #explorer,
+    #toc-panel {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        width: 80%;
+        max-width: 80%;
+        padding: 0.75rem;
+        transition: transform 0.2s ease-in-out;
+        z-index: 100;
+    }
 
-	#explorer {
-		left: 0;
-		transform: translateX(-100%);
-	}
+    #explorer {
+        left: 0;
+        transform: translateX(-100%);
+    }
 
-	#explorer.visible {
-		transform: translateX(0);
-	}
+    #explorer.visible {
+        transform: translateX(0);
+    }
 
-	#toc-panel {
-		right: 0;
-		transform: translateX(100%);
-	}
+    #toc-panel {
+        right: 0;
+        transform: translateX(100%);
+    }
 
-	#toc-panel.visible {
-		transform: translateX(0);
-	}
+    #toc-panel.visible {
+        transform: translateX(0);
+    }
 
-	#explorer-handle,
-	#toc-handle,
-	#explorer-hint {
-		display: none;
-	}
+    #explorer-handle,
+    #toc-handle,
+    #explorer-hint {
+        display: none;
+    }
 
-	#toc-panel.is-empty {
-		display: flex !important;
-	}
+    #toc-panel.is-empty {
+        display: flex !important;
+    }
 
-	main {
-		padding-bottom: 5em;
-	}
+    main {
+        padding-bottom: 5em;
+    }
 }

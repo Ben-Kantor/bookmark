@@ -1,20 +1,27 @@
 {
-	"tasks": {
-		"dev": "deno run --unstable-bundle --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
-		"start": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
-		"update": "git stash && git pull --rebase && git stash pop && deno update"
-	},
-	"lint": {
-		"exclude": ["./assets/", "./content/"]
-	},
-	"fmt": {
-		"useTabs": false,
-		"lineWidth": 100,
-		"indentWidth": 4,
-		"semiColons": false,
-		"singleQuote": true,
-		"proseWrap": "preserve",
-		"useBraces": "preferNone",
-		"operatorPosition": "maintain"
-	}
+  "tasks": {
+    "dev": "deno run --unstable-bundle --allow-all --watch=static/,templates/,.,--ext=ts,js,html,json ./server/init.ts",
+    "start": "deno run --unstable-bundle --allow-env --allow-net --watch=. --allow-read=. ./server/init.ts",
+    "update": "git stash && git pull --rebase && git stash pop && deno update"
+  },
+  "lint": {
+    "exclude": ["./assets/", "./content/", "./server/subset-font.ts"],
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    }
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 4,
+    "semiColons": false,
+    "singleQuote": true,
+    "proseWrap": "preserve",
+    "useBraces": "preferNone",
+    "operatorPosition": "maintain"
+  },
+  "imports": {
+    "@std/fmt": "jsr:@std/fmt@^1.0.8",
+    "@std/path": "jsr:@std/path@^1.1.2"
+  }
 }

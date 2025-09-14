@@ -1,63 +1,63 @@
 /* ====> embeds.css <==== */
 .embed-wrapper {
-	margin: 0.5em 0.5em 0.5em 0.75em;
+    margin: 0.5em 0.5em 0.5em 0.75em;
 }
 
 md-embed {
-	display: inline-flex;
-	margin: 0 auto 1em;
-	overflow-wrap: break-word;
-	border: 1px solid var(--layer-2);
-	border-radius: 4px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	position: relative;
-	margin-left: 0px;
-	max-width: 100%;
-	min-width: 0;
+    display: inline-flex;
+    margin: 0 auto 1em;
+    overflow-wrap: break-word;
+    border: 1px solid var(--layer-2);
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-left: 0px;
+    max-width: 100%;
+    min-width: 0;
 }
 
 md-embed pre {
-	width: 100%;
+    width: 100%;
 }
 
 md-embed code {
-	display: block;
-	padding: 1.5em;
-	border-radius: 0.5em;
-	background-color: var(--layer-1);
-	width: 100%;
-	overflow-x: auto;
-	box-sizing: border-box;
+    display: block;
+    padding: 1.5em;
+    border-radius: 0.5em;
+    background-color: var(--layer-1);
+    width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
 }
 
 md-embed > pre > code {
-	border-radius: 0;
-	max-width: calc(100% - 0px);
+    border-radius: 0;
+    max-width: calc(100% - 0px);
 }
 
 /* Embed Titles */
-md-embed[title]:not([title='']) {
-	padding-top: 30px !important;
+md-embed[title]:not([title=""]) {
+    padding-top: 30px !important;
 }
 
-md-embed[title]:not([title=''])::before {
-	content: attr(title);
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 30px;
-	line-height: 30px;
-	padding: 0 10px;
-	background: var(--layer-2);
-	color: var(--text-bold);
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	font-weight: bold;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+md-embed[title]:not([title=""])::before {
+    content: attr(title);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    background: var(--layer-2);
+    color: var(--text-bold);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Media Embeds */
@@ -65,130 +65,130 @@ md-embed:has(iframe),
 md-embed:has(video),
 md-embed:has(audio),
 md-embed:has(img) {
-	width: auto;
-	height: auto;
+    width: auto;
+    height: auto;
 }
 
 md-embed:has(pre) {
-	width: 100%;
-	height: auto;
+    width: 100%;
+    height: auto;
 }
 
 md-embed iframe {
-	aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 9;
 }
 
 /* Content Area Media */
 #content-area .embed-wrapper {
-	max-width: 100% !important;
-	width: auto !important;
-	overflow-x: auto;
-	display: block;
+    max-width: 100% !important;
+    width: auto !important;
+    overflow-x: auto;
+    display: block;
 }
 
 #content-area audio,
 #content-area video {
-	max-width: 100% !important;
-	height: auto;
-	object-fit: contain;
+    max-width: 100% !important;
+    height: auto;
+    object-fit: contain;
 }
 
 #content-area pre,
 #content-area code,
 #content-area iframe,
 #content-area img {
-	object-fit: contain;
+    object-fit: contain;
 }
 
 main iframe,
 main audio,
 main video,
 main img:not(.pswp__img) {
-	width: 100%;
+    width: 100%;
 }
 
 /* Code Styling in Embeds */
 pre,
 code {
-	font-family: 'FiraCode Nerd Font' !important;
+    font-family: "FiraCode Nerd Font" !important;
 }
 
 pre > code {
-	background-color: var(--layer-1) !important;
-	display: block;
-	padding: 1em;
-	border-radius: 0.5em;
+    background-color: var(--layer-1) !important;
+    display: block;
+    padding: 1em;
+    border-radius: 0.5em;
 }
 
 pre:not(:only-child) {
-	margin-top: 1em;
-	margin-bottom: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 /* Code scrolling for non-embedded blocks */
 :not(md-embed) > code {
-	overflow-x: auto;
-	overflow-y: hidden;
-	white-space: pre;
-	word-wrap: normal;
-	-webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    word-wrap: normal;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Special handling for single code blocks */
 main:has(> pre:only-child > code),
 main > pre:only-child > code:only-child {
-	margin: 0px !important;
+    margin: 0px !important;
 }
 
 .line-number {
-	position: static;
-	display: inline-block;
-	width: 2em;
-	color: #888;
-	text-align: right;
-	padding-right: 0;
-	user-select: none;
+    position: static;
+    display: inline-block;
+    width: 2em;
+    color: #888;
+    text-align: right;
+    padding-right: 0;
+    user-select: none;
 }
 
 .mspace.newline {
-	display: none;
+    display: none;
 }
 
 .download-button {
-	background-color: var(--accent-primary);
-	color: var(--text-normal);
-	height: 3em;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0.5em;
-	padding: 1em;
+    background-color: var(--accent-primary);
+    color: var(--text-normal);
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5em;
+    padding: 1em;
 }
 
 code,
 pre {
-	scrollbar-width: thin !important;
-	-ms-overflow-style: scrollbar !important;
+    scrollbar-width: thin !important;
+    -ms-overflow-style: scrollbar !important;
 }
 
 /* Print Adjustments for Embeds */
 @media print {
-	md-embed {
-		border: none !important;
-		box-shadow: none !important;
-		padding: 0 !important;
-		margin: 0 0 1em 0 !important;
-		width: 100% !important;
-		page-break-inside: avoid;
-	}
+    md-embed {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 0 1em 0 !important;
+        width: 100% !important;
+        page-break-inside: avoid;
+    }
 
-	md-embed[title]:not([title=''])::before {
-		display: none !important;
-	}
+    md-embed[title]:not([title=""])::before {
+        display: none !important;
+    }
 
-	md-embed img,
-	md-embed video {
-		max-width: 100% !important;
-		height: auto !important;
-	}
+    md-embed img,
+    md-embed video {
+        max-width: 100% !important;
+        height: auto !important;
+    }
 }

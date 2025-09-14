@@ -1,76 +1,71 @@
-import { contentType } from "jsr:@std/media-types"
-import {
-  basename,
-  extname,
-  normalize,
-} from "jsr:@std/path"
+import { contentType } from 'jsr:@std/media-types@1'
+import { extname, normalize } from 'jsr:@std/path@1'
 
-import { htmlTemplate, nerdFont } from "./build.ts"
-import { PORT } from "./constants.ts"
-import { loadFileToHTML, resolveFileRequest } from "./coreutils.ts"
-import { generateOgTags, zipContent } from "./lib.ts"
+import { htmlTemplate, nerdFont } from './build.ts'
+import { PORT } from './constants.ts'
+import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
+import { generateOgTags, zipContent } from './lib.ts'
 
 const handler = async (request: Request): Promise<Response> => {
-  try {
-    const requestUrl = new URL(request.url)
-    const normalizedPath = normalize(decodeURIComponent(requestUrl.pathname))
+    try {
+        const requestUrl = new URL(request.url)
+        const normalizedPath = normalize(decodeURIComponent(requestUrl.pathname))
 
-    if (normalizedPath === "/nerdFont.woff2") {
-      return new Response(nerdFont, {
-        headers: { "Content-Type": "font/woff2" },
-      })
+        if (normalizedPath === '/nerdFont.woff2') {
+            return new Response(nerdFont, {
+                headers: { 'Content-Type': 'font/woff2' },
+            })
+        }
+
+        if (normalizedPath === '/site.zip') {
+            const zipData = await zipContent()
+            return new Response(zipData as BodyInit, {
+                headers: { 'Content-Type': 'application/zip' },
+            })
+        }
+
+        const filePathResult = await resolveFileRequest(normalizedPath)
+
+        if (filePathResult.status === 404 && !filePathResult.filePath)
+            return new Response('File not found.', { status: 404 })
+        else if (filePathResult.status === 403)
+            return new Response('Forbidden.', { status: 403 })
+        else if (filePathResult.status === 500 || !filePathResult.filePath)
+            throw new Error('Failure to resolve file request')
+
+        if (filePathResult.isLiteralRequest) {
+            const file = await Deno.open(filePathResult.filePath, { read: true })
+            const stat = await file.stat()
+            const headers = new Headers({
+                'Content-Type': contentType(extname(filePathResult.filePath)) ||
+                    'application/octet-stream',
+                'Content-Length': stat.size.toString(),
+            })
+            return new Response(file.readable, {
+                status: filePathResult.status || 200,
+                headers,
+            })
+        }
+
+        const htmlContent = await loadFileToHTML(filePathResult.filePath)
+        const page = htmlTemplate
+            .replace('$PLACEHOLDER-META', generateOgTags(filePathResult))
+            .replace('$PLACEHOLDER-CONTENT', htmlContent)
+
+        const headers: { [key: string]: string } = { 'Content-Type': 'text/html' }
+        if (filePathResult.preferredAddress)
+            headers['X-Redirect-URL'] = filePathResult.preferredAddress
+
+        return new Response(page, {
+            status: filePathResult.status || 200,
+            headers,
+        })
+    } catch (err) {
+        console.error(String(err))
+        return new Response('Internal Server Error:\n' + String(err), {
+            status: 500,
+        })
     }
-
-    if (normalizedPath === "/site.zip") {
-      return new Response(await zipContent(), {
-        headers: { "Content-Type": "application/zip" },
-      })
-    }
-
-    const filePathResult = await resolveFileRequest(normalizedPath)
-
-    if (filePathResult.status === 404 && !filePathResult.filePath) {
-      return new Response("File not found.", { status: 404 })
-    } else if (filePathResult.status === 403) {
-      return new Response("Forbidden.", { status: 403 })
-    } else if (filePathResult.status === 500 || !filePathResult.filePath) {
-      throw new Error("Failure to resolve file request")
-    }
-
-    if (filePathResult.isLiteralRequest) {
-      const file = await Deno.open(filePathResult.filePath, { read: true })
-      const stat = await file.stat()
-      const headers = new Headers({
-        "Content-Type": contentType(extname(filePathResult.filePath)) ||
-          "application/octet-stream",
-        "Content-Length": stat.size.toString(),
-      })
-      return new Response(file.readable, {
-        status: filePathResult.status || 200,
-        headers,
-      })
-    }
-
-    const htmlContent = await loadFileToHTML(filePathResult.filePath)
-    const page = htmlTemplate
-      .replace("$PLACEHOLDER-META", generateOgTags(filePathResult))
-      .replace("$PLACEHOLDER-CONTENT", htmlContent)
-
-    const headers: { [key: string]: string } = { "Content-Type": "text/html" }
-    if (filePathResult.preferredAddress) {
-      headers["X-Redirect-URL"] = filePathResult.preferredAddress
-    }
-
-    return new Response(page, {
-      status: filePathResult.status || 200,
-      headers,
-    })
-  } catch (err) {
-    console.error(String(err))
-    return new Response("Internal Server Error:\n" + String(err), {
-      status: 500,
-    })
-  }
 }
 
 Deno.serve({ port: PORT }, handler)
