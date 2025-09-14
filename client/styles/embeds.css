@@ -107,6 +107,10 @@ main img:not(.pswp__img) {
     width: 100%;
 }
 
+iframe {
+    height: 100%;
+}
+
 /* Code Styling in Embeds */
 pre,
 code {

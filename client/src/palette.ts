@@ -137,44 +137,23 @@ export const commands: Command[] = [
 
     {
         name: 'Download Page',
-        aliases: ['save', 'download current', 'export'],
+        aliases: ['save', 'export'],
         run: () => downloadFile(globalThis.location.pathname),
     },
 
     {
         name: 'Download Vault',
-        aliases: ['save vault', 'download all', 'export vault'],
+        aliases: ['save', 'export', 'zip'],
         run: () => downloadFile('/site.zip', 'site.zip'),
     },
 
     {
         name: 'Print Page',
-        aliases: ['print', 'export pdf'],
+        aliases: ['print', 'export'],
         run: () => {
-            const main: HTMLElement | null = document.querySelector('main')
-
-            if (
-                main?.children.length === 1 &&
-                main.children[0].tagName.toLowerCase() === 'iframe'
-            ) {
-                const attempted: boolean = localStorage.getItem('iframePrintAttempted') === 'true'
-
-                localStorage.setItem(
-                    'iframePrintAttempted',
-                    attempted ? 'false' : 'true',
-                )
-
-                if (!attempted) {
-                    return alert(
-                        "Please print through the iframe toolbar or another method for best results, or choose this option again to use your browser's print dialog.",
-                    )
-                }
-            }
-
             globalThis.print()
         },
     },
-
     {
         name: 'Toggle Theme',
         aliases: ['dark mode', 'light mode', 'switch theme'],

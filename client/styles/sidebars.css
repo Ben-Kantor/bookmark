@@ -351,6 +351,7 @@ button.keyboard-focus::after {
     background-color: transparent;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
 #command-palette-input:focus {

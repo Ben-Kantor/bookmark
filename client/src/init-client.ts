@@ -68,7 +68,7 @@ const setupCommandPaletteListeners = (): void => {
 
 const setupGlobalKeyboardShortcuts = (): void => {
     document.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+        if (e.ctrlKey && e.key === 'S') {
             e.preventDefault()
             if (e.shiftKey)
                 downloadFile('/site.zip', 'site.zip')
@@ -76,13 +76,14 @@ const setupGlobalKeyboardShortcuts = (): void => {
                 downloadFile(globalThis.location.pathname)
             return
         }
-        if (e.key.toLowerCase() === 'alt') {
+        if (e.key === 'Escape') {
             if (!paletteOverlay.classList.contains('hidden')) {
                 closeCommandPalette()
                 return
             }
             e.preventDefault()
             openCommandPalette()
+            return
         }
         if (!paletteOverlay.classList.contains('hidden'))
             handlePaletteNavigation(e)
