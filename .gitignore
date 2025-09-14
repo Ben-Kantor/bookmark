@@ -1,0 +1,7 @@
+/*
+# Whitelist
+!/client/
+!/content/
+!/server/
+!/deno.json
+!/.gitignore
