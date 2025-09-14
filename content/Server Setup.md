@@ -27,3 +27,26 @@ This section contains an object of key-value pairs, where each key is a renderin
 Here are all currently accepted media types: `markdown`, `plaintext`, `codeblock`, `image`, `video`, `audio`, `literal`, `iframe`, `download`.
 
 If a matching override is not found, the type will be determined automatically.
+
+## Auto-Start
+The following instructions explain how to add the Bookmark server as a system on systemd.
+
+  Add a systemd task to `/etc/systemd/system` called something like `bookmark.service`
+  ```toml
+  [Unit]
+  Description=Bookmark Sample Server
+  After=network.target
+  
+  [Service]
+  Type=simple
+  User=webserver
+  ExecStart=/home/webserver/.deno/bin/deno run serve
+  Restart=on-failure
+  WorkingDirectory=/home/webserver/bookmark
+  RestartSec=10
+  
+  [Install]
+  WantedBy=multi-user.target
+  ```
+  Enable with `systemctl enable bookmark.service`, and start with `systemctl start bookmark.service`.
+  For security reasons, ensure that the user running the server has limited permissions.

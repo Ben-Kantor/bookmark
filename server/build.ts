@@ -1,37 +1,66 @@
 import { join } from 'jsr:@std/path@1'
 import { minify } from 'npm:html-minifier-terser@7'
-import { config } from './constants.ts'
+import { config, verbose } from './constants.ts'
 import subsetFont from './subset-font.ts'
 import { vaultMap } from './vaultmap.ts'
 import { createExplorerBuilder } from './build-explorer.ts'
 
-const tasks = {
-	bundle: Deno.bundle({
-		entrypoints: ['./client/src/init-client.ts'],
-		minify: config.minify,
-		write: false,
-		platform: 'browser' as Deno.bundle.Platform,
-		format: 'iife' as Deno.bundle.Format,
-		sourcemap: config.sourceMap ? ('inline') : undefined,
-	}),
+const buildStartTime = performance.now()
 
-	font: Promise.all([
-		Deno.readTextFile('assets/charList.txt'),
-		fetch(
-			'https://cdn.jsdelivr.net/gh/mshaugh/nerdfont-webfonts/build/fonts/FiraCodeNerdFont-Regular.woff2',
-		)
-			.then((res) => res.arrayBuffer()),
-	]).then(([characters, fontBuffer]) =>
-		subsetFont(new Uint8Array(fontBuffer), characters, { targetFormat: 'woff2' })
+const logTask = async <T>(taskName: string, promise: Promise<T>): Promise<T> => {
+	if (!verbose)
+		return promise
+	try {
+		const result = await promise
+		const elapsedTime = (performance.now() - buildStartTime).toFixed(2)
+		console.log(`✅ T+${elapsedTime}ms: ${taskName}`)
+		return result
+	} catch (error) {
+		const elapsedTime = (performance.now() - buildStartTime).toFixed(2)
+		console.error(`❌ T+${elapsedTime}ms: ${taskName}`)
+		throw error
+	}
+}
+
+const tasks = {
+	bundle: logTask(
+		'Bundling client code',
+		Deno.bundle({
+			entrypoints: ['./client/src/init-client.ts'],
+			minify: config.minify,
+			write: false,
+			platform: 'browser' as Deno.bundle.Platform,
+			format: 'iife' as Deno.bundle.Format,
+			sourcemap: config.sourceMap ? 'inline' : undefined,
+		}),
 	),
 
-	css: Promise.all(
-		[...Deno.readDirSync('./client/styles')]
-			.map(({ name }) => Deno.readTextFile(join('./client/styles', name))),
-	).then((contents) => '\n' + contents.join('\n')),
+	font: logTask(
+		'Subsetting Nerd Font',
+		Promise.all([
+			Deno.readTextFile('assets/charList.txt'),
+			fetch(
+				'https://cdn.jsdelivr.net/gh/mshaugh/nerdfont-webfonts/build/fonts/FiraCodeNerdFont-Regular.woff2',
+			)
+				.then((res) => res.arrayBuffer()),
+		]).then(([characters, fontBuffer]) =>
+			subsetFont(new Uint8Array(fontBuffer), characters, { targetFormat: 'woff2' })
+		),
+	),
 
-	html: Deno.readTextFile('./client/client.html'),
-	iconMap: Deno.readTextFile('./assets/iconMap.json').then(JSON.parse),
+	css: logTask(
+		'Concatenating CSS',
+		Promise.all(
+			[...Deno.readDirSync('./client/styles')]
+				.map(({ name }) => Deno.readTextFile(join('./client/styles', name))),
+		).then((contents) => '\n' + contents.join('\n')),
+	),
+
+	html: logTask('Reading HTML template', Deno.readTextFile('./client/client.html')),
+	iconMap: logTask(
+		'Parsing icon map',
+		Deno.readTextFile('./assets/iconMap.json').then(JSON.parse),
+	),
 }
 
 const bundleResult = await tasks.bundle
@@ -43,38 +72,42 @@ if (!bundleResult.success || !bundleResult.outputFiles) {
 const transpiledBundle = bundleResult.outputFiles[0].text()
 
 const buildHtmlTemplate = async (): Promise<string> => {
-	const [clientCSS, iconMap, htmlString] = await Promise.all([
+	const [clientCSS, iconMap, htmlString, resolvedBundle] = await Promise.all([
 		tasks.css,
 		tasks.iconMap,
 		tasks.html,
+		transpiledBundle,
 	])
 
 	const finalHtml = htmlString
 		.replace(
 			'$PLACEHOLDER-HEAD',
 			`<meta name="description" property="og:description" content="${config.description}">
-	  <link rel="stylesheet" href="/!!/photoswipe.css">
-	  <style>${clientCSS}</style>
-	  <script>window.config = ${JSON.stringify(config)}</script>`,
+      <link rel="stylesheet" href="/!!/photoswipe.css">
+      <style>${clientCSS}</style>
+      <script>window.config = ${JSON.stringify(config)}</script>`,
 		)
-		.replace('$PLACEHOLDER-JS', `<script>${transpiledBundle}</script>`)
+		.replace('$PLACEHOLDER-JS', `<script>${resolvedBundle}</script>`)
 		.replace('$PLACEHOLDER-TITLE', config.title)
 		.replace('$PLACEHOLDER-EXPLORER', createExplorerBuilder(iconMap)(vaultMap.children))
 		.replace('\n', config.minify ? '' : '\n')
 
 	return config.minify
-		? await minify(finalHtml, {
-			collapseWhitespace: true,
-			removeComments: true,
-			minifyCSS: true,
-			minifyJS: true,
-			keepClosingSlash: true,
-			caseSensitive: true,
-		})
+		? logTask(
+			'Minifying final HTML',
+			minify(finalHtml, {
+				collapseWhitespace: true,
+				removeComments: true,
+				minifyCSS: true,
+				minifyJS: true,
+				keepClosingSlash: true,
+				caseSensitive: true,
+			}),
+		)
 		: finalHtml
 }
 
 export const [htmlTemplate, nerdFont] = await Promise.all([
-	buildHtmlTemplate(),
+	logTask('Building final HTML template', buildHtmlTemplate()),
 	tasks.font,
 ])

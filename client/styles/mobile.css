@@ -84,7 +84,7 @@
 }
 
 /* Mobile Layout Adjustments */
-@media (min-width: 400px) {
+@media (min-width: 225px) {
     .mobile-logo-text {
         display: block;
     }
@@ -120,19 +120,10 @@
         display: flex;
     }
 
-    #page-wrapper {
-        flex-direction: column;
-    }
-
     #content-area-wrapper,
     #content-area {
         margin: 0 !important;
         border-radius: 0 !important;
-    }
-
-    #content-area-wrapper {
-        padding-top: 56px;
-        height: 100%;
     }
 
     /* Sidebar Mobile Positioning */
@@ -170,7 +161,7 @@
     #explorer-handle,
     #toc-handle,
     #explorer-hint {
-        display: none;
+        display: none !important;
     }
 
     #toc-panel.is-empty {

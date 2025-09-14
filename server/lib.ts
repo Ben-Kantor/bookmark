@@ -1,5 +1,5 @@
 import { yellow } from 'jsr:@std/fmt@1/colors'
-import { config, contentDir } from './constants.ts'
+import { config, contentDir, verbose } from './constants.ts'
 import { globToRegExp } from 'jsr:@std/path@1'
 import { fileRequestInfo } from './types.ts'
 
@@ -143,7 +143,7 @@ export const pathMatchesGlob = (path: string, glob: string): boolean => {
 }
 
 export const warn = (message: string): void => {
-	if (config.logWarnings) console.warn(yellow(message))
+	if (config.logWarnings || verbose) console.warn(yellow(message))
 }
 
 export const generateOgTags = memoize((file: fileRequestInfo): string => {
