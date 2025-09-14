@@ -3,5 +3,6 @@
 !/client/
 !/content/
 !/server/
+!/assets/
 !/deno.json
 !/.gitignore
