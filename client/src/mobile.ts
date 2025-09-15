@@ -167,15 +167,13 @@ const swipeLeft = (): void => {
 	const toc = get('toc-panel')!
 	const overlay = get('mobile-overlay')!
 
-	if (explorer.classList.contains('visible')) {
-		explorer.classList.remove('visible')
+	if (!explorer.classList.contains('panel-collapsed')) {
 		explorer.classList.add('panel-collapsed')
-		if (!toc.classList.contains('visible')) {
+		if (toc.classList.contains('panel-collapsed')) {
 			overlay.style.opacity = '0'
 			overlay.style.pointerEvents = 'none'
 		}
-	} else if (!toc.classList.contains('visible')) {
-		toc.classList.add('visible')
+	} else if (toc.classList.contains('panel-collapsed')) {
 		toc.classList.remove('panel-collapsed')
 		overlay.style.opacity = '1'
 		overlay.style.pointerEvents = 'auto'
@@ -187,15 +185,13 @@ const swipeRight = (): void => {
 	const toc = get('toc-panel')!
 	const overlay = get('mobile-overlay')!
 
-	if (toc.classList.contains('visible')) {
-		toc.classList.remove('visible')
+	if (!toc.classList.contains('panel-collapsed')) {
 		toc.classList.add('panel-collapsed')
-		if (!explorer.classList.contains('visible')) {
+		if (explorer.classList.contains('panel-collapsed')) {
 			overlay.style.opacity = '0'
 			overlay.style.pointerEvents = 'none'
 		}
-	} else if (!explorer.classList.contains('visible')) {
-		explorer.classList.add('visible')
+	} else if (explorer.classList.contains('panel-collapsed')) {
 		explorer.classList.remove('panel-collapsed')
 		overlay.style.opacity = '1'
 		overlay.style.pointerEvents = 'auto'
