@@ -6,3 +6,4 @@
 !/assets/
 !/deno.json
 !/.gitignore
+!/readme.md

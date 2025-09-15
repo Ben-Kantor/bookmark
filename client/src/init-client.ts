@@ -151,6 +151,4 @@ const preventDragging = (): void => {
 	)
 }
 
-//document.addEventListener('DOMContentLoaded', init)
-
 init()
