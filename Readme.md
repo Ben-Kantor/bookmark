@@ -73,7 +73,7 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
     deno run serve
     ```
 
--   **Update the server and packages:** *(May require merge conflict resolution.)*
+-   **Update the server and packages:** *(May require merge conflict resolution)*
     ```bash
     deno run update
     ```

@@ -51,6 +51,7 @@ export const createEmbedWithProperties = (
 		content = processLineSection(content, properties)
 
 	let style = ''
+
 	if (properties.width) style += `width:${properties.width};`
 	if (properties.height) style += `height:${properties.height};`
 	if (properties.css) style += properties.css
@@ -64,6 +65,7 @@ export const createEmbedWithProperties = (
 export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 	const properties: types.EmbedProperties = {}
 	const terms = s.split(/[\|#]/).slice(1)
+	console.log(s)
 
 	for (const term of terms) {
 		const [key, value] = term.split('=')
@@ -79,8 +81,8 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 			}
 			if (/\d+x\d+/.test(key)) {
 				const [w, h] = key.split('x')
-				properties.width = w
-				properties.height = h
+				properties.width = w + (parseInt(w).toString() == w ? 'px' : '')
+				properties.height = h + (parseInt(h).toString() == h ? 'px' : '')
 				continue
 			}
 			if (s.includes('#' + key)) {
@@ -95,10 +97,10 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 
 		switch (key) {
 			case 'height':
-				properties.height = value
+				properties.height = value + (parseInt(value).toString() == value ? 'px' : '')
 				continue
 			case 'width':
-				properties.width = value
+				properties.width = value + (parseInt(value).toString() == value ? 'px' : '')
 				continue
 			case 'title':
 				properties.title = stripQuotes(value)
@@ -131,6 +133,7 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 		}
 	}
 	if (!properties.title) properties.title = s.split(/[\|\#]/)[0].trim()
+	console.log(properties)
 	return properties
 }
 
