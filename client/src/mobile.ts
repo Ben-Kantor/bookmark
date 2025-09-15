@@ -169,12 +169,14 @@ const swipeLeft = (): void => {
 
 	if (explorer.classList.contains('visible')) {
 		explorer.classList.remove('visible')
+		explorer.classList.add('panel-collapsed')
 		if (!toc.classList.contains('visible')) {
 			overlay.style.opacity = '0'
 			overlay.style.pointerEvents = 'none'
 		}
 	} else if (!toc.classList.contains('visible')) {
 		toc.classList.add('visible')
+		toc.classList.remove('panel-collapsed')
 		overlay.style.opacity = '1'
 		overlay.style.pointerEvents = 'auto'
 	}
@@ -187,12 +189,14 @@ const swipeRight = (): void => {
 
 	if (toc.classList.contains('visible')) {
 		toc.classList.remove('visible')
+		toc.classList.add('panel-collapsed')
 		if (!explorer.classList.contains('visible')) {
 			overlay.style.opacity = '0'
 			overlay.style.pointerEvents = 'none'
 		}
 	} else if (!explorer.classList.contains('visible')) {
 		explorer.classList.add('visible')
+		explorer.classList.remove('panel-collapsed')
 		overlay.style.opacity = '1'
 		overlay.style.pointerEvents = 'auto'
 	}
