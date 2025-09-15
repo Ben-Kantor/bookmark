@@ -15,7 +15,7 @@ export const ABSOLUTE_CONTENT_DIR: string = resolve(Deno.cwd(), CONTENT_DIR_PATH
 export const ABSOLUTE_ASSETS_DIR: string = resolve(Deno.cwd(), ASSETS_DIR_PATH)
 
 // --- Build and Runtime Options ---
-export const MINIFY: boolean = true
+export const MINIFY: boolean = false
 export const SOURCE_MAP: boolean = false
 export const SANITIZE: boolean = false
 export const LOG_WARNINGS: boolean = true

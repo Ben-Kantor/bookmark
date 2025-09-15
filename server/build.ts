@@ -78,19 +78,18 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		tasks.html,
 		transpiledBundle,
 	])
-
 	const finalHtml = htmlString
+		//the anon functions avoids special pattern detection in the replace function
 		.replace(
 			'$PLACEHOLDER-HEAD',
 			`<meta name="description" property="og:description" content="${CONFIG.DESCRIPTION}">
-      <link rel="stylesheet" href="/!!/photoswipe.css">
-      <style>${clientCSS}</style>
-      <script>window.config = ${JSON.stringify(CONFIG)}</script>`,
+<link rel="stylesheet" href="/!!/photoswipe.css">
+<style>${clientCSS}</style>`,
 		)
-		.replace('$PLACEHOLDER-JS', `<script>${resolvedBundle}</script>`)
-		.replace('$PLACEHOLDER-TITLE', CONFIG.TITLE)
-		.replace('$PLACEHOLDER-EXPLORER', createExplorerBuilder(iconMap)(vaultMap.children))
-		.replace('\n', CONFIG.MINIFY ? '' : '\n')
+		.replace('$PLACEHOLDER-JS', () => `<script>${resolvedBundle}</script>`)
+		.replace('$PLACEHOLDER-TITLE', () => CONFIG.TITLE)
+		.replace('$PLACEHOLDER-EXPLORER', () => createExplorerBuilder(iconMap)(vaultMap.children))
+		.replace('\n', () => CONFIG.MINIFY ? '' : '\n')
 
 	return CONFIG.MINIFY
 		? logTask(

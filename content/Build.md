@@ -19,7 +19,7 @@ All CSS files from `./client/styles` are loaded and concatenated into a single s
 The *client.html* template is loaded and assets are injected via placeholder replacement:
 
 - `$PLACEHOLDER-HEAD`: Meta tags, PhotoSwipe stylesheet link, combined CSS in a `<style>` tag, and serialized config in a `<script>` tag
-- `$PLACEHOLDER-JS`: Transpiled JavaScript bundle in a `<script>` tag
+- `$PLACEHOLDERJS`: Transpiled JavaScript bundle in a `<script>` tag
 - `$PLACEHOLDER-TITLE`: Configured site title
 - `$PLACEHOLDER-EXPLORER`: Pre-built explorer HTML from vault map and icon mappings
 

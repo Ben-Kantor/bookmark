@@ -7,7 +7,7 @@ import {
     setActiveIndex,
     setCols,
     setLastFocusedItem,
-} from './constants-client.ts'
+} from './constants.ts'
 
 export const highlightItem = (item: HTMLLIElement | null): void => {
     if (lastFocusedItem)

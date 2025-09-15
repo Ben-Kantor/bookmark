@@ -28,25 +28,6 @@
 
         <!-- Explorer/Toc State Initilization & Theme Initilization -->
         <script>
-            const s = [
-                    `html.explorer-is-collapsed-initial #explorer,html.toc-is-collapsed-initial #toc-panel{width:0;padding:0;visibility:hidden;overflow:hidden}`,
-                ],
-                p = (i, k) => {
-                    let c = localStorage.getItem(k + "Collapsed") === "true";
-                    if (c)
-                        document.documentElement.classList.add(
-                            k + "-is-collapsed-initial",
-                        );
-                    else {
-                        let w = localStorage.getItem(k + "Width");
-                        if (w) s.push(`#${i}{width:${w}px}`);
-                    }
-                };
-            (p("explorer", "explorer"), p("toc-panel", "toc"));
-            if (s.length) {
-                let t = document.createElement("style");
-                ((t.textContent = s.join(" ")), document.head.appendChild(t));
-            }
             let T = localStorage.getItem("theme");
             if (!T) {
                 T = globalThis.matchMedia("(prefers-color-scheme: light)")
