@@ -1,9 +1,5 @@
-/*
-# Whitelist
-!/client/
-!/content/
-!/server/
-!/assets/
-!/deno.json
-!/.gitignore
-!/readme.md
+.vscode/
+.zed/
+style.md
+todo.md
+deno.lock
