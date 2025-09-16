@@ -18,7 +18,7 @@ export const createExplorerBuilder = (
 				type: entry.dir ? 'directory' : 'file',
 				name: entry.name,
 				path: `${pathPrefix}${entry.name}${entry.dir ? '/' : ''}`,
-				displayName: entry.name,
+				displayName: entry.name.replace(/\.md$/, ""),
 				extension: entry.dir ? null : entry.name.split('.').pop() || '',
 				children: entry.dir
 					? createExplorerStructure(entry.children, `${pathPrefix}${entry.name}/`)

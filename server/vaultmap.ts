@@ -19,8 +19,6 @@ export const buildVaultMap_ = (
 
 	if (isRoot) vaultNode.isRoot = true
 
-	const fileEntries: VaultMap[] = []
-
 	for (const entry of Deno.readDirSync(currentAbsolutePath)) {
 		const entryAbsolutePath = join(currentAbsolutePath, entry.name)
 
