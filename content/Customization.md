@@ -1,6 +1,10 @@
 # Customization
 
 This page contains various potential needs to modify Bookmark, and an explanation of how to accomplish each of them.
+## Expose a Simulated Entry in the Explorer
+
+If you want to make a dynamically generated file e.g. sitemap.md, sitemap.json, site.zip appear in the explorer, you can create an empty file with that name.
+
 ## Create a Page Without Sidebars
 
 To hide the sidebars, including the file explorer and table of contents, add the following code block to the top of your markdown page:

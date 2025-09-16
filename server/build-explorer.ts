@@ -10,47 +10,23 @@ export const createExplorerBuilder = (
 	): ExplorerItem[] => {
 		const filtered = items.filter((item) => !item.name.startsWith('.'))
 
-		// Separate directories and files
-		const dirs = filtered.filter((item) => item.dir)
-		const files = filtered.filter((item) => !item.dir)
+		const explorerEntries: ExplorerItem[] = []
 
-		// Sort each group: capital letters first, then natural numeric sort
-		const sortGroup = (group: VaultMap[]): VaultMap[] => {
-			const capital = group.filter((item) =>
-				item.name.charAt(0).toUpperCase() === item.name.charAt(0) &&
-				item.name.charAt(0).toLowerCase() !== item.name.charAt(0)
-			)
-			const lowercase = group.filter((item) =>
-				!(item.name.charAt(0).toUpperCase() === item.name.charAt(0) &&
-					item.name.charAt(0).toLowerCase() !== item.name.charAt(0))
-			)
-
-			capital.sort((a, b) =>
-				a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-			)
-			lowercase.sort((a, b) =>
-				a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-			)
-
-			return [...capital, ...lowercase]
+		for (const entry of filtered) {
+			//if (entry.name.startsWith('.')) continue
+			explorerEntries.push({
+				type: entry.dir ? 'directory' : 'file',
+				name: entry.name,
+				path: `${pathPrefix}${entry.name}${entry.dir ? '/' : ''}`,
+				displayName: entry.name,
+				extension: entry.dir ? null : entry.name.split('.').pop() || '',
+				children: entry.dir
+					? createExplorerStructure(entry.children, `${pathPrefix}${entry.name}/`)
+					: [],
+			})
 		}
 
-		return [...sortGroup(dirs), ...sortGroup(files)]
-			.map((item) => {
-				const currentPath = `${pathPrefix}${item.name}${item.dir ? '/' : ''}`
-
-				return {
-					type: item.dir ? 'directory' : 'file',
-					name: item.name,
-					path: currentPath,
-					displayName: item.dir ? item.name : (item.title || item.name),
-					extension: item.dir ? null : item.name.split('.').pop() || '',
-					isActive: false, // Will be handled by the client
-					isExpanded: false, // Will be handled by the client
-					hasChildren: item.dir ? item.children.length > 0 : false,
-					children: item.dir ? createExplorerStructure(item.children, currentPath) : [],
-				}
-			})
+		return explorerEntries
 	}
 
 	const generateExplorerHTML = (items: ExplorerItem[]): string => {
@@ -61,7 +37,7 @@ export const createExplorerBuilder = (
 
 	const generateDirectoryHTML = (item: ExplorerItem): string => {
 		const folderId = `folder-contents-${item.path.replace(/[^a-zA-Z0-9]/g, '-')}`
-		const icon = item.hasChildren
+		const icon = item.children.length > 0
 			? fileTypeIcons['folder-closed']
 			: fileTypeIcons['folder-childless']
 
@@ -72,7 +48,7 @@ export const createExplorerBuilder = (
 		return `
       <li class="explorer-item folder" role="treeitem" aria-expanded="false">
         <button class="explorer-folder-button" style="padding-left: 0" aria-expanded="false" ${
-			item.hasChildren ? `aria-controls="${folderId}"` : ''
+			item.children.length > 0 ? `aria-controls="${folderId}"` : ''
 		} data-folder-path="${item.path}" aria-label="${item.name} folder">
           <span class="item-icon icon" aria-hidden="true">${icon || ''}</span>
           <span class="item-text">${item.name}</span>

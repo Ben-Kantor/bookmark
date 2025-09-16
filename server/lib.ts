@@ -1,7 +1,8 @@
 import { yellow } from 'jsr:@std/fmt@1/colors'
 import * as CONFIG from './config.ts'
-import { globToRegExp } from 'jsr:@std/path@1'
-import { fileRequestInfo } from './types.ts'
+import { globToRegExp, join } from 'jsr:@std/path@1'
+import { fileRequestInfo, VaultMap } from './types.ts'
+import { vaultMap } from './vaultmap.ts'
 
 export const escapeHTML = (str: string): string => {
 	return str.replace(/&/g, '&amp;')
@@ -155,3 +156,15 @@ export const generateOgTags = memoize((file: fileRequestInfo): string => {
     <meta property="og:type" content="website">
   `
 }, 100)
+
+export const generateMap = (): string => {
+    return `# ${CONFIG.TITLE}
+*this explore page was generated dynamically by Bookmark*
+
+${mapDir(vaultMap.children).join('\n')}`
+}
+
+export const mapDir = (dirs: VaultMap[]): string[] =>
+	dirs.flatMap((dir) => {
+		return dir.dir ? [dir.name + '/', ...mapDir(dir.children).map((e) => '  ' + e)] : dir.name
+	})

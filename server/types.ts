@@ -49,15 +49,14 @@ export interface Command {
 
 export interface VaultMapFile {
 	name: string
-	title?: string
 	dir: false
 }
 
 export interface VaultMapDirectory {
 	name: string
 	dir: true
-	isRoot?: boolean
 	children: VaultMap[]
+	isRoot: boolean
 }
 
 export type VaultMap = VaultMapDirectory | VaultMapFile
@@ -88,8 +87,5 @@ export interface ExplorerItem {
 	path: string
 	displayName: string
 	extension: string | null
-	isActive: boolean
-	isExpanded: boolean
-	hasChildren: boolean
 	children: ExplorerItem[]
 }

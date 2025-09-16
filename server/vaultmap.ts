@@ -1,44 +1,39 @@
 import { basename, dirname, extname, fromFileUrl, join, resolve } from 'jsr:@std/path@1'
-import * as types from './types.ts'
-import { toTitleCase } from './lib.ts'
+import { VaultMap, VaultMapDirectory } from './types.ts'
 import * as CONFIG from './config.ts'
 
 export const buildVaultMap_ = (
 	dir: string = './',
 	absolutePath?: string,
 	isRoot: boolean = true,
-): types.VaultMap => {
+): VaultMap => {
 	const currentAbsolutePath = absolutePath || resolve(dirname(fromFileUrl(import.meta.url)), dir)
 	const dirName = basename(currentAbsolutePath)
 
-	const vaultNode: types.VaultMap = {
+	const vaultNode: VaultMapDirectory = {
 		name: dirName,
 		dir: true,
 		children: [],
+		isRoot: isRoot,
 	}
 
 	if (isRoot) vaultNode.isRoot = true
 
-	try {
-		for (const entry of Deno.readDirSync(currentAbsolutePath)) {
-			if (entry.name.startsWith('.')) continue
+	const fileEntries: VaultMap[] = []
 
-			const entryAbsolutePath = join(currentAbsolutePath, entry.name)
+	for (const entry of Deno.readDirSync(currentAbsolutePath)) {
+		const entryAbsolutePath = join(currentAbsolutePath, entry.name)
 
-			if (entry.isFile) {
-				vaultNode.children.push({
-					name: entry.name,
-					dir: false,
-					title: toTitleCase(entry.name),
-				})
-			} else if (entry.isDirectory) {
-				vaultNode.children.push(
-					buildVaultMap(entry.name, entryAbsolutePath, false),
-				)
-			}
+		if (entry.isFile) {
+			vaultNode.children.push({
+				name: entry.name,
+				dir: false,
+			})
+		} else if (entry.isDirectory) {
+			vaultNode.children.push(
+				buildVaultMap(entry.name, entryAbsolutePath, false),
+			)
 		}
-	} catch (e) {
-		console.error(`Error reading directory ${currentAbsolutePath}:`, e)
 	}
 
 	return vaultNode
@@ -48,12 +43,12 @@ export const buildVaultMap = (
 	dir: string = './',
 	absolutePath?: string,
 	isRoot: boolean = true,
-): types.VaultMap => {
+): VaultMap => {
 	return sortVaultMap(buildVaultMap_(dir, absolutePath, isRoot))
 }
 
 export const findFilePath = (
-	vaultMap: types.VaultMap,
+	vaultMap: VaultMap,
 	fileName?: string,
 	fileExtension?: string,
 	currentPathSegment: string = '',
@@ -100,14 +95,22 @@ export const findFilePath = (
 	return undefined
 }
 
-function sortVaultMap(node: types.VaultMap): types.VaultMap {
-	if (node.dir && node.children) {
-		node.children.sort((a, b) =>
-			a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-		)
-		node.children.forEach(sortVaultMap)
+function sortVaultMap(node: VaultMap): VaultMap {
+	if (!node.dir) return node
+
+	return {
+		...node,
+		children: [...node.children].sort((a, b) => {
+			if (!a.dir && b.dir) return 1
+			if (
+				a.name.charAt(0).toLowerCase() === a.name.charAt(0) &&
+				b.name.charAt(0).toLowerCase() !== a.name.charAt(0)
+			) {
+				return 1
+			}
+			return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+		}),
 	}
-	return node
 }
 
-export const vaultMap = buildVaultMap(CONFIG.CONTENT_DIR) as types.VaultMapDirectory
+export const vaultMap = buildVaultMap(CONFIG.CONTENT_DIR) as VaultMapDirectory

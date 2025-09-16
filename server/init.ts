@@ -4,7 +4,8 @@ import { extname, normalize } from 'jsr:@std/path@1'
 import { htmlTemplate, nerdFont } from './build.ts'
 import * as CONFIG from './config.ts'
 import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
-import { generateOgTags, zipContent } from './lib.ts'
+import { generateMap, generateOgTags, zipContent } from './lib.ts'
+import { vaultMap } from './vaultmap.ts'
 
 const handler = async (request: Request): Promise<Response> => {
 	const requestUrl = new URL(request.url)
@@ -24,8 +25,16 @@ const handler = async (request: Request): Promise<Response> => {
 			response = new Response(zipData as BodyInit, {
 				headers: { 'Content-Type': 'application/zip' },
 			})
-		} else if (normalizedPath === '/') {
-			// redirect to index.html
+		} else if (normalizedPath === '/sitemap.md') {
+			response = new Response(generateMap() as BodyInit, {
+				headers: { 'Content-Type': 'text/markdown' },
+			})
+		} else if (normalizedPath === '/sitemap.json'){
+			response = new Response(JSON.stringify(vaultMap) as BodyInit, {
+				headers: { 'Content-Type': 'application/json' },
+			})
+		}
+		 if (normalizedPath === '/') {
 			response = new Response(null, {
 				status: 302,
 				headers: { 'Location': CONFIG.INDEX_FILE },
