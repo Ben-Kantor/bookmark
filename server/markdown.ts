@@ -19,8 +19,8 @@ const preprocessMarkdown = (
 	addTitle?: boolean,
 ): string => {
 	if (addTitle && !markdown.startsWith('# '))
-		markdown = `# ${toTitleCase(basename(currentPath))}\n\n${markdown}`
-	if (addTitle && (markdown.match(/^#\s(.*)|<h1>(.*)<\/h1>\n/)?.length||0) > 1) {
+		markdown = `# ${toTitleCase(basename(currentPath).replace(/\.md$/, ''))}\n\n${markdown}`
+	if (addTitle && (markdown.match(/^#\s(.*)|<h1>(.*)<\/h1>\n/)?.length || 0) > 1) {
 		console.warn(
 			yellow(`File ${currentPath} contains multiple level 1 headers.`),
 		)

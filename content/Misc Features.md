@@ -11,4 +11,7 @@
   1. A request to /sitemap.md returns a human-readable markdown directory map of the site.
   2. A request to /sitemap.json returns the json vault map.
   3. A request to /site.zip creates a .zip archive of the content directory and returns that.
-  
+
+## Memoization
+  1. The `memoize()` function takes as arguments a function and a maximum number of kilobytes to cache, and returns a memoized version.
+  2. This is used primarily for the expensive `loadFileToHTML` function, which means subsequent requests for the same file will be significantly quicker.

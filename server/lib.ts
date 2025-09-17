@@ -113,7 +113,6 @@ export const memoize = <T extends (...args: any[]) => any>(
 
 export const toTitleCase = (fileName: string): string => {
 	return fileName
-		.replace('.md', '')
 		.split(/[-_]+/)
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ')
@@ -158,7 +157,7 @@ export const generateOgTags = memoize((file: fileRequestInfo): string => {
 }, 100)
 
 export const generateMap = (): string => {
-    return `# ${CONFIG.TITLE}
+	return `# ${CONFIG.TITLE}
 *this explore page was generated dynamically by Bookmark*
 
 ${mapDir(vaultMap.children).join('\n')}`
