@@ -171,10 +171,6 @@ export const updateTitle = (): void => {
 	document.title = h1Title || pathTitle || metaTitle || ''
 }
 
-export const lastOnlyChild = (el: Element): Element => {
-	return el.children.length > 1 ? el : lastOnlyChild(el.children[0])
-}
-
 export const hideEmptyHeaders = (): void => {
 	const tables = document.querySelectorAll('.content table')
 	tables.forEach((table) => {
