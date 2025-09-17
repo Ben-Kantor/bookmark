@@ -113,6 +113,7 @@ export const memoize = <T extends (...args: any[]) => any>(
 
 export const toTitleCase = (fileName: string): string => {
 	return fileName
+		.replace(/[^a-zA-Z0-9]/g, ' ')
 		.split(/[-_]+/)
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ')

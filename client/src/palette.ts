@@ -101,21 +101,16 @@ export function searchFilesFromDOM(lowerQuery: string): PaletteItem[] {
 
 	const results: PaletteItem[] = []
 
-	// Search through all file links in the explorer, including those in collapsed folders
 	const fileLinks = explorerList.querySelectorAll('a.explorer-file-link')
 
 	fileLinks.forEach((link) => {
 		const href = (link as HTMLAnchorElement).href
 		if (!href) return
 
-		// Extract the path from the href (remove domain/protocol)
 		const url = new URL(href)
 		const filePath = decodeURI(url.pathname)
-
-		// Get the filename from the path
 		const filename = filePath.split('/').pop() || ''
-
-		// Check if filename matches query
+		
 		if (filename.toLowerCase().includes(lowerQuery)) {
 			results.push({
 				label: filePath,

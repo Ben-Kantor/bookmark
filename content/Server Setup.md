@@ -24,19 +24,21 @@ The configuration is stored in the *constants.ts* file, below each option is exp
 
 This section contains an object of key-value pairs, where each key is a rendering type, as seen in the list below. Each array of paths contains relative paths from the root of the content directory. This allows you to, for instance, force an html file which would otherwise be embedded in an iframe to be shown as code, embedded raw, or listed as a download link.
 
-Here are all currently accepted media types: `markdown`, `plaintext`, `codeblock`, `image`, `video`, `audio`, `literal`, `iframe`, `download`.
+Here are all currently accepted keys: `markdown`, `plaintext`, `codeblock`, `image`, `video`, `audio`, `literal`, `iframe`, `download`.
+
+The value for each key should be a glob, which matches all files to render in the chosen manner.
 
 If a matching override is not found, the type will be determined automatically.
 
-## Auto-Start
-The following instructions explain how to add the Bookmark server as a system on systemd.
+## Setting as System Service
 
-  Add a systemd task to `/etc/systemd/system` called something like `bookmark.service`
+
+Add a systemd task to `/etc/systemd/system` called `bookmark.service`
   ```toml
   [Unit]
-  Description=Bookmark Sample Server
+  Description=Bookmark Dynamic Markdown Webserver
   After=network.target
-  
+
   [Service]
   Type=simple
   User=webserver
@@ -44,9 +46,15 @@ The following instructions explain how to add the Bookmark server as a system on
   Restart=on-failure
   WorkingDirectory=/home/webserver/bookmark
   RestartSec=10
-  
+
   [Install]
   WantedBy=multi-user.target
   ```
-  Enable with `systemctl enable bookmark.service`, and start with `systemctl start bookmark.service`.
-  For security reasons, ensure that the user running the server has limited permissions.
+Enable with `systemctl enable bookmark.service`, and start with `systemctl start bookmark.service`.
+For security reasons, it is reccomended to run the server from a user with limited permissions.
+
+## Updating
+
+The root directory of the project includes an update.sh script which will rebase the current directory onto the latest commit to the github repo, while saving the state of your ./content directory.
+
+When you run this, watch the output as it will notify you if merge conflict resolution is needed.

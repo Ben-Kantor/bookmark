@@ -66,18 +66,8 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
 4.  **Configure the server:**
   Edit the `constants.ts` file to change the title, description, and paths as needed.
 
-## Usage
-
--   **Start the server:**
-    ```bash
-    deno run serve
-    ```
-
--   **Update the server and packages:**
-    ```bash
-    deno run update
-    ```
-    May require merge conflict resolution.
+5. **Launching:**
+  Run `deno run serve` to launch the server.
 
 ## Contributing
 
@@ -86,3 +76,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 ## License
 
 This project is licensed under the MIT License.
+
+## AI Disclosure
+
+LLM code tools were used for writing html, css, and some client ts, and reviewing and refactoring server code. All LLM-Generated code has been carefully reviewed.

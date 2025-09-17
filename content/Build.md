@@ -8,27 +8,23 @@ Deno's built-in bundler processes client-side TypeScript starting from *init-cli
 
 ## Font Subsetting
 
-FiraCode Nerd Font is fetched from CDN and subset using characters from `assets/charList.txt`. The font is converted to WOFF2 format, including only needed glyphs to reduce file size.
+FiraCode Nerd Font is fetched from CDN and subset using characters from `assets/charList.txt`. The font is subsetted, including only needed glyphs to reduce file size.
 
 ## CSS Processing
 
-All CSS files from `./client/styles` are loaded and concatenated into a single stylesheet with newline separators.
+All CSS files from `./client/styles` are loaded and concatenated into a single stylesheet.
 
 ## HTML Template Assembly
 
 The *client.html* template is loaded and assets are injected via placeholder replacement:
 
-- `$PLACEHOLDER-HEAD`: Meta tags, PhotoSwipe stylesheet link, combined CSS in a `<style>` tag, and serialized config in a `<script>` tag
-- `$PLACEHOLDERJS`: Transpiled JavaScript bundle in a `<script>` tag
-- `$PLACEHOLDER-TITLE`: Configured site title
+- `$PLACEHOLDER-HEAD`: Meta tags, combined CSS in a `<style>` tag.
+- `$PLACEHOLDER-JS`: Transpiled JavaScript bundle in a `<script>` tag
+- `$PLACEHOLDER-TITLE`: Configured site title, will be immediatly replaced by client-side code.
 - `$PLACEHOLDER-EXPLORER`: Pre-built explorer HTML from vault map and icon mappings
 
-If minification is enabled, [html-minifier-terser](https://github.com/terser/html-minifier-terser) processes the complete HTML to collapse whitespace and remove comments.
-
-## Concurrent Processing
-
-Tasks run in parallel using Promises: bundling, font processing, CSS/HTML/icon loading. Final assembly waits for required dependencies.
+If minification is enabled, [html-minifier-terser](https://github.com/terser/html-minifier-terser) processes the complete HTML add included CSS to collapse whitespace and remove comments.
 
 ## Result
 
-Exports `htmlTemplate` (self-contained HTML string) and `nerdFont` (subsetted font buffer). The template can be customized with page-specific content before delivery.
+Exports `htmlTemplate` (self-contained HTML template string) and `nerdFont` (subsetted font buffer).
