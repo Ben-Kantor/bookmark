@@ -3,7 +3,7 @@
 // Original source: https://github.com/papandreou/subset-font
 //
 
-import { compress, decompress } from 'npm:woff2-encoder@1'
+import { compress, decompress } from 'npm:woff2-encoder@1.1.0'
 
 interface SubsetOptions {
     targetFormat?: 'woff2' | 'truetype'

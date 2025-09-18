@@ -1,6 +1,6 @@
-import { yellow } from 'jsr:@std/fmt@1/colors'
+import { yellow } from 'jsr:@std/fmt@1.0.8/colors'
 import * as CONFIG from './config.ts'
-import { globToRegExp } from 'jsr:@std/path@1'
+import { globToRegExp } from 'jsr:@std/path@1.1.2'
 import { fileRequestInfo, VaultMap } from './types.ts'
 import { vaultMap } from './vaultmap.ts'
 

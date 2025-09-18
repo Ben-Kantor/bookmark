@@ -1,4 +1,4 @@
-import { basename, dirname, extname, fromFileUrl, join, resolve } from 'jsr:@std/path@1'
+import { basename, dirname, extname, fromFileUrl, join, resolve } from 'jsr:@std/path@1.1.2'
 import { VaultMap, VaultMapDirectory } from './types.ts'
 import * as CONFIG from './config.ts'
 

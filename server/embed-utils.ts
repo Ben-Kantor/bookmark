@@ -1,5 +1,6 @@
-import * as types from './types.ts'
 import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts'
+
+import * as types from './types.ts'
 import { escapeHTML, warn } from './lib.ts'
 
 export const createEmbedWithProperties = (

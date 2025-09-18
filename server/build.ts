@@ -1,5 +1,6 @@
-import { join } from 'jsr:@std/path@1'
-import { minify } from 'npm:html-minifier-terser@7'
+import { join } from 'jsr:@std/path@1.1.2'
+import { minify } from 'npm:html-minifier-terser@7.2.0'
+
 import * as CONFIG from './config.ts'
 import subsetFont from './subset-font.ts'
 import { vaultMap } from './vaultmap.ts'
@@ -79,12 +80,12 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		transpiledBundle,
 	])
 	const finalHtml = htmlString
-		//the anon functions avoids special pattern detection in the replace function
 		.replace(
 			'$PLACEHOLDER-HEAD',
 			`<meta name="description" property="og:description" content="${CONFIG.DESCRIPTION}">
 <style>${clientCSS}</style>`,
 		)
+		//the anon functions avoids special pattern detection in the replace function, e.g. "$&" gets replaced with the matched string
 		.replace('$PLACEHOLDER-JS', () => `<script>${resolvedBundle}</script>`)
 		.replace('$PLACEHOLDER-TITLE', () => CONFIG.TITLE)
 		.replace('$PLACEHOLDER-EXPLORER', () => createExplorerBuilder(iconMap)(vaultMap.children))

@@ -1,4 +1,4 @@
-import { basename, dirname, extname, join } from 'jsr:@std/path@1'
+import { basename, dirname, extname, join } from 'jsr:@std/path@1.1.2'
 
 import * as CONFIG from './config.ts'
 import { loadFileToHTML } from './coreutils.ts'

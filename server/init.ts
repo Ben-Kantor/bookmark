@@ -1,5 +1,5 @@
-import { contentType } from 'jsr:@std/media-types@1'
-import { extname, normalize } from 'jsr:@std/path@1'
+import { contentType } from 'jsr:@std/media-types@1.1.0'
+import { extname, normalize } from 'jsr:@std/path@1.1.2'
 
 import { htmlTemplate, nerdFont } from './build.ts'
 import * as CONFIG from './config.ts'

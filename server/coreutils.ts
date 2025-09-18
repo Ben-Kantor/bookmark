@@ -1,6 +1,6 @@
-import { contentType } from 'jsr:@std/media-types@1'
-import { type ParsedPath } from 'jsr:@std/path@1'
-import { basename, extname, isAbsolute, join, parse, relative } from 'jsr:@std/path@1'
+import { contentType } from 'jsr:@std/media-types@1.1.0'
+import { type ParsedPath } from 'jsr:@std/path@1.1.2'
+import { basename, extname, isAbsolute, join, parse, relative } from 'jsr:@std/path@1.1.2'
 
 import * as CONFIG from './config.ts'
 import { formatBytes, memoize, pathMatchesGlob, toHTTPLink, warn } from './lib.ts'

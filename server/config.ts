@@ -1,4 +1,4 @@
-import { resolve } from 'jsr:@std/path@1'
+import { resolve } from 'jsr:@std/path@1.1.2'
 
 // --- General Site Information ---
 export const TITLE: string = 'Bookmark'
