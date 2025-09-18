@@ -108,7 +108,7 @@ END_COMMIT=$(git rev-parse --short=7 HEAD)
 
 # List New Commits
 if [[ "$START_COMMIT" != "none" && "$START_COMMIT" != "$END_COMMIT" ]]; then
-    NEW_COMMITS=$(git log --oneline --abbrev-commit --abbrev=7 ${START_COMMIT}..${END_COMMIT})
+    NEW_COMMITS=$(git log --oneline --abbrev-commit --abbrev=7 --reverse ${START_COMMIT}..${END_COMMIT})
 else
     NEW_COMMITS="  none"
 fi
