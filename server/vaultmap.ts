@@ -100,6 +100,8 @@ function sortVaultMap(node: VaultMap): VaultMap {
 		...node,
 		children: [...node.children].sort((a, b) => {
 			if (!a.dir && b.dir) return 1
+			if (a.dir && !b.dir) return -1
+
 			if (
 				a.name.charAt(0).toLowerCase() === a.name.charAt(0) &&
 				b.name.charAt(0).toLowerCase() !== a.name.charAt(0)
