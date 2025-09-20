@@ -110,7 +110,7 @@ const finalizeMarkdown = (
 ): string => {
 	// Process code blocks with syntax highlighting
 	let processedMarkdown = markdown.replace(
-		/```[\s\S]+?```/g,
+		/```[\s\S]+```/g,
 		(match) => escapeBrackets(match),
 	)
 	processedMarkdown = processedMarkdown.replace(

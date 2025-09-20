@@ -95,7 +95,7 @@ const readFileContent = async (filePath: string): Promise<string> => {
 	const textContent: string | void = await Deno.readTextFile(filePath).catch(
 		(err) => warn(err.toString()),
 	)
-	return textContent || '<i>Empty File</i>'
+	return textContent || 'Empty File'
 }
 
 const detectBinaryContent = (textContent: string): boolean => textContent.includes('\u0000')
@@ -109,7 +109,6 @@ const renderContent = async (
 	const fileExt: string = extname(filePath).toLowerCase()
 	const fileBaseName: string = basename(filePath, fileExt)
 	const relativePath: string = relative(CONFIG.CONTENT_DIR, filePath)
-
 	switch (renderingType) {
 		case 'markdown':
 			return await renderMarkdown(
@@ -129,7 +128,7 @@ const renderContent = async (
 					'\n' +
 					textContent.trimEnd() +
 					'\n' +
-					'`',
+				'```',
 				filePath,
 				isEmbed,
 			)
