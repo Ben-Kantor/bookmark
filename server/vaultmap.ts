@@ -107,7 +107,7 @@ function sortVaultMap(node: VaultMap): VaultMap {
 				return 1
 			}
 			return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
-		}),
+		}).map(sortVaultMap),
 	}
 }
 
