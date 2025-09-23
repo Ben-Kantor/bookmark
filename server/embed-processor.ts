@@ -19,16 +19,16 @@ export const processEmbed = async (
 	currentPath: string,
 	contentDir: string,
 ): Promise<string> => {
-	let mutableBracketTerm = bracketTerm
-	if (mutableBracketTerm?.startsWith('<') && mutableBracketTerm.endsWith('>'))
-		mutableBracketTerm = mutableBracketTerm.slice(1, -1)
+	const slicedBracketTerm = (bracketTerm?.startsWith('<') && bracketTerm.endsWith('>'))
+		? bracketTerm
+		: bracketTerm?.slice(1, -1)
 
-	const linkSource = doubleBracketTerm || parenthesesTerm || mutableBracketTerm
+	const linkSource = doubleBracketTerm || parenthesesTerm || slicedBracketTerm
 	const rawLinkTarget = linkSource?.split(/[|#]/)[0]
 	const displayText =
 		(doubleBracketTerm
 			? doubleBracketTerm.split(/[|#]/)[0] || rawLinkTarget
-			: mutableBracketTerm || rawLinkTarget) || ''
+			: slicedBracketTerm || rawLinkTarget)?.replace(/^\./, '') || ''
 
 	if (!rawLinkTarget) {
 		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${
@@ -47,7 +47,7 @@ export const processEmbed = async (
 	)
 
 	if (!targetPathFromContentDir && !httpLink) {
-		warn(`Missing or malformed embed ![[${rawLinkTarget}]] in /${currentPath}`)
+		warn(`Missing or malformed embed ![[${rawLinkTarget}]] in ${currentPath}`)
 		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${
 			doubleBracketTerm || bracketTerm || parenthesesTerm
 		}]</md-embed>`
@@ -185,19 +185,23 @@ const resolveTargetPath = (
 ): string | undefined => {
 	if (doubleBracketTerm) {
 		const term = doubleBracketTerm.split(/[|#]/)[0]
-		if (term.includes('.')) {
-			const parts = term.split('.')
-			return findFilePath(vaultMap, parts[0], `.${parts[1]}`)
+
+		const ext = extname(term)
+		if (ext) {
+			const base = basename(term, ext)
+			return findFilePath(vaultMap, base, ext)
 		}
+
 		return findFilePath(vaultMap, term, '.md') || findFilePath(vaultMap, term)
 	}
 
 	const prospectivePath = join(dirname(currentPath), rawLinkTarget)
-	if (fileExists(join(CONFIG.CONTENT_DIR || '', prospectivePath)))
-		return prospectivePath
+	const prefixedPath = join(CONFIG.CONTENT_DIR || '', prospectivePath)
 
-	const base = basename(rawLinkTarget, extname(rawLinkTarget))
+	if (fileExists(prefixedPath)) return prospectivePath
+
 	const ext = extname(rawLinkTarget)
+	const base = basename(rawLinkTarget, ext)
 	return findFilePath(vaultMap, base, ext)
 }
 
