@@ -12,7 +12,6 @@ MERGE_CONFLICTS=()
 info()    { echo -e "${CYAN}[INFO]${RESET} $*"; }
 success() { echo -e "${GREEN}[OK]${RESET} $*"; }
 warn()    { echo -e "${YELLOW}[WARN]${RESET} $*"; }
-error()   { echo -e "${RED}[ERROR]${RESET} $*"; }
 
 cleanup() {
     [[ -d "$TMP_CONTENT" ]] && rm -rf "$TMP_CONTENT"
@@ -27,10 +26,11 @@ git remote get-url origin &>/dev/null || git remote add origin https://github.co
 START_COMMIT=$(git rev-parse --short=7 HEAD 2>/dev/null || echo "none")
 START_DENO=$(deno --version | head -n1 | awk '{print $2}')
 
-# Preserve untracked content (with paths!)
+# Preserve untracked content (with paths)
 info "Preserving untracked local content..."
 mkdir -p "$TMP_CONTENT"
-git ls-files --others --exclude-standard -z | rsync -aR --files-from=- ./ "$TMP_CONTENT"
+git ls-files --others --exclude-standard -z \
+  | rsync -a --files-from=- ./ "$TMP_CONTENT" || true
 
 # Stash tracked changes
 info "Stashing tracked changes..."
@@ -47,10 +47,10 @@ fi
 info "Restoring stashed changes..."
 git stash pop &>/dev/null || true
 
-# Restore untracked files
+# Restore untracked files to original locations
 if [[ -d "$TMP_CONTENT" ]]; then
     rsync -a "$TMP_CONTENT/" ./ || true
-    success "Local untracked content restored."
+    success "Local untracked content restored to original paths."
 fi
 
 # Update Deno
