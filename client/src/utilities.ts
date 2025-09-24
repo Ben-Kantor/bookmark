@@ -52,6 +52,7 @@ export const navigateTo = async (
 	if (mainContentEl && newMainContentHtml)
 		mainContentEl.innerHTML = newMainContentHtml
 
+	hideEmptyHeaders()
 	updateExplorerState(decodeURIComponent(path))
 
 	if (tocList) {
