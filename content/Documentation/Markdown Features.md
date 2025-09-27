@@ -36,6 +36,11 @@ __This text is strongly emphasized with double underscores (bold).__
 ___This text is both strongly emphasized and emphasized with tripe underscores (bold italics).___
 
 **_This text is emphasized with underscores inside double asterisks. (bold italics in italic color)._**
+## Links
+
+This wikilink connects to the readme [[Readme]]. `[[Readme]]`
+
+This wikilink connects to a header on this page: [[#Lists]]. `[[#Lists]]`
 
 ## Lists
 

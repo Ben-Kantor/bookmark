@@ -266,6 +266,12 @@ export const createCustomLinksExtension = (
 				? doubleBracketTerm.split(/[|#]/)[1] || rawLinkTarget
 				: mutableBracketTerm || rawLinkTarget
 
+			if (linkSource?.startsWith('#')) {
+				const anchorOnly = linkSource.slice(1) // Remove the # prefix
+				const displayTextForAnchor = displayText || anchorOnly
+				return `<a href="#${anchorOnly}" class="link">${displayTextForAnchor.trim()}</a>`
+			}
+
 			if (!rawLinkTarget)
 				return `<a class="broken-link">${displayText}</a>`
 

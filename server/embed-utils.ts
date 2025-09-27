@@ -16,7 +16,7 @@ export const createEmbedWithProperties = (
 
 	if (element?.children.length === 0) {
 		warn(`No content found in embed ${targetPath}`)
-		return "<md-embed role='group' title='Error: Missing or malformed embed</p>'>![Embedded Content]</md-embed>"
+		return "<md-embed role='group' title='Error: Missing or malformed embed'>![Embedded Content]</md-embed>"
 	}
 
 	if (element?.firstElementChild?.tagName.toLowerCase() === 'div')

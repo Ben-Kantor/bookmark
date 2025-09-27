@@ -20,8 +20,8 @@ export const processEmbed = async (
 	contentDir: string,
 ): Promise<string> => {
 	const slicedBracketTerm = (bracketTerm?.startsWith('<') && bracketTerm.endsWith('>'))
-		? bracketTerm
-		: bracketTerm?.slice(1, -1)
+		? bracketTerm?.slice(1, -1)
+		: bracketTerm
 
 	const linkSource = doubleBracketTerm || parenthesesTerm || slicedBracketTerm
 	const rawLinkTarget = linkSource?.split(/[|#]/)[0]
@@ -31,7 +31,8 @@ export const processEmbed = async (
 			: slicedBracketTerm || rawLinkTarget)?.replace(/^\./, '') || ''
 
 	if (!rawLinkTarget) {
-		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${
+		warn(`Missing or malformed embed ![[${rawLinkTarget}]] in ${currentPath}`)
+		return `<md-embed role='group' title='Error: Missing or malformed embed'>![${
 			doubleBracketTerm || bracketTerm || parenthesesTerm
 		}]</md-embed>`
 	}
@@ -48,7 +49,7 @@ export const processEmbed = async (
 
 	if (!targetPathFromContentDir && !httpLink) {
 		warn(`Missing or malformed embed ![[${rawLinkTarget}]] in ${currentPath}`)
-		return `<md-embed role='group' title='Error: Missing or malformed embed</p>'>![${
+		return `<md-embed role='group' title='Error: Missing or malformed embed'>![${
 			doubleBracketTerm || bracketTerm || parenthesesTerm
 		}]</md-embed>`
 	}
