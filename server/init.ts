@@ -1,7 +1,7 @@
 import { contentType } from 'jsr:@std/media-types@1.1.0'
 import { extname, normalize } from 'jsr:@std/path@1.1.2'
 
-import { htmlTemplate, nerdFont } from './build.ts'
+import { htmlTemplate, nerdFontPromise } from './build.ts'
 import * as CONFIG from './config.ts'
 import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
 import { generateMap, generateOgTags, zipContent } from './lib.ts'
@@ -20,7 +20,10 @@ const handler = async (request: Request): Promise<Response> => {
 		else console.error(`❌ ${elapsedTime}ms: Error serving ${normalizedPath}:`, err)
 	}
 
-	const serveFont = () => new Response(nerdFont, { headers: { 'Content-Type': 'font/woff2' } })
+	const serveFont = async () => {
+		const nerdFont = await nerdFontPromise
+		return new Response(nerdFont, { headers: { 'Content-Type': 'font/woff2' } })
+	}
 	const serveZip = async () =>
 		new Response(await zipContent() as BodyInit, {
 			headers: { 'Content-Type': 'application/zip' },
@@ -64,7 +67,7 @@ const handler = async (request: Request): Promise<Response> => {
 
 	let response: Response
 	try {
-		if (normalizedPath === '/!/nerdFont.woff2') response = serveFont()
+		if (normalizedPath === '/!/nerdFont.woff2') response = await serveFont()
 		else if (normalizedPath === '/site.zip') response = await serveZip()
 		else if (normalizedPath === '/sitemap.md') response = serveMarkdown()
 		else if (normalizedPath === '/sitemap.json') response = serveJSON()

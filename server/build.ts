@@ -106,4 +106,4 @@ const buildHtmlTemplate = async (): Promise<string> => {
 }
 
 export const htmlTemplate = await buildHtmlTemplate()
-export const nerdFont = await tasks.font
+export const nerdFontPromise = tasks.font
