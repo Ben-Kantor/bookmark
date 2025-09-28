@@ -128,27 +128,28 @@ export const initHeaderLinks = (): void => {
 export const scrollToAnchor = (): void => {
 	const scrollContainer = document.getElementsByTagName('main')[0]!
 	const hash = globalThis.location.hash
-
 	if (!hash || hash === '#')
 		return
 
 	requestAnimationFrame(() => {
-		try {
-			const decodedAndEscapedHash = '#' +
-				CSS.escape(decodeURIComponent(hash).substring(1))
-			const targetElement = scrollContainer.querySelector(
-				decodedAndEscapedHash,
-			)
-			if (targetElement) {
-				targetElement.scrollIntoView({
-					behavior: 'smooth',
-					block: 'start',
-				})
-				return
-			}
-		} catch (e) {
-			console.error(`Error scrolling to anchor "${hash}":`, e)
-			scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })
+		const decodedAndEscapedHash = decodeURIComponent(hash).substring(1).trimEnd()
+		const children = Array.from(scrollContainer.children)
+
+		const normalizedHash = decodedAndEscapedHash.replace(/[\-\_\s]+/g, '-').toLowerCase()
+
+		const targetElement = children.find((elem) => {
+			if (!/^h\d$/i.test(elem.tagName.toLowerCase())) return false
+
+			const normalizedText = elem.textContent?.replace(/[\-\_\s]+/g, '-').toLowerCase()
+			return normalizedText === normalizedHash
+		})
+
+		if (targetElement) {
+			targetElement.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			})
+			return
 		}
 	})
 }
