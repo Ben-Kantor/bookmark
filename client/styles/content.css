@@ -160,7 +160,7 @@ hr {
 
 /* Inline Code */
 code:not(pre > code),
-pre:not(code) {
+pre:not(code):not(main > *) {
     background-color: var(--code-bg);
     color: var(--code-text);
     font-family: "Fira Code", "Courier New", monospace;

@@ -197,6 +197,10 @@ main {
     overflow-y: auto;
 }
 
+txt {
+    white-space: pre-wrap;
+}
+
 #content-area-wrapper,
 #content-area,
 #content-area main.content {

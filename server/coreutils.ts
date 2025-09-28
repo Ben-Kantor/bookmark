@@ -3,7 +3,7 @@ import { type ParsedPath } from 'jsr:@std/path@1.1.2'
 import { basename, extname, isAbsolute, join, parse, relative } from 'jsr:@std/path@1.1.2'
 
 import * as CONFIG from './config.ts'
-import { formatBytes, memoize, pathMatchesGlob, toHTTPLink, warn } from './lib.ts'
+import { escapeHTML, formatBytes, memoize, pathMatchesGlob, toHTTPLink, warn } from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import * as types from './types.ts'
 
@@ -119,7 +119,7 @@ const renderContent = async (
 			)
 
 		case 'plaintext':
-			return `<pre class="whitespace-pre-wrap break-words">${textContent.trimEnd()}</pre>`
+			return '<txt>' + escapeHTML(textContent) + '</txt>'
 
 		case 'codeblock':
 			return await renderMarkdown(
@@ -128,7 +128,7 @@ const renderContent = async (
 					'\n' +
 					textContent.trimEnd() +
 					'\n' +
-				'```',
+					'```',
 				filePath,
 				isEmbed,
 			)
