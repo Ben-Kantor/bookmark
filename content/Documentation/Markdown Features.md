@@ -168,7 +168,7 @@ This is a paragraph with <span>inline HTML</span>.
   </ul>
 </div>
 
-## Using Footnotes
+## Footnotes
 
 [^1]: This is a footnote content.
 

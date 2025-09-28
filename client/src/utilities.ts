@@ -77,7 +77,7 @@ export const navigateTo = async (
 
 export const downloadFile = (path: string, downloadName?: string): void => {
 	const a = document.createElement('a')
-	a.href = downloadName ? path : `/!/${path}`
+	a.href = downloadName ? path : `${path}`
 	a.download = downloadName || decodeURIComponent(path.split('/').pop() || '')
 	document.body.appendChild(a)
 	a.click()
