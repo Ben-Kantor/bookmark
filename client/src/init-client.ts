@@ -50,6 +50,7 @@ const init = async (): Promise<void> => {
 	initSwipeDetection()
 	hideEmptyHeaders()
 	preventDragging()
+	createCopyButtons()
 }
 
 const setupCommandPaletteListeners = (): void => {
@@ -151,4 +152,32 @@ const preventDragging = (): void => {
 	)
 }
 
+export const createCopyButtons = (): void => {
+	document.addEventListener('DOMContentLoaded', function () {
+		document.querySelectorAll('pre').forEach(function (pre) {
+			pre.style.position = 'relative'
+			const button = document.createElement('button')
+			button.className = 'copy-button'
+			button.textContent = ''
+
+			button.onclick = () => {
+				const text = pre.firstElementChild?.textContent
+				if (text) navigator.clipboard.writeText(text)
+				button.textContent = ''
+				button.classList.remove('copied')
+				void button.offsetWidth
+				button.classList.add('copied')
+			}
+
+			pre.onmouseleave = () => {
+				setTimeout(() => {
+					button.textContent = ''
+					button.classList.remove('copied')
+				}, 200)
+			}
+
+			pre.appendChild(button)
+		})
+	})
+}
 init()

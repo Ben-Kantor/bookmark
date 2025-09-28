@@ -1,7 +1,6 @@
 // This file is a modified version of the subset-font library.
 // Original author: Andreas Lind
 // Original source: https://github.com/papandreou/subset-font
-//
 
 import { compress, decompress } from 'npm:woff2-encoder@1.1.0'
 

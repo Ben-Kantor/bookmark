@@ -1,0 +1,77 @@
+/* ====> codeblocks.css <==== */
+code,
+pre {
+    scrollbar-width: thin !important;
+    -ms-overflow-style: scrollbar !important;
+}
+
+/* Code Styling in Embeds */
+pre,
+code {
+    font-family: "FiraCode Nerd Font" !important;
+}
+
+pre > code {
+    background-color: var(--layer-1) !important;
+    display: block;
+    padding: 1em;
+    border-radius: 0.5em;
+}
+
+pre:not(:only-child) {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+/* Code scrolling for non-embedded blocks */
+:not(md-embed) > code {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    word-wrap: normal;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Special handling for single code blocks */
+main:has(> pre:only-child > code),
+main > pre:only-child > code:only-child {
+    margin: 0px !important;
+}
+
+/* Codeblock Copy Buttons */
+.copy-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--layer-0);
+    color: var(--text-normal);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+        opacity 0.2s,
+        background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-icons);
+    padding-right: 0.5px;
+    padding-bottom: 2px;
+}
+
+pre:hover .copy-button {
+    opacity: 0.5;
+}
+
+.copy-button:hover {
+    background: var(--active-interactable);
+    color: var(--accent-light);
+    opacity: 1 !important;
+}
+
+.copy-button:active {
+    background: var(--accent-dark);
+}

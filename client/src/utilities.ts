@@ -3,6 +3,7 @@ import { wrapImages } from './image.ts'
 import { highlightItem } from './keyboard-nav.ts'
 import { updateExplorerState } from './explorer.ts'
 import { generateToc } from './toc.ts'
+import { createCopyButtons } from './init-client.ts'
 
 export const navigateTo = async (
 	targetURL: string,
@@ -68,6 +69,7 @@ export const navigateTo = async (
 	initHeaderLinks()
 	updateTitle()
 	await wrapImages()
+	createCopyButtons()
 
 	if (activeIndex === 0) {
 		const newActiveItem = document.querySelector('.active-file-row')

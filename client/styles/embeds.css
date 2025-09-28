@@ -111,39 +111,6 @@ iframe {
     height: 100%;
 }
 
-/* Code Styling in Embeds */
-pre,
-code {
-    font-family: "FiraCode Nerd Font" !important;
-}
-
-pre > code {
-    background-color: var(--layer-1) !important;
-    display: block;
-    padding: 1em;
-    border-radius: 0.5em;
-}
-
-pre:not(:only-child) {
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-/* Code scrolling for non-embedded blocks */
-:not(md-embed) > code {
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: pre;
-    word-wrap: normal;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Special handling for single code blocks */
-main:has(> pre:only-child > code),
-main > pre:only-child > code:only-child {
-    margin: 0px !important;
-}
-
 .line-number {
     position: static;
     display: inline-block;
@@ -162,17 +129,13 @@ main > pre:only-child > code:only-child {
     background-color: var(--accent-primary);
     color: var(--text-normal);
     height: 3em;
+    width: 12em;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0.5em;
     padding: 1em;
-}
-
-code,
-pre {
-    scrollbar-width: thin !important;
-    -ms-overflow-style: scrollbar !important;
+    border-radius: 0.5em;
 }
 
 /* Print Adjustments for Embeds */
