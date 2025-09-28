@@ -73,7 +73,7 @@ const setupGlobalKeyboardShortcuts = (): void => {
 			if (e.shiftKey)
 				downloadFile('/site.zip', 'site.zip')
 			else
-				downloadFile(globalThis.location.pathname)
+				downloadFile('/!/' + globalThis.location.pathname)
 			return
 		}
 		if (e.key === 'Escape') {

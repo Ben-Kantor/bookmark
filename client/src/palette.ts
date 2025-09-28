@@ -110,7 +110,7 @@ export function searchFilesFromDOM(lowerQuery: string): PaletteItem[] {
 		const url = new URL(href)
 		const filePath = decodeURI(url.pathname)
 		const filename = filePath.split('/').pop() || ''
-		
+
 		if (filename.toLowerCase().includes(lowerQuery)) {
 			results.push({
 				label: filePath,
@@ -133,7 +133,7 @@ export const commands: Command[] = [
 	{
 		name: 'Download Page',
 		aliases: ['save', 'export'],
-		run: () => downloadFile(globalThis.location.pathname),
+		run: () => downloadFile('/!/' + globalThis.location.pathname),
 	},
 
 	{

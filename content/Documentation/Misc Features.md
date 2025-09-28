@@ -2,7 +2,7 @@
 If a file does not have an h1 header at the start, one is automatically inserted based on the file name.
 
 The first h1 header in a page is used as the tab title by the client.
-  
+
 ## Codeblocks
 Language is detected first by checking the string immediately following the opening backtick, before the first newline character.
 
@@ -21,3 +21,6 @@ A request to /site.zip creates a .zip archive of the content directory and retur
 The `memoize()` function takes as arguments a function and a maximum number of kilobytes to cache, and returns a memoized version.
 
 This is used primarily for the expensive `loadFileToHTML` function, which means subsequent requests for the same file will be significantly quicker.
+
+## Downloading
+CTRL + C is captured to download the raw content of the page, and CTRL + SHIFT + C downloads a zip file of the entire archive.
