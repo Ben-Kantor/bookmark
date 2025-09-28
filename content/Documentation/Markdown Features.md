@@ -82,7 +82,7 @@ This wikilink connects to a header on this page: [[#Lists]]. `[[#Lists]]`
 ## Images
 Images and other media can be embedded by putting a local or remote link inside square brackets, preceded by an exclamation mark. More information can be found in the page on [[Embeds]].
 
-`![https:\//upload.wikimedia.org\/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]`
+`![https://upload.wikimedia.org/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]`
 
 ![https://upload.wikimedia.org/wikipedia/commons/b/b6/Felis_catus-cat_on_snow.jpg]
 
@@ -122,21 +122,6 @@ const data = {
     It uses four spaces or a tab for indentation.
     Another line of code.
 
-## Blockquotes
-
-> This is a blockquote.
-> It can span multiple lines.
->
-> > This is a nested blockquote.
-> > > Even deeper nesting is possible.
->
-> Blockquotes can also contain other markdown elements:
-> * Like list items
-> * Or **bold text**
->
-> ```
-> code within a blockquote
-> ```
 ## Tables
 
 | Header 1 | Header 2 | Header 3 |
