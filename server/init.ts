@@ -55,9 +55,15 @@ const handler = async (request: Request): Promise<Response> => {
 				}),
 			})
 		} else {
+			const htmlContent = await loadFileToHTML(filePathResult.filePath)
 			const page = htmlTemplate
 				.replace('$PLACEHOLDER-META', generateOgTags(filePathResult))
-				.replace('$PLACEHOLDER-CONTENT', await loadFileToHTML(filePathResult.filePath))
+				.replace('$PLACEHOLDER-CONTENT', htmlContent)
+				.replace(
+					'$PLACEHOLDER-TITLE',
+					htmlContent.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.toString() ||
+						filePathResult.filePath?.split('/')?.pop()?.split('.')[0] || 'File',
+				)
 			const headers: { [key: string]: string } = { 'Content-Type': 'text/html' }
 			if (filePathResult.preferredAddress)
 				headers['X-Redirect-URL'] = filePathResult.preferredAddress
