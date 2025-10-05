@@ -76,19 +76,18 @@ h1:after {
     content: "";
     display: block;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(to right, var(--accent-dark), transparent);
+    height: 1px;
+    background: var(--accent-dark);
     margin-top: 0.5em;
     margin-bottom: 0.3em;
 }
 
 hr {
-    border: 0;
-    height: 2px !important;
-    background: linear-gradient(to right, var(--accent-dark), transparent);
+    border-top: 1px solid var(--accent-dark);
     display: block;
     margin-top: 0.5em;
     margin-bottom: 1.5em !important;
+    width: 100%;
 }
 
 .clickable-header {
@@ -175,6 +174,12 @@ pre:not(code):not(main > *) {
 /* Checkbox Lists */
 .content ul:has(input[type="checkbox"]) {
     list-style-type: none;
+    padding-left: 0.5em;
+}
+
+.content ul:has(input[type="checkbox"]) li {
+    position: relative;
+    padding-left: 2em;
 }
 
 .content ul:has(input[type="checkbox"]) li input[type="checkbox"] {
@@ -185,9 +190,9 @@ pre:not(code):not(main > *) {
     height: 1.1em;
     border: 2px solid var(--text-normal);
     border-radius: 3px;
-    margin-right: 0.4em;
-    vertical-align: middle;
-    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0.2em; /* Adjust vertical alignment as needed */
 }
 
 .content ul:has(input[type="checkbox"]) li input[type="checkbox"]:checked {
