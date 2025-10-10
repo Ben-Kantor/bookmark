@@ -71,9 +71,15 @@ const handler = async (request: Request): Promise<Response> => {
 		}
 	}
 
+	const serveRobotsTxt = async () => {
+		const robotsTxt = await Deno.readTextFile('assets/robots.txt')
+		return new Response(robotsTxt, { headers: { 'Content-Type': 'text/plain' } })
+	}
+
 	let response: Response
 	try {
-		if (normalizedPath === '/!/nerdFont.woff2') response = await serveFont()
+		if (normalizedPath === '/robots.txt') response = await serveRobotsTxt()
+		else if (normalizedPath === '/!/nerdFont.woff2') response = await serveFont()
 		else if (normalizedPath === '/site.zip') response = await serveZip()
 		else if (normalizedPath === '/sitemap.md') response = serveMarkdown()
 		else if (normalizedPath === '/sitemap.json') response = serveJSON()
