@@ -17,27 +17,27 @@
 
     /* Dark Theme */
     --background-primary: #121212;
-    --layer-0: #1c1c1c;
-    --layer-1: #242424;
-    --layer-2: #2e2e2e;
-    --accent-primary: #d14b68;
-    --accent-dark: #692534;
-    --accent-light: #eee4cd;
-    --accent-gold: #fcd882;
-    --text-normal: #f8f6fc;
+    --layer-0: #1b1b1b;
+    --layer-1: #232323;
+    --layer-2: #303030;
+    --accent-primary: #d75b76;
+    --accent-dark: #752a3b;
+    --accent-light: #f3e9d5;
+    --accent-gold: #fcd98e;
+    --text-normal: #faf8fe;
     --text-accent: var(--accent-light);
     --text-bold: var(--accent-gold);
-    --text-italic: #f3b7c1;
+    --text-italic: #f5b9c3;
     --active-interactable: var(--layer-2);
 
     /* Code Colors */
     --code-bg: var(--layer-1);
     --code-text: var(--text-normal);
-    --code-comment: #777777;
+    --code-comment: #888888;
     --code-keyword: var(--accent-gold);
     --code-string: var(--accent-light);
     --code-function: var(--accent-primary);
-    --code-number: #e6a85c;
+    --code-number: #e8af65;
     --code-type: var(--accent-primary);
     --code-operator: var(--accent-light);
     --code-variable: var(--text-italic);
@@ -45,28 +45,30 @@
 
 [data-theme="light"] {
     --background-primary: #faf4ed;
-    --layer-0: #f2e9de;
-    --layer-1: #fffaf3;
-    --layer-2: #e7d9cf;
-    --accent-primary: #b4637a;
-    --accent-dark: #ffbba6;
-    --accent-light: #575279;
-    --accent-gold: #bd7614;
-    --text-normal: #575279;
+    --layer-0: #f1e7db;
+    --layer-1: #fff9f1;
+    --layer-2: #e4d5ca;
+    --accent-primary: #b45a75;
+    --accent-dark: #ffa78d;
+    --accent-light: #4f4a71;
+    --accent-gold: #b77110;
+    --text-normal: #504a71;
     --text-accent: var(--accent-light);
     --text-bold: var(--accent-gold);
-    --text-italic: #907aa9;
+    --text-italic: #8f6ea9;
 
+    /* Code Colors */
     --code-bg: var(--layer-1);
     --code-text: var(--text-normal);
-    --code-comment: #8a8a8a;
+    --code-comment: #7a7a7a;
     --code-string: var(--accent-light);
     --code-function: var(--accent-primary);
-    --code-number: #d19a66;
+    --code-number: #c88c55;
     --code-type: var(--accent-primary);
     --code-operator: var(--accent-light);
     --code-variable: var(--text-italic);
 }
+
 
 [data-high-contrast="true"] {
     --background-primary: #000000;
