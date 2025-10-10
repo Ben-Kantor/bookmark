@@ -106,7 +106,7 @@ const processHttpEmbed = async (
 
 		if (majorType === 'image') {
 			const img =
-				`<img src="${httpLink}" alt="${displayText}" style="padding:0px" class="lightbox-image"/>`
+				`<img src="${httpLink}" alt="${displayText}" style="padding:0px" class="lightbox-image" fetchpriority="high"/>`
 			return createEmbedWithProperties(img, displayText, rawProperties)
 		}
 
