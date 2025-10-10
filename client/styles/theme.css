@@ -3,10 +3,8 @@
     font-family: "FiraCode Nerd Font";
     src: url("/!/nerdFont.woff2") format("woff2");
 }
-@font-face {
-    font-family: "DM Serif Text";
-    src: url("/!!/DMSerifText-Regular-Subset.woff2") format("woff2");
-}
+
+@import url("/!!/DMSerifText-Regular-Subset.woff2");
 
 :root {
     --font-title: "DM Serif Text", serif;
@@ -68,7 +66,6 @@
     --code-operator: var(--accent-light);
     --code-variable: var(--text-italic);
 }
-
 
 [data-high-contrast="true"] {
     --background-primary: #000000;
