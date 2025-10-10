@@ -9,7 +9,12 @@
         <meta name="theme-color" content="#692534" />
         <link rel="stylesheet" href="/!!/photoswipe.css" />
         $PLACEHOLDER-META
-        <link rel="icon" type="image/x-icon" href="/!!/icon-x32.ico" />
+        <link
+            rel="preload"
+            href="/!!/photoswipe.css"
+            as="style"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
         $PLACEHOLDER-HEAD
 
         <!-- PhotoSwipe Lightbox Module Initilization -->
