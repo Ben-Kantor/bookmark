@@ -37,3 +37,7 @@ export const renderOverrides: { [key in OverrideKey]?: string[] } = {
 	iframe: [],
 	codeblock: ['./**.html'],
 }
+
+export const ignoreFiles: string[] = [
+	'**/ignoreme',
+]
