@@ -87,7 +87,6 @@ const buildHtmlTemplate = async (): Promise<string> => {
 		)
 		//the anon functions avoids special pattern detection in the replace function, e.g. "$&" gets replaced with the matched string
 		.replace('$PLACEHOLDER-JS', () => `<script>${resolvedBundle}</script>`)
-		.replace('$PLACEHOLDER-TITLE', () => CONFIG.TITLE)
 		.replace('$PLACEHOLDER-EXPLORER', () => createExplorerBuilder(iconMap)(vaultMap.children))
 
 	return CONFIG.MINIFY

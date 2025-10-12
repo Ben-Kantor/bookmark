@@ -4,7 +4,7 @@ import { extname, normalize } from 'jsr:@std/path@1.1.2'
 import { htmlTemplate, nerdFontPromise } from './build.ts'
 import * as CONFIG from './config.ts'
 import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
-import { generateMap, generateOgTags, zipContent } from './lib.ts'
+import { generateMap, summarizeHTML, zipContent } from './lib.ts'
 import { vaultMap } from './vaultmap.ts'
 import { fileRequestInfo } from './types.ts'
 
@@ -57,12 +57,12 @@ const handler = async (request: Request): Promise<Response> => {
 		} else {
 			const htmlContent = await loadFileToHTML(filePathResult.filePath)
 			const page = htmlTemplate
-				.replace('$PLACEHOLDER-META', generateOgTags(filePathResult))
+				.replace('$PLACEHOLDER-DESCRIPTION', summarizeHTML(htmlContent))
 				.replace('$PLACEHOLDER-CONTENT', htmlContent)
 				.replace(
 					'$PLACEHOLDER-TITLE',
-					htmlContent.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.toString() ||
-						filePathResult.filePath?.split('/')?.pop()?.split('.')[0] || 'File',
+					(htmlContent.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i) || [])[1] ||
+						filePathResult.filePath?.split('/')?.pop()?.split('.')[0] || CONFIG.TITLE,
 				)
 			const headers: { [key: string]: string } = { 'Content-Type': 'text/html' }
 			if (filePathResult.preferredAddress)

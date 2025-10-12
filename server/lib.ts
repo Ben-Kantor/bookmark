@@ -1,7 +1,7 @@
 import { yellow } from 'jsr:@std/fmt@1.0.8/colors'
 import * as CONFIG from './config.ts'
 import { globToRegExp } from 'jsr:@std/path@1.1.2'
-import { fileRequestInfo, VaultMap } from './types.ts'
+import { VaultMap } from './types.ts'
 import { vaultMap } from './vaultmap.ts'
 
 export const escapeHTML = (str: string): string => {
@@ -147,16 +147,6 @@ export const warn = (message: string): void => {
 	if (CONFIG.LOG_WARNINGS || CONFIG.VERBOSE) console.warn(yellow(message))
 }
 
-export const generateOgTags = memoize((file: fileRequestInfo): string => {
-	return `
-    <meta property="og:title" content="${CONFIG.TITLE}">
-    <meta property="og:description" content="${
-		escapeHTML(`File: ${file.filePath?.split('/').pop()}`)
-	}">
-    <meta property="og:type" content="website">
-  `
-}, 100)
-
 export const generateMap = (): string => {
 	return `# ${CONFIG.TITLE}
 *this explore page was generated dynamically by Bookmark*
@@ -168,3 +158,43 @@ export const mapDir = (dirs: VaultMap[]): string[] =>
 	dirs.flatMap((dir) => {
 		return dir.dir ? [dir.name + '/', ...mapDir(dir.children).map((e) => '  ' + e)] : dir.name
 	})
+
+export const summarizeHTML = (html: string): string => {
+  html = html.replace(/<!--[\s\S]*?-->/g, '');
+  const pMatches = Array.from(html.matchAll(/<p[^>]*>(.*?)<\/p>/gi), m => stripTags(m[1]).trim()).filter(Boolean);
+  let summary = '';
+  for (const p of pMatches) {
+    if (summary.length >= 75) break;
+    summary += (summary ? '\n' : '') + p;
+  }
+  if (summary) return truncate(summary);
+  const imgAltMatch = html.match(/<img[^>]*alt=["']([^"']+)["']/i);
+  if (imgAltMatch) return truncate(decodeEntities(imgAltMatch[1].trim()));
+  const imgSrcMatch = html.match(/<img[^>]*src=["']([^"']+)["']/i);
+  if (imgSrcMatch) return truncate(getFilename(imgSrcMatch[1]));
+  const mediaAltTitleMatch = html.match(/<(audio|video|iframe)[^>]*(?:alt|title)=["']([^"']+)["']/i);
+  if (mediaAltTitleMatch) return truncate(decodeEntities(mediaAltTitleMatch[2].trim()));
+  const mediaSrcMatch = html.match(/<(audio|video|iframe)[^>]*src=["']([^"']+)["']/i);
+  if (mediaSrcMatch) return truncate(getFilename(mediaSrcMatch[2]));
+  const rawText = stripTags(html).trim();
+  return truncate(rawText);
+};
+
+const decodeEntities = (str: string): string => str.replace(/&([^;]+);/g, (_, entity) => {
+  const entities: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+  return entities[entity] || _;
+});
+
+const getFilename = (url: string): string => {
+  const parts = url.split('/');
+  return decodeURIComponent(parts[parts.length - 1] || url);
+};
+
+const stripTags = (str: string): string => str.replace(/<[^>]+>/g, '');
+
+const truncate = (str: string): string => {
+  if (str.length <= 100) return str;
+  const truncated = str.slice(0, 97);
+  const lastSpace = truncated.lastIndexOf(' ');
+  return (lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated) + '...';
+};
