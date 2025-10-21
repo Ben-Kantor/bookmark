@@ -95,29 +95,18 @@ export const initHeaderLinks = (): void => {
 		header.classList.add('clickable-header')
 
 		const handleHeaderCopy = async (event: Event) => {
+			if ((event.target as HTMLElement).closest('a'))
+				return
+
 			event.preventDefault()
 
 			const url = `${globalThis.location.origin}${globalThis.location.pathname}#${
 				encodeURIComponent(header.textContent || '')
 			}`
 
-			try {
-				if (navigator.clipboard && navigator.clipboard.writeText)
-					await navigator.clipboard.writeText(url)
-				else {
-					const textArea = document.createElement('textarea')
-					textArea.value = url
-					document.body.appendChild(textArea)
-					textArea.select()
-					document.execCommand('copy')
-					document.body.removeChild(textArea)
-				}
-
-				header.classList.add('copied')
-				setTimeout(() => header.classList.remove('copied'), 200)
-			} catch (err) {
-				console.error('Failed to copy link: ', err)
-			}
+			await navigator.clipboard.writeText(url)
+			header.classList.add('copied')
+			setTimeout(() => header.classList.remove('copied'), 200)
 		}
 
 		header.addEventListener('click', handleHeaderCopy)

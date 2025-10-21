@@ -282,7 +282,7 @@ export const createCustomLinksExtension = (
 			const remoteLink = toHTTPLink(rawLinkTarget)
 			if (remoteLink) {
 				const finalURL = remoteLink + (linkAnchor ? `#${linkAnchor}` : '')
-				return `<a href="${finalURL}" class="link">\u{1f517} ${displayText.trim()}</a>`
+				return `<a href="${finalURL}" class="link">${displayText.trim()}</a>`
 			}
 
 			let targetPathFromContentDir: string | undefined
@@ -306,7 +306,7 @@ export const createCustomLinksExtension = (
 					rawLinkTarget,
 				)
 
-				if (fileExists(join(contentDir, prospectivePath)))
+				if (fileExists(prospectivePath))
 					targetPathFromContentDir = prospectivePath
 				else {
 					const base = basename(rawLinkTarget, extname(rawLinkTarget))
