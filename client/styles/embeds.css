@@ -107,6 +107,14 @@ main img:not(.pswp__img) {
     width: 100%;
 }
 
+#content-area-wrapper:has(main > iframe:only-child),
+main:has(iframe:only-child) {
+    margin: 0;
+    border-radius: 0;
+    padding: 0;
+    outline: none !important;
+}
+
 iframe {
     height: 100%;
 }
