@@ -145,10 +145,6 @@ export const scrollToAnchor = (): void => {
 	})
 }
 
-export const titleFromMarkdown = (markdown: string): string | undefined => {
-	return markdown.match(/\A#\s(.+)\n/)?.[1]
-}
-
 export const updateTitle = (): void => {
 	const h1Title = document.querySelector('h1')?.textContent
 	const pathTitle = toTitleCase(

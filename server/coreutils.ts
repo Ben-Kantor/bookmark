@@ -1,9 +1,18 @@
-import { contentType } from 'jsr:@std/media-types@1.1.0'
-import { type ParsedPath } from 'jsr:@std/path@1.1.2'
-import { basename, extname, isAbsolute, join, parse, relative } from 'jsr:@std/path@1.1.2'
+import { type Dirent, type Stats } from 'node:fs'
+import { readdir, stat } from 'node:fs/promises'
+import { type ParsedPath } from 'node:path'
+import { basename, extname, isAbsolute, join, parse, relative } from 'node:path'
 
 import * as CONFIG from './config.ts'
-import { escapeHTML, formatBytes, memoize, pathMatchesGlob, toHTTPLink, warn } from './lib.ts'
+import {
+	contentType,
+	escapeHTML,
+	formatBytes,
+	memoize,
+	pathMatchesGlob,
+	toHTTPLink,
+	warn,
+} from './lib.ts'
 import { renderMarkdown } from './markdown.ts'
 import * as types from './types.ts'
 
@@ -12,9 +21,9 @@ export const resolveFileRequest = async (
 ): Promise<types.fileRequestInfo> => {
 	let absolutePath: string | undefined
 	if (path.startsWith('/!!'))
-		absolutePath = join(Deno.cwd(), CONFIG.ASSETS_DIR_PATH, path.slice(3))
+		absolutePath = join(process.cwd(), CONFIG.ASSETS_DIR_PATH, path.slice(3))
 	else {absolutePath = join(
-			Deno.cwd(),
+			process.cwd(),
 			CONFIG.CONTENT_DIR_PATH,
 			path.replace(/^\/\!/g, ''),
 		)}
@@ -34,9 +43,10 @@ export const resolveFileRequest = async (
 		return { status: 403 }
 	}
 
-	const fileStat = await Deno.stat(
-		absolutePath || absolutePath,
-	).catch(() => ({ isFile: false, isDirectory: false }))
+	const fileStat = await stat(absolutePath).catch(() => ({
+		isFile: () => false,
+		isDirectory: () => false,
+	}))
 
 	// Check for existing file
 	const fileResult = handleExistingFile(
@@ -92,7 +102,7 @@ const determineRenderingType = (filePath: string): string | undefined => {
 }
 
 const readFileContent = async (filePath: string): Promise<string> => {
-	const textContent: string | void = await Deno.readTextFile(filePath).catch(
+	const textContent: string | void = await Bun.file(filePath).text().catch(
 		(err) => warn(err.toString()),
 	)
 	return textContent || 'Empty File'
@@ -172,7 +182,7 @@ const renderDownloadContent = async (
 	relativePath: string,
 ): Promise<string> => {
 	try {
-		const fileInfo = await Deno.stat(filePath)
+		const fileInfo = await stat(filePath)
 		const fileExt = extname(filePath).toLowerCase()
 		const html = `<div class="flex flex-col p-4 items-center text-center">
 			<h2 class="text-xl font-bold">${fileBaseName}</h2>
@@ -216,7 +226,6 @@ const handleWebLink = (path: string): types.fileRequestInfo | null => {
 	if (webLink) {
 		return {
 			filePath: webLink,
-			isWebLink: true,
 		}
 	}
 	return null
@@ -233,12 +242,12 @@ const handleRootPath = (path: string): types.fileRequestInfo | null => {
 }
 
 const handleExistingFile = (
-	fileStat: Deno.FileInfo | { isFile: boolean; isDirectory: boolean },
+	fileStat: Stats | { isFile: () => boolean; isDirectory: () => boolean },
 	parsedPath: ParsedPath,
 	path: string,
 	absolutePath?: string,
 ): types.fileRequestInfo | null => {
-	if (fileStat.isFile) {
+	if (fileStat.isFile()) {
 		const filePath = absolutePath || parsedPath.dir + '/' + parsedPath.base
 		return {
 			filePath: filePath,
@@ -250,19 +259,19 @@ const handleExistingFile = (
 }
 
 const handleDirectory = async (
-	fileStat: Deno.FileInfo | { isFile: boolean; isDirectory: boolean },
+	fileStat: Stats | { isFile: () => boolean; isDirectory: () => boolean },
 	parsedPath: ParsedPath,
 	path: string,
 	absolutePath?: string,
 ): Promise<types.fileRequestInfo | null> => {
-	if (fileStat.isDirectory) {
+	if (fileStat.isDirectory()) {
 		const dirPath = absolutePath || parsedPath.dir
-		const possibleFiles = Deno.readDir(dirPath)
-		let firstFile: Deno.DirEntry | undefined
+		const possibleFiles = await readdir(dirPath, { withFileTypes: true })
+		let firstFile: Dirent | undefined
 
-		for await (const entry of possibleFiles) {
+		for (const entry of possibleFiles) {
 			if (!firstFile) firstFile = entry
-			if (!entry.isFile) continue
+			if (!entry.isFile()) continue
 			if (entry.name.toLowerCase().split('.')[0] === 'index') {
 				const filePath = join(dirPath, entry.name)
 				return {
@@ -301,13 +310,13 @@ const findFileByPrefix = async (
 ): Promise<types.fileRequestInfo | null> => {
 	try {
 		const dirPath = absolutePath ? parse(absolutePath).dir : parsedPath.dir
-		const possibleFiles = Deno.readDir(dirPath)
+		const possibleFiles = await readdir(dirPath, { withFileTypes: true })
 		const requestFileName: string = parsedPath.name
 			.toLowerCase()
 			.split('.')[0]
 
-		for await (const entry of possibleFiles) {
-			if (!entry.isFile) continue
+		for (const entry of possibleFiles) {
+			if (!entry.isFile()) continue
 			if (entry.name.toLowerCase().startsWith(requestFileName)) {
 				const filePath = join(dirPath, entry.name)
 				return {

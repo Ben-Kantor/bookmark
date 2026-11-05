@@ -13,7 +13,6 @@ export const createExplorerBuilder = (
 		const explorerEntries: ExplorerItem[] = []
 
 		for (const entry of filtered) {
-			//if (entry.name.startsWith('.')) continue
 			explorerEntries.push({
 				type: entry.dir ? 'directory' : 'file',
 				name: entry.name,

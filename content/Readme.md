@@ -39,7 +39,7 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
 
 ### Developer Experience
 
--   Fully typed frontend and backend with ES2020+ deno features
+-   Fully typed frontend and backend with modern TypeScript features
 -   Zero-config TypeScript execution with built-in tooling and web standards
 -   Intelligent memoization with size-based LRU eviction and memoization
 -   Comprehensive error catching with user-friendly fallbacks and developer warnings
@@ -53,10 +53,10 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
   cd bookmark
   ```
 
-2.  **Install Deno:**
-  Run this command: `curl -fsSL https://deno.land/install.sh | sh`
+2.  **Install Bun:**
+  Run this command: `curl -fsSL https://bun.sh/install | bash`
 
-  Follow the instructions on the [official Deno website](https://docs.deno.com/runtime/getting_started/installation/).
+  Follow the instructions on the [official Bun website](https://bun.sh/docs/installation).
 
 3.  **Add your content:**
   Move your content directly into the `./content` directory.
@@ -64,10 +64,13 @@ Bookmark is a dynamic markdown webserver, that serves repositories of markdown a
   Make sure you have a `.404.md` and `index.md` file.
 
 4.  **Configure the server:**
-  Edit the `constants.ts` file to change the title, description, and paths as needed.
+  Edit the `server/config.ts` file to change the title, description, and paths as needed.
 
-5. **Launching:**
-  Run `deno run serve` to launch the server.
+5. **Install dependencies:**
+  Run `bun install`.
+
+6. **Launching:**
+  Run `bun run serve` to launch the server, or `bun run start` to run it once without watching.
 
 ## Contributing
 

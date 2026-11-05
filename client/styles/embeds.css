@@ -108,7 +108,7 @@ main img:not(.pswp__img) {
 }
 
 #content-area-wrapper:has(main > iframe:only-child),
-main:has(iframe:only-child) {
+main:has(> iframe:only-child) {
     margin: 0;
     border-radius: 0;
     padding: 0;

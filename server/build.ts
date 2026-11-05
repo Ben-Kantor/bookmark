@@ -1,5 +1,6 @@
-import { join } from 'jsr:@std/path@1.1.2'
-import { minify } from 'npm:html-minifier-terser@7.2.0'
+import { readdirSync } from 'node:fs'
+import { join, resolve } from 'node:path'
+import { minify } from 'html-minifier-terser'
 
 import * as CONFIG from './config.ts'
 import subsetFont from './subset-font.ts'
@@ -26,20 +27,21 @@ const logTask = async <T>(taskName: string, promise: Promise<T>): Promise<T> => 
 const tasks = {
 	bundle: logTask(
 		'bundle client code',
-		Deno.bundle({
-			entrypoints: ['./client/src/init-client.ts'],
+		Bun.build({
+			entrypoints: [resolve(import.meta.dir, '../client/src/init-client.ts')],
 			minify: CONFIG.MINIFY,
+			// @ts-ignore Bun.build accepts `write` at runtime but @types/bun's BuildConfig omits it
 			write: false,
-			platform: 'browser' as Deno.bundle.Platform,
-			format: 'iife' as Deno.bundle.Format,
-			sourcemap: CONFIG.SOURCE_MAP ? 'inline' : undefined,
+			target: 'browser',
+			format: 'iife',
+			sourcemap: CONFIG.SOURCE_MAP ? 'inline' : 'none',
 		}),
 	),
 
 	font: logTask(
 		'subset Nerd Font',
 		Promise.all([
-			Deno.readTextFile('assets/charList.txt'),
+			Bun.file('assets/charList.txt').text(),
 			fetch(
 				'https://cdn.jsdelivr.net/gh/mshaugh/nerdfont-webfonts/build/fonts/FiraCodeNerdFont-Regular.woff2',
 			)
@@ -52,25 +54,27 @@ const tasks = {
 	css: logTask(
 		'concatenate CSS',
 		Promise.all(
-			[...Deno.readDirSync('./client/styles')]
-				.map(({ name }) => Deno.readTextFile(join('./client/styles', name))),
+			readdirSync('./client/styles', { withFileTypes: true })
+				.map(({ name }) => Bun.file(join('./client/styles', name)).text()),
 		).then((contents) => '\n' + contents.join('\n')),
 	),
 
-	html: logTask('read HTML template', Deno.readTextFile('./client/client.html')),
+	html: logTask('read HTML template', Bun.file('./client/client.html').text()),
 	iconMap: logTask(
 		'parse icon map',
-		Deno.readTextFile('./assets/iconMap.json').then(JSON.parse),
+		Bun.file('./assets/iconMap.json').text().then(JSON.parse),
 	),
 }
 
 const bundleResult = await tasks.bundle
-if (!bundleResult.success || !bundleResult.outputFiles) {
-	console.error('Bundle errors:', bundleResult.errors)
+if (!bundleResult.success) {
+	console.error('Bundle errors:', bundleResult.logs)
 	throw new Error('Failed to bundle client code')
 }
 
-const transpiledBundle = bundleResult.outputFiles[0].text()
+const entryArtifact = bundleResult.outputs.find((o) => o.kind === 'entry-point') ??
+	bundleResult.outputs[0]
+const transpiledBundle = await entryArtifact.text()
 
 const buildHtmlTemplate = async (): Promise<string> => {
 	const [clientCSS, iconMap, htmlString, resolvedBundle] = await Promise.all([

@@ -1,8 +1,14 @@
-import { yellow } from 'jsr:@std/fmt@1.0.8/colors'
+import { statSync } from 'node:fs'
+import mime from 'mime-types'
+import picomatch from 'picomatch'
+import { yellow } from 'picocolors'
+
 import * as CONFIG from './config.ts'
-import { globToRegExp } from 'jsr:@std/path@1.1.2'
 import { VaultMap } from './types.ts'
 import { vaultMap } from './vaultmap.ts'
+
+export const contentType = (extension: string): string | false =>
+	mime.contentType(extension.replace(/^\./, ''))
 
 export const escapeHTML = (str: string): string => {
 	return str.replace(/&/g, '&amp;')
@@ -43,7 +49,7 @@ export const toHTTPLink = (link: string | null | undefined): string | null => {
 
 export const fileExists = (path: string): boolean => {
 	try {
-		Deno.statSync(path)
+		statSync(path)
 		return true
 	} catch {
 		return false
@@ -51,14 +57,15 @@ export const fileExists = (path: string): boolean => {
 }
 
 export const zipContent = async (): Promise<Uint8Array> => {
-	const { walk } = await import('jsr:@std/fs@1')
-	const JSZip = (await import('npm:jszip@3')).default
+	const JSZip = (await import('jszip')).default
 
 	const zip = new JSZip()
+	const glob = new Bun.Glob('**/*')
 
-	for await (const entry of walk(CONFIG.CONTENT_DIR, { includeDirs: false })) {
-		const data = await Deno.readFile(entry.path)
-		const relative = entry.path.replace(/^content[\/\\]/, '')
+	for await (
+		const relative of glob.scan({ cwd: CONFIG.CONTENT_DIR, onlyFiles: true })
+	) {
+		const data = await Bun.file(`${CONFIG.CONTENT_DIR}/${relative}`).arrayBuffer()
 		zip.file(relative, data)
 	}
 
@@ -66,7 +73,6 @@ export const zipContent = async (): Promise<Uint8Array> => {
 	return content
 }
 
-// deno-lint-ignore no-explicit-any
 export const memoize = <T extends (...args: any[]) => any>(
 	fn: T,
 	maxSizeKB: number,
@@ -78,7 +84,6 @@ export const memoize = <T extends (...args: any[]) => any>(
 	const sizeOf = (k: string, v: ReturnType<T> | undefined) =>
 		k.length * 2 + JSON.stringify(v).length * 2 + 64
 
-	// deno-lint-ignore no-explicit-any
 	const keyOf = (...args: any[]) =>
 		args.length === 0 ?
 			'' :
@@ -134,13 +139,14 @@ export const replaceUnicode = (text: string): string => {
 	)
 }
 
-export const titleFromMarkdown = (markdown: string): string | undefined => {
-	return markdown.match(/\A#\s(.+)\n/)?.[1]
-}
-
-const globToRegExpMemo = memoize(globToRegExp, 10)
+const matcherCache = new Map<string, (path: string) => boolean>()
 export const pathMatchesGlob = (path: string, glob: string): boolean => {
-	return globToRegExpMemo(glob).test(path)
+	let matcher = matcherCache.get(glob)
+	if (!matcher) {
+		matcher = picomatch(glob, { dot: true })
+		matcherCache.set(glob, matcher)
+	}
+	return matcher(path)
 }
 
 export const warn = (message: string): void => {

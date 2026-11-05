@@ -1,4 +1,5 @@
-import { basename, dirname, extname, fromFileUrl, join, resolve } from 'jsr:@std/path@1.1.2'
+import { readdirSync } from 'node:fs'
+import { basename, extname, join, resolve } from 'node:path'
 import { VaultMap, VaultMapDirectory } from './types.ts'
 import * as CONFIG from './config.ts'
 import { pathMatchesGlob } from './lib.ts'
@@ -8,7 +9,7 @@ export const buildVaultMap_ = (
 	absolutePath?: string,
 	isRoot: boolean = true,
 ): VaultMap => {
-	const currentAbsolutePath = absolutePath || resolve(dirname(fromFileUrl(import.meta.url)), dir)
+	const currentAbsolutePath = absolutePath || resolve(import.meta.dir, dir)
 	const dirName = basename(currentAbsolutePath)
 
 	const vaultNode: VaultMapDirectory = {
@@ -20,17 +21,17 @@ export const buildVaultMap_ = (
 
 	if (isRoot) vaultNode.isRoot = true
 
-	for (const entry of Deno.readDirSync(currentAbsolutePath)) {
+	for (const entry of readdirSync(currentAbsolutePath, { withFileTypes: true })) {
 		const entryAbsolutePath = join(currentAbsolutePath, entry.name)
 		if (CONFIG.ignoreFiles.some((glob) => pathMatchesGlob(entryAbsolutePath, glob)))
 			continue
 
-		if (entry.isFile) {
+		if (entry.isFile()) {
 			vaultNode.children.push({
 				name: entry.name,
 				dir: false,
 			})
-		} else if (entry.isDirectory) {
+		} else if (entry.isDirectory()) {
 			vaultNode.children.push(
 				buildVaultMap(entry.name, entryAbsolutePath, false),
 			)

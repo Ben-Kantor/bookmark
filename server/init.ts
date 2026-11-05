@@ -1,10 +1,9 @@
-import { contentType } from 'jsr:@std/media-types@1.1.0'
-import { extname, normalize } from 'jsr:@std/path@1.1.2'
+import { extname, normalize } from 'node:path'
 
 import { htmlTemplate, nerdFontPromise } from './build.ts'
 import * as CONFIG from './config.ts'
 import { loadFileToHTML, resolveFileRequest } from './coreutils.ts'
-import { generateMap, summarizeHTML, zipContent } from './lib.ts'
+import { contentType, generateMap, summarizeHTML, zipContent } from './lib.ts'
 import { vaultMap } from './vaultmap.ts'
 import { fileRequestInfo } from './types.ts'
 
@@ -44,14 +43,15 @@ const handler = async (request: Request): Promise<Response> => {
 		else if (filePathResult.status === 500 || !filePathResult.filePath)
 			throw new Error('Failure to resolve file request')
 		else if (filePathResult.isLiteralRequest) {
-			const file = await Deno.open(filePathResult.filePath, { read: true })
-			const stat = await file.stat()
-			return new Response(file.readable, {
+			const file = Bun.file(filePathResult.filePath)
+			if (!(await file.exists()))
+				return new Response('File not found.', { status: 404 })
+			return new Response(file.stream(), {
 				status: filePathResult.status || 200,
 				headers: new Headers({
 					'Content-Type': contentType(extname(filePathResult.filePath)) ||
 						'application/octet-stream',
-					'Content-Length': stat.size.toString(),
+					'Content-Length': file.size.toString(),
 				}),
 			})
 		} else {
@@ -72,7 +72,7 @@ const handler = async (request: Request): Promise<Response> => {
 	}
 
 	const serveRobotsTxt = async () => {
-		const robotsTxt = await Deno.readTextFile('assets/robots.txt')
+		const robotsTxt = await Bun.file('assets/robots.txt').text()
 		return new Response(robotsTxt, { headers: { 'Content-Type': 'text/plain' } })
 	}
 
@@ -94,4 +94,4 @@ const handler = async (request: Request): Promise<Response> => {
 	return response
 }
 
-Deno.serve({ port: CONFIG.PORT }, handler)
+Bun.serve({ port: CONFIG.PORT, fetch: handler })

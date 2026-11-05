@@ -2,7 +2,7 @@
 // Original author: Andreas Lind
 // Original source: https://github.com/papandreou/subset-font
 
-import { compress, decompress } from 'npm:woff2-encoder@1.1.0'
+import { compress, decompress } from 'woff2-encoder'
 
 interface SubsetOptions {
     targetFormat?: 'woff2' | 'truetype'

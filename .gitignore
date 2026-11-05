@@ -2,4 +2,4 @@
 .zed/
 style.md
 todo.md
-deno.lock
+node_modules/

@@ -1,4 +1,4 @@
-import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts'
+import { parseHTML } from 'linkedom'
 
 import * as types from './types.ts'
 import { escapeHTML, warn } from './lib.ts'
@@ -9,10 +9,9 @@ export const createEmbedWithProperties = (
 	properties: types.EmbedProperties,
 	targetPath?: string,
 ): string => {
-	const parser = new DOMParser()
-	let element = parser
-		.parseFromString(`${content}`, 'text/html')
-		?.body
+	const { document } = parseHTML('<!DOCTYPE html><html><head></head><body></body></html>')
+	document.body.innerHTML = `${content}`
+	let element: Element | null = document.body
 
 	if (element?.children.length === 0) {
 		warn(`No content found in embed ${targetPath}`)
@@ -66,7 +65,6 @@ export const createEmbedWithProperties = (
 export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 	const properties: types.EmbedProperties = {}
 	const terms = s.split(/[\|#]/).slice(1)
-	console.log(s)
 
 	for (const term of terms) {
 		const [key, value] = term.split('=')
@@ -134,7 +132,6 @@ export const extractEmbedProperties = (s: string): types.EmbedProperties => {
 		}
 	}
 	if (!properties.title) properties.title = s.split(/[\|\#]/)[0].trim()
-	console.log(properties)
 	return properties
 }
 

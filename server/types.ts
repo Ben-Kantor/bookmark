@@ -3,23 +3,6 @@ export interface fileRequestInfo {
 	status?: undefined | 403 | 404 | 500
 	isLiteralRequest?: boolean
 	preferredAddress?: string
-	isWebLink?: boolean
-}
-
-export interface SiteConfig {
-	title: string
-	description: string
-	port: number
-	minify: boolean
-	sourceMap: boolean
-	sanitize: boolean
-	paths: {
-		contentDir: string
-		assetsDir: string
-		indexFile: string
-	}
-	renderOverrides: { [key: string]: string[] }
-	logWarnings: boolean
 }
 
 export interface EmbedProperties {

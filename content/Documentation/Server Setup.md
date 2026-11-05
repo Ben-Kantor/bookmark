@@ -1,6 +1,6 @@
 ## Options
 
-The configuration is stored in the *constants.ts* file, below each option is explained.
+The configuration is stored in the *config.ts* file, below each option is explained.
 
 - **port** - Port to host the server on.
 - **minify** - Whether to minify html, js, and css sent to the client.
@@ -41,7 +41,7 @@ Add a systemd task to `/etc/systemd/system` called `bookmark.service`
   [Service]
   Type=simple
   User=webserver
-  ExecStart=/home/webserver/.deno/bin/deno run serve
+  ExecStart=/home/webserver/.bun/bin/bun run start
   Restart=on-failure
   WorkingDirectory=/home/webserver/bookmark
   RestartSec=10

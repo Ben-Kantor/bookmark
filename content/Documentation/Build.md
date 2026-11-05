@@ -1,10 +1,10 @@
 # Build Process Documentation
 
-Bookmark performs build tasks at server startup to decrease developer overhead. Since the server runs on [Deno](https://deno.com/), only client-side code needs transpilation and bundling. The *build.ts* file handles assembling the final HTML page and preparing assets.
+Bookmark performs build tasks at server startup to decrease developer overhead. Since the server runs on [Bun](https://bun.sh/), only client-side code needs transpilation and bundling. The *build.ts* file handles assembling the final HTML page and preparing assets.
 
 ## TypeScript Bundling
 
-Deno's built-in bundler processes client-side TypeScript starting from *init-client.ts*. It follows imports and bundles everything into a single JavaScript IIFE targeting browsers. Source maps can be enabled via `config.sourceMap` for debugging, and minification via `config.minify` for production.
+Bun's built-in bundler processes client-side TypeScript starting from *init-client.ts*. It follows imports and bundles everything into a single JavaScript IIFE targeting browsers. Source maps can be enabled via `config.sourceMap` for debugging, and minification via `config.minify` for production.
 
 ## Font Subsetting
 

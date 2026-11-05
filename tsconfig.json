@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "Preserve",
+		"moduleResolution": "bundler",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"types": ["bun"],
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"skipLibCheck": true
+	},
+	"include": ["server", "client/src"]
+}

@@ -14,7 +14,7 @@ RESTORE_PATHS=( "content" )
 git remote get-url origin &>/dev/null || git remote add origin https://github.com/Ben-Kantor/bookmark
 
 START_COMMIT=$(git rev-parse --short=7 HEAD 2>/dev/null || echo "none")
-START_DENO=$(command -v deno &>/dev/null && deno --version | head -n1 | awk '{print $2}' || echo "none")
+START_BUN=$(command -v bun &>/dev/null && bun --version || echo "none")
 
 info "Saving local state..."
 git add -A
@@ -40,14 +40,14 @@ done
 info "Cleaning up temporary commit..."
 git reset --soft HEAD~1
 
-info "Updating Deno..."
-if command -v deno &>/dev/null; then
-    deno update &>/dev/null || warn "deno update failed."
-    deno upgrade &>/dev/null || warn "deno upgrade failed."
+info "Updating Bun..."
+if command -v bun &>/dev/null; then
+    bun update &>/dev/null || warn "bun update failed."
+    bun upgrade &>/dev/null || warn "bun upgrade failed."
 fi
 
 END_COMMIT=$(git rev-parse --short=7 HEAD 2>/dev/null || echo "none")
-END_DENO=$(command -v deno &>/dev/null && deno --version | head -n1 | awk '{print $2}' || echo "none")
+END_BUN=$(command -v bun &>/dev/null && bun --version || echo "none")
 
 [[ "$START_COMMIT" != "$END_COMMIT" && "$START_COMMIT" != "none" ]] \
     && NEW_COMMITS=$(git log --oneline --abbrev-commit --reverse ${START_COMMIT}..${END_COMMIT}) \
@@ -57,8 +57,8 @@ echo
 echo -e "${BLUE}================== UPDATE SUMMARY ==================${RESET}"
 [[ "$START_COMMIT" == "$END_COMMIT" ]] && echo -e "Server commit: ${YELLOW}stayed at $END_COMMIT${RESET}" \
     || echo -e "Server commit: ${START_COMMIT} -> ${GREEN}$END_COMMIT${RESET}"
-[[ "$START_DENO" == "$END_DENO" ]] && echo -e "Deno version: ${YELLOW}stayed at $END_DENO${RESET}" \
-    || echo -e "Deno version: ${START_DENO} -> ${GREEN}$END_DENO${RESET}"
+[[ "$START_BUN" == "$END_BUN" ]] && echo -e "Bun version: ${YELLOW}stayed at $END_BUN${RESET}" \
+    || echo -e "Bun version: ${START_BUN} -> ${GREEN}$END_BUN${RESET}"
 echo -e "\n${CYAN}New commits:${RESET}\n$NEW_COMMITS\n"
 
 if [[ ${#MERGE_CONFLICTS[@]} -eq 0 ]]; then
